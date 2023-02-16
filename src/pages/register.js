@@ -12,12 +12,11 @@ const Register = () => {
   const loading = useSelecter((state) => state.auth.loading)
 
    const [formData,setFormData] = useState({
-    name:'',
     email:'',
     password:'',
    })
 
-  const {name,email,password} = formData
+  const {email,password} = formData
 
   const onChange =(e) => {
     setFormData({ ...formData,[e.target.name]: e.target.value })
@@ -27,7 +26,7 @@ const Register = () => {
     e.preventDefault()
 
     if (dispatch && dispatch !== null && dispatch !== undefined) {
-      await dispatch(register(name,email,password))
+      await dispatch(register(email,password))
     }
 
     if (typeof window !== 'undefined' && isAuthenticated) {
@@ -74,18 +73,6 @@ const Register = () => {
       <div className="text-center text-2xl mb-5">アカウント登録</div>
       <form className="w-1/3 mx-auto" onSubmit={onSubmit}>
         <div className="mb-4">
-          <div className="mb-1" htmlFor="name">
-            名前
-          </div>
-          <input
-            className="input-form"
-            type="text"
-            name="name"
-            placeholder="フルスタックチャンネル"
-            onChange={onChange}
-            value={name}
-            required
-          />
         </div>
         <div className="mb-4">
           <div className="mb-1" htmlFor="email">

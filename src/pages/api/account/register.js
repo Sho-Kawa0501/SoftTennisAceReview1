@@ -1,9 +1,8 @@
 export default async(req,res) => {
   if(req.method === 'POST') {
-    const {name,email,password} = req.body
+    const {email,password} = req.body
 
     const body = JSON.stringify({
-      name,
       email,
       password,
     })
