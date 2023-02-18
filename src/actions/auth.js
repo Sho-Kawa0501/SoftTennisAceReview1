@@ -6,6 +6,22 @@ import {
   LOGIN_SUCCESS,
   LOGIN_FAIL,
 
+  // ユーザー情報取得
+  USER_SUCCESS,
+  USER_FAIL,
+
+  //　リフレッシュトークン
+  REFRESH_SUCCESS,
+  REFRESH_FAIL,
+
+  // 認証チェック
+  AUTHENTICATED_SUCCESS,
+  AUTHENTICATED_FAIL,
+
+  // ログアウト
+  LOGOUT_SUCCESS,
+  LOGOUT_FAIL,
+
   // 読み込み中
   SET_AUTH_LOADING,
   REMOVE_AUTH_LOADING,
@@ -81,4 +97,131 @@ export const login = (email,password) => async(dispatch) => {
       type:LOGIN_FAIL,
     })
   }
+}
+
+//ユーザー情報取得
+export const user = () => async(dispatch) => {
+  dispatch({
+    type:SET_AUTH_LOADING,
+  })
+
+  try { //ユーザー情報取得用APIをコール
+    const res = await fetch('/api/account/user', {
+      method:'GET',
+    })
+
+    const data = await res.json()
+
+    //成功したら、値を取得してpayloadに入れる。
+    //reducerでstate状態を更新できるようになる
+    if (res.status === 200) {
+      dispatch({
+        type: USER_SUCCESS,
+        payload:data,
+      })
+    } else {
+      dispatch({
+        type: USER_FAIL,
+      }) 
+    }
+  } catch (err) {
+    dispatch({
+      type:USER_FAIL,
+    })
+  }
+  dispatch({
+    type:REMOVE_AUTH_LOADING,
+  })
+}
+
+export const refresh = () => async (dispatch) => {
+  dispatch({
+    type:SET_AUTH_LOADING,
+  })
+
+  try {
+    const res = await fetch(`/api/account/refresh`, {
+      method: 'GET',
+    })
+
+    if (res.status === 200) {
+      dispatch(verify())
+
+    } else {
+      dispatch({
+        type:REFRESH_FAIL,
+      })
+    }
+  } catch (err) {
+    dispatch({
+      type:REFRESH_FAIL,
+    })
+  }
+  dispatch({
+    type:REMOVE_AUTH_LOADING,
+  })
+}
+
+export const verify = () => async(dispatch) => {
+  dispatch({
+    type: SET_AUTH_LOADING,
+  })
+
+  try { 
+    const res = await fetch('/api/account/verify', {
+      method:'GET',
+    })
+
+    if (res.status === 200) {
+      dispatch({
+        type:AUTHENTICATED_SUCCESS,
+      })
+      dispatch(user())
+    } else { 
+      dispatch({
+        type:AUTHENTICATED_FAIL,
+      })
+    }
+  } catch(err) {
+    dispatch({
+      type: AUTHENTICATED_FAIL,
+    })
+  }
+
+  dispatch({
+    type: REMOVE_AUTH_LOADING,
+  })
+}
+
+//ログアウト
+
+export const logout = () => async(dispatch) => {
+  dispatch({
+    type: SET_AUTH_LOADING,
+  })
+
+  try {
+    const res = await fetch('/api/account/logout', {
+      method:'POST',
+    })
+
+    if (res.status === 200) {
+      dispatch({
+        type:LOGOUT_SUCCESS,
+      })
+    } else {
+      dispatch({
+        type:LOGOUT_FAIL,
+      })
+    }
+
+  } catch (err) {
+    dispatch({
+      type: LOGOUT_FAIL,
+    })
+  }
+
+  dispatch ({
+    type:REMOVE_AUTH_LOADING,
+  })
 }

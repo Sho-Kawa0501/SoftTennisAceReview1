@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useRouter } from '../action/auth'
+import { useRouter } from 'next/router'
 import { login } from '../actions/auth'
-import Loader from 'react-loader-spinner'
+import { Rings } from 'react-loader-spinner'
 import Head from 'next/head'
 
 const Login = () => {
@@ -74,7 +74,7 @@ const Login = () => {
 
         <div className="flex justify-center">
           {loading ? (
-            <Loader type="Oval" color="#F59E00" width={50} height={50} />
+            <Rings type="Oval" color="#F59E00" width={50} height={50} />
           ) : (
             <button className="button-yellow" type="submit">
               送信
@@ -85,3 +85,5 @@ const Login = () => {
     </>
   )
 }
+
+export default Login

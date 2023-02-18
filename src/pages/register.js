@@ -2,19 +2,19 @@ import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
 import { register } from '../actions/auth'
-import Loader from 'react-loader-spinner'
+import { Rings } from 'react-loader-spinner'
 import Head from 'next/head'
 
 const Register = () => {
   const dispatch = useDispatch()
   const router = useRouter()
-  const isAuthenticated = useSelecter((state) => state.auth.isAuthenticated)
-  const loading = useSelecter((state) => state.auth.loading)
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated)
+  const loading = useSelector((state) => state.auth.loading)
 
-   const [formData,setFormData] = useState({
+  const [formData,setFormData] = useState({
     email:'',
     password:'',
-   })
+  })
 
   const {email,password} = formData
 
@@ -33,36 +33,6 @@ const Register = () => {
       router.push('/')
     } 
   }
-
-// const Register = () => {
-//   const dispatch = useDispatch()
-//   const router = useRouter()
-//   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated)
-//   const loading = useSelector((state) => state.auth.loading)
-
-//   const [formData, setFormData] = useState({
-//     name: '',
-//     email: '',
-//     password: '',
-//   })
-
-//   const { name, email, password } = formData
-
-//   const onChange = (e) => {
-//     setFormData({ ...formData, [e.target.name]: e.target.value })
-//   }
-
-//   const onSubmit = async (e) => {
-//     e.preventDefault()
-
-//     if (dispatch && dispatch !== null && dispatch !== undefined) {
-//       await dispatch(register(name, email, password))
-//     }
-//   }
-
-//   if (typeof window !== 'undefined' && isAuthenticated) {
-//     router.push('/')
-//   }
 
   return (
     <>
@@ -106,7 +76,7 @@ const Register = () => {
 
         <div className="flex justify-center">
           {loading ? (
-            <Loader type="Oval" color="#F59E00" width={50} height={50} />
+            <Rings type="Oval" color="#F59E00" width={50} height={50} />
           ) : (
             <button className="button-yellow" type="submit">
               送信
