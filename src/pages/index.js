@@ -15,14 +15,14 @@ const Index = () => {
         {isAuthenticated && user ? (
           <div>
             <div>ようこそ、{user.name}さん</div>
-            <div>あなたは、無料会員です。</div>
+            <div>ログイン後画面</div>
             <div className="my-4 border-4 border-dashed border-gray-200 rounded">
-              <div className="flex justify-center items-center h-64">こちらは無料コンテンツ！</div>
+              <div className="flex justify-center items-center h-64">これまでよく頑張った！</div>
             </div>
           </div>
         ) : (
           <div className="text-center text-2xl">
-            フルスタックチャンネルによる有料会員サイトのチュートリアルです。
+            ログイン前画面
           </div>
         )}
       </div>

@@ -11,28 +11,30 @@ const Register = () => {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated)
   const loading = useSelector((state) => state.auth.loading)
 
-  const [formData,setFormData] = useState({
-    email:'',
-    password:'',
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
   })
 
-  const {email,password} = formData
+  const { email, password } = formData
 
-  const onChange =(e) => {
-    setFormData({ ...formData,[e.target.name]: e.target.value })
+  const onChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
   const onSubmit = async (e) => {
     e.preventDefault()
 
     if (dispatch && dispatch !== null && dispatch !== undefined) {
-      await dispatch(register(email,password))
+      await dispatch(register(email, password))
     }
-
-    if (typeof window !== 'undefined' && isAuthenticated) {
-      router.push('/')
-    } 
   }
+
+  if (typeof window !== 'undefined' && isAuthenticated) {
+    router.push('/')
+  }
+
+  
 
   return (
     <>

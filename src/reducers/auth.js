@@ -1,5 +1,5 @@
 import {
-  // アカウント登録
+  // ユーザー登録
   REGISTER_SUCCESS,
   REGISTER_FAIL,
 
@@ -23,6 +23,14 @@ import {
   LOGOUT_SUCCESS,
   LOGOUT_FAIL,
 
+  // チェックアウト完了
+  CREATE_CHECKOUT_SUCCESS,
+  CREATE_CHECKOUT_FAIL,
+
+  // チェックアウト詳細
+  DETAIL_CHECKOUT_SUCCESS,
+  DETAIL_CHECKOUT_FAIL,
+
   // 読み込み中
   SET_AUTH_LOADING,
   REMOVE_AUTH_LOADING,
@@ -30,8 +38,10 @@ import {
 
 const initialState = { //初期値
   user: null,
-  isAuthenticated: null,
+  isAuthenticated: false,
   loading: false,
+  checkout_url: null,
+  checkout_detail: null,
 }
 
 const authReducer = (state = initialState, action) => {
@@ -104,6 +114,28 @@ const authReducer = (state = initialState, action) => {
         user: null,
       }
     case LOGOUT_FAIL:
+      return {
+        ...state,
+      }
+
+    // チェックアウト完了
+    case CREATE_CHECKOUT_SUCCESS:
+      return {
+        ...state,
+        checkout_url: payload,
+      }
+    case CREATE_CHECKOUT_FAIL:
+      return {
+        ...state,
+      }
+
+    // チェックアウト詳細
+    case DETAIL_CHECKOUT_SUCCESS:
+      return {
+        ...state,
+        checkout_detail: payload,
+      }
+    case DETAIL_CHECKOUT_FAIL:
       return {
         ...state,
       }
