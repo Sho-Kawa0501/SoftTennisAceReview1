@@ -1,6 +1,6 @@
 import cookie from 'cookie'
 
-export default async (rea, res) => {
+export default async (req, res) => {
   //POST通信しか通さない
   if (req.method === 'POST') {
     //リクエストのbodyからemailとpasswordを取得
@@ -14,23 +14,23 @@ export default async (rea, res) => {
   
 
   try {
-    const apiRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/login`, {
-      method:'POST',
-      headers:{
+    const apiRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/login/`, {
+      method: 'POST',
+      headers: {
         'Content-Type': 'application/json',
       },
-      body:body,
+      body: body,
     })
 
     const data  = await apiRes.json()
 
-    if (apiRe.status === 200) {
+    if (apiRes.status === 200) {
       res.setHeader('Set-Cookie', [
-        cookie.serialize('access',data.access, {
-          httpOnly:false,
-          secure:true,
-          sameSite:'Lax',
-          path:'/',
+        cookie.serialize('access', data.access, {
+          httpOnly: false,
+          secure: true,
+          sameSite: 'Lax',
+          path: '/',
           maxAge: 60 * 60, // 1時間
         }),
         cookie.serialize('refresh', data.refresh, {
