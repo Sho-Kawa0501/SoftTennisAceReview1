@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
 import { getPostIds, getPostDetail } from '../../../lib/posts'
+import { reset_post_status } from '../../../actions/post'
 import useSWR from 'swr'
 import Head from 'next/head'
 import Link from 'next/link'
@@ -26,6 +27,14 @@ const DetailPost = ({ staticPost, id }) => {
   useEffect(() => {
     mutate()
   }, [])
+
+  // 状態解除
+  useEffect(() => {
+    if (dispatch && dispatch !== null && dispatch !== undefined) {
+      dispatch(reset_post_status())
+    }
+  }, [dispatch])
+
 
   if (Router.isFallback || !post) {
     return <div className="text-center">Loading...</div>

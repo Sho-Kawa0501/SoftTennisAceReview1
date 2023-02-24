@@ -35,7 +35,6 @@ const Register = () => {
   }
 
   
-
   return (
     <>
       <Head>
