@@ -7,6 +7,10 @@ import {
   EDIT_POST_SUCCESS,
   EDIT_POST_FAIL,
 
+  // 投稿削除
+  DELETE_POST_SUCCESS,
+  DELETE_POST_FAIL,
+
   // 読み込み中
   SET_POST_LOADING,
   REMOVE_POST_LOADING,
@@ -103,6 +107,45 @@ export const edit_post = (id,title,image,content) => async(dispatch) => {
       type: EDIT_POST_FAIL,
     })
   }
+  dispatch({
+    type: REMOVE_POST_LOADING,
+  })
+}
+
+// 投稿削除
+export const delete_post = (id) => async (dispatch) => {
+  dispatch({
+    type: SET_POST_LOADING,
+  })
+
+  const body = JSON.stringify({
+    id,
+  })
+
+  try {
+    const res = await fetch('/api/post/delete_post', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: body,
+    })
+
+    if (res.status === 200) {
+      dispatch({
+        type: DELETE_POST_SUCCESS,
+      })
+    } else {
+      dispatch({
+        type: DELETE_POST_FAIL,
+      })
+    }
+  } catch (err) {
+    dispatch({
+      type: DELETE_POST_FAIL,
+    })
+  }
+
   dispatch({
     type: REMOVE_POST_LOADING,
   })

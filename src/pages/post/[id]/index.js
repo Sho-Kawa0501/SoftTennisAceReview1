@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
+import { delete_post, reset_post_status } from '../../../actions/post'
 import { getPostIds, getPostDetail } from '../../../lib/posts'
-import { reset_post_status } from '../../../actions/post'
 import useSWR from 'swr'
 import Head from 'next/head'
 import Link from 'next/link'
@@ -15,6 +15,7 @@ const DetailPost = ({ staticPost, id }) => {
   const dispatch = useDispatch()
   const router = useRouter()
   const user = useSelector((state) => state.auth.user)
+  const delete_post_success = useSelector((state) => state.post.delete_post_success)
 
   const { data:post,mutate } = useSWR(
     `${process.env.NEXT_PUBLIC_API_URL}/api/post_detail/${id}/`,
@@ -38,6 +39,17 @@ const DetailPost = ({ staticPost, id }) => {
 
   if (Router.isFallback || !post) {
     return <div className="text-center">Loading...</div>
+  }
+
+  const deletePost = async () => {
+    if (dispatch && dispatch !== null && dispatch !== undefined && post) {
+      await dispatch(delete_post(post.id))
+    }
+  }
+
+  // 削除成功
+  if (delete_post_success) {
+    router.push('/')
   }
 
   return (
@@ -81,7 +93,9 @@ const DetailPost = ({ staticPost, id }) => {
                         <a>編集</a>
                       </Link>
                     </div>
-                    <div className="cursor-pointer">削除</div>
+                    <div className="cursor-pointer" onClick={deletePost}>
+                      削除
+                    </div>
                   </div>
                 )}
               </div>
