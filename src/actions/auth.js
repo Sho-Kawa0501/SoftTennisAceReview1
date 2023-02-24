@@ -3,6 +3,7 @@ import {
   REGISTER_SUCCESS,
   REGISTER_FAIL,
 
+  //ログイン
   LOGIN_SUCCESS,
   LOGIN_FAIL,
 
@@ -22,17 +23,12 @@ import {
   LOGOUT_SUCCESS,
   LOGOUT_FAIL,
 
-  // チェックアウト完了
-  CREATE_CHECKOUT_SUCCESS,
-  CREATE_CHECKOUT_FAIL,
-
-  // チェックアウト詳細
-  DETAIL_CHECKOUT_SUCCESS,
-  DETAIL_CHECKOUT_FAIL,
-
   // 読み込み中
   SET_AUTH_LOADING,
   REMOVE_AUTH_LOADING,
+
+  // 状態解除
+  RESET_AUTH_STATUS,
 } from './types'
 
 // ユーザー登録
@@ -59,6 +55,7 @@ export const register = (email, password) => async (dispatch) => {
       dispatch({
         type: REGISTER_SUCCESS,
       })
+      await dispatch(login(email, password))
     } else {
       dispatch({
         type: REGISTER_FAIL,
@@ -215,7 +212,6 @@ export const verify = () => async (dispatch) => {
 }
 
 //ログアウト
-
 export const logout = () => async(dispatch) => {
   dispatch({
     type: SET_AUTH_LOADING,
@@ -244,5 +240,12 @@ export const logout = () => async(dispatch) => {
 
   dispatch ({
     type:REMOVE_AUTH_LOADING,
+  })
+}
+
+// 状態解除
+export const reset_auth_status = () => (dispatch) => {
+  dispatch({
+    type: RESET_AUTH_STATUS,
   })
 }

@@ -2,10 +2,13 @@ import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
 import { getPostList } from '../lib/posts'
+import { reset_auth_status } from '../actions/auth'
+import { reset_post_status } from '../actions/post'
 import useSWR from 'swr'
 import Head from 'next/head'
 import Link from 'next/link'
 import Image from 'next/image'
+
 
 //json形式で返す関数
 const fetcher = (url) => fetch(url).then((res) => res.json())
@@ -27,6 +30,14 @@ const Index = ({ staticPosts }) => {
     mutate()
   }, [])
 
+  // 状態解除
+  useEffect(() => {
+    if (dispatch && dispatch !== null && dispatch !== undefined) {
+      dispatch(reset_auth_status())
+      dispatch(reset_post_status())
+    }
+  }, [dispatch])
+
   if (router.isFallback || !posts) {
     return <div className="text-center">Loading...</div>
   }
@@ -36,6 +47,7 @@ const Index = ({ staticPosts }) => {
       <Head>
         <title>FullStackChannel</title>
       </Head>
+
       <div className="max-w-screen-lg mx-auto">
         <div className="grid grid-cols-3 gap-4">
           <div className="col-span-2">
@@ -98,6 +110,8 @@ const Index = ({ staticPosts }) => {
   )
 }
 
+export default Index
+
 export async function getStaticProps() {
   const staticPosts = await getPostList()
 
@@ -106,5 +120,3 @@ export async function getStaticProps() {
     revalidate: 1,
   }
 }
-
-export default Index
