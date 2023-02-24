@@ -3,6 +3,10 @@ import {
   NEW_POST_SUCCESS,
   NEW_POST_FAIL,
 
+   // 投稿編集
+  EDIT_POST_SUCCESS,
+  EDIT_POST_FAIL,
+
   // 読み込み中
   SET_POST_LOADING,
   REMOVE_POST_LOADING,
@@ -28,6 +32,17 @@ const postReducer = (state = initialState, action) => {
         new_post_success: true,
       }
     case NEW_POST_FAIL:
+      return {
+        ...state,
+      }
+
+    // 投稿編集
+    case EDIT_POST_SUCCESS:
+      return {
+        ...state,
+        edit_post_success: true,
+      }
+    case EDIT_POST_FAIL:
       return {
         ...state,
       }
