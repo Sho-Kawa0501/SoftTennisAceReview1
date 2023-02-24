@@ -74,6 +74,16 @@ const DetailPost = ({ staticPost, id }) => {
                     <div>{post.title}</div>
                   </div>
                 </div>
+                {user && user.id === post.user.id && (
+                  <div className="text-sm flex space-x-4">
+                    <div>
+                      <Link href={`/post/${post.id}/edit`} legacyBehavior>
+                        <a>編集</a>
+                      </Link>
+                    </div>
+                    <div className="cursor-pointer">削除</div>
+                  </div>
+                )}
               </div>
 
               <div className="whitespace-pre p-4">
