@@ -11,6 +11,10 @@ import {
   USER_SUCCESS,
   USER_FAIL,
 
+  // プロフィール編集
+  EDIT_PROFILE_SUCCESS,
+  EDIT_PROFILE_FAIL,
+
   //　リフレッシュトークン
   REFRESH_SUCCESS,
   REFRESH_FAIL,
@@ -148,6 +152,7 @@ export const user = () => async (dispatch) => {
   })
 }
 
+
 export const refresh = () => async (dispatch) => {
   dispatch({
     type: SET_AUTH_LOADING,
@@ -240,6 +245,53 @@ export const logout = () => async(dispatch) => {
 
   dispatch ({
     type:REMOVE_AUTH_LOADING,
+  })
+}
+
+// プロフィール編集
+export const edit_profile = (id, name, image) => async (dispatch) => {
+  dispatch({
+    type: SET_AUTH_LOADING,
+  })
+
+  const formData = new FormData()
+  formData.append('name', name)
+  if (image) {
+    formData.append('image', image)
+  }
+
+  try {
+    const res = await fetch('/api/post/edit_post', {
+      method: 'GET',
+    })
+    const data = await res.json()
+
+    const res2 = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/users/${id}/`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${data.access}`,
+      },
+      body: formData,
+    })
+
+    if (res2.status === 200) {
+      dispatch({
+        type: EDIT_PROFILE_SUCCESS,
+      })
+      await dispatch(user())
+    } else {
+      dispatch({
+        type: EDIT_PROFILE_FAIL,
+      })
+    }
+  } catch (err) {
+    dispatch({
+      type: EDIT_PROFILE_FAIL,
+    })
+  }
+
+  dispatch({
+    type: REMOVE_AUTH_LOADING,
   })
 }
 
