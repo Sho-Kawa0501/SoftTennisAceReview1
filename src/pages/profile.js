@@ -19,6 +19,7 @@ const Profile = () => {
 
   const { name } = formData
 
+  //user情報に変更があったら、nameに値を設定するようにする
   useEffect(() => {
     if (user) {
       setFormData({

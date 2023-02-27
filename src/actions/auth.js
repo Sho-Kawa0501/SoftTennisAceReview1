@@ -87,6 +87,7 @@ export const login = (email,password) => async(dispatch) => {
     password,
   })
 
+  // APIコール
   try {
     const res = await fetch('/api/account/login', {
       method:'POST',

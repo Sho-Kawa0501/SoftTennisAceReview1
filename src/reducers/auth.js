@@ -135,10 +135,18 @@ const authReducer = (state = initialState, action) => {
       }
     
     // 状態解除
+    
     case REMOVE_AUTH_LOADING:
       return {
         ...state,
         loading: false,
+      }
+
+    // 状態解除
+    case RESET_AUTH_STATUS:
+      return {
+        ...state,
+        edit_profile_success: false,
       }
     default:
       return state

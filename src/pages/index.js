@@ -13,15 +13,19 @@ import Image from 'next/image'
 //json形式で返す関数
 const fetcher = (url) => fetch(url).then((res) => res.json())
 
+
 const Index = ({ staticPosts }) => {
   const dispatch = useDispatch()
   const router = useRouter()
+  //Actionsのpayloadの値をuserに格納
   const user = useSelector((state) => state.auth.user)
 
   const { data: posts, mutate } = useSWR(
     `${process.env.NEXT_PUBLIC_API_URL}/api/post_list/`,
     fetcher,
     {
+      //オプションfallbackDataにgetPostListで取得してきたデータを入れる
+      //返ってくる初期データ
       fallbackData: staticPosts,
     }
   )
@@ -112,6 +116,7 @@ const Index = ({ staticPosts }) => {
 
 export default Index
 
+//ISR
 export async function getStaticProps() {
   const staticPosts = await getPostList()
 

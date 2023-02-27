@@ -8,28 +8,36 @@ import Head from 'next/head'
 const Login = () => {
   const dispatch = useDispatch()
   const router = useRouter()
-  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated)
+
+  //authのstate状態を参照
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated) 
   const loading = useSelector((state) => state.auth.loading)
 
+  //入力されるemail,passwordのstate管理
   const [formData,setFormData] = useState({
     email:'',
     password:'',
   })
 
-  const { email, password} = formData
+  //上記のデータ2つを取り出す
+  const { email, password } = formData
 
+  //useStateを利用して入力されるたびに文字を変更できるようにする
   const onChange= (e) => {
     setFormData({ ...formData, [e.target.name]:e.target.value})
   }
 
+  //送信
   const onSubmit = async (e) => {
     e.preventDefault()
 
+    //dispatchが機能していればlogin関数を呼ぶ
     if (dispatch && dispatch !==null && dispatch !== undefined) {
       await dispatch(login(email, password))
     }
   }
 
+  //windowオブジェクトが存在して状態isAuthenticatedがTrueならトップページに移動
   if (typeof window !== 'undefined' && isAuthenticated) {
     router.push('/')
   }
