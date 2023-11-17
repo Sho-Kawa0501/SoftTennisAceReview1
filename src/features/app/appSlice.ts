@@ -4,11 +4,13 @@ import { RootState } from '../../app/store'
 interface AppState {
   activeModal: string | null,
   isLoading:boolean,
+  isModalOpen: boolean,
 }
 
 const initialState: AppState = {
   activeModal: null,
   isLoading:false,
+  isModalOpen: false,
 }
 
 export const appSlice = createSlice({
@@ -23,16 +25,24 @@ export const appSlice = createSlice({
     },
     resetIsLoading:(state) => {
       state.isLoading = false
+    },
+    setIsModalOpen:(state) => {
+      state.isModalOpen = true
+    },
+    resetIsModalOpen:(state) => {
+      state.isModalOpen = false
     }
+    
   }
 })
 
-export const { 
+export const {
   setActiveModal,
   setIsLoading,
   resetIsLoading,
 } = appSlice.actions
 export const selectActiveModal = (state: RootState) => state.app.activeModal
 export const selectIsLoading = (state: RootState) => state.app.isLoading
+export const selectIsOpenModal = (state:RootState) => state.app.isModalOpen
 
 export default appSlice.reducer

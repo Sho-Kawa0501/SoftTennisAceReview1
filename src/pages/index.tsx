@@ -1,30 +1,30 @@
-import React,{ useEffect,createContext,useMemo} from 'react'
+import React,{ useEffect,createContext,useMemo,useContext,useState} from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { AppDispatch, RootState } from 'app/store'
-import { useRouter } from 'next/router'
-import { getReviewList,getItemList, } from '../lib/posts'
-import ItemFilterModal from 'features/item/ItemFilterModal'
-import { setIsLoading,resetIsLoading } from 'features/app/appSlice'
-import { fetchAsyncCheckAuth,fetchAsyncGetRefreshToken,fetchAsyncNewToken } from 'features/account/accountSlice'
+import { getItemList,getItemMetaDataList } from '../lib/item'
+// import { getReviewList } from 'lib/review'
+import ItemFilterModal from 'components/templates/ItemFilterModal'
 import useSWR from 'swr'
 import Head from 'next/head'
 import { InferGetStaticPropsType,NextPage,GetStaticProps } from 'next'
-import { IndexData } from 'types'
+import { StaticItemMetaDataType,Brand,Series,Position,Item } from 'types/itemTypes'
 import { setItems,setBrands,setSeries,setPositions } from 'features/item/itemSlice'
-import { Brand,Series,Position,ItemProps,Item } from 'features/item/ItemTypes'
-import ItemCardList from 'components/ItemCardList'
-import ReviewCardList from 'components/ReviewCardList'
-import { getItemMetaDataList } from 'features/item/apiService'
+import ItemCardList from 'components/organisms/ItemCardList'
+import ReviewCardList from 'components/organisms/ReviewCardList'
+import { resetIsLogin,resetIsRegister,resetIsDeleteUser } from 'features/account/accountSlice'
+import { AlertMessage } from 'components/Atoms/AlertMessage'
+import { selectIsDeleteUser,selectIsRegister,selectIsLogin } from 'features/account/accountSlice'
+import { useAlertAuthMessage } from 'hooks/account/useAlertAuthMessage'
+import { selectFilterdItems } from 'features/item/itemSlice'
 
-
-type IcontextProps = {
-  items: ItemProps[],
+type ItemContextProps = {
+  items: Item[],
   brands: Brand[],
   series: Series[],
   positions: Position[],
 }
 
-export const ItemContext = createContext<IcontextProps>({
+export const ItemContext = createContext<ItemContextProps>({
   items: [],
   brands: [],
   series: [],
@@ -33,24 +33,21 @@ export const ItemContext = createContext<IcontextProps>({
 
 type ReviewPageProps = InferGetStaticPropsType<typeof getStaticProps>
 
-//json形式で返す関数
-const fetcher = (url:string) => fetch(url).then((res) => res.json())
-
-const Index:NextPage<ReviewPageProps> = React.memo(({ staticReviews,staticItems,staticItemMetaData }:ReviewPageProps) => {
+const Index:NextPage<ReviewPageProps> = React.memo(({ staticItems,staticItemMetaData }:ReviewPageProps) => {
   const dispatch:AppDispatch = useDispatch()
-  const router = useRouter()
-  
-  const filteredItems = useSelector((state: RootState) => state.item.filteredItems)
-  const { data: reviews,error, } = useSWR<IndexData[]>(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/latest_review_list/`,
-    fetcher,
-    {
-      fallbackData: staticReviews,
-    }
-  )
+  useEffect(() => {
+    console.log('Index Component rendered');
+  }, []);
+  const { showMessage } = useAlertAuthMessage()
 
+  //Iselect
+  const filteredItems = useSelector(selectFilterdItems)
 
-  // 選択されたそれぞれの値を更新して、ReduxStoreに保存するためにuseEffectを使用
+  const contextValue = useMemo(() => ({
+    items:staticItems,
+    ...staticItemMetaData
+  }), [staticItems,staticItemMetaData])
+
   useEffect(() => {
     if(staticItems) dispatch(setItems(staticItems))
     if(staticItemMetaData) {
@@ -58,41 +55,36 @@ const Index:NextPage<ReviewPageProps> = React.memo(({ staticReviews,staticItems,
       dispatch(setSeries(staticItemMetaData.series))
       dispatch(setPositions(staticItemMetaData.positions))
     }
-  }, [staticItems, staticItemMetaData,])
-
-  const contextValue = useMemo(() => ({
-    ...staticItemMetaData
-  }), [staticItemMetaData])
+  }, [staticItems, staticItemMetaData])
 
   return (
     <>
       <Head>
         <title>AceRacketRealm</title>
       </Head>
+      {showMessage.show &&
+      <> 
+        <AlertMessage message={showMessage.message} color={showMessage.color} />
+      </>
+      }
       <ItemContext.Provider value={contextValue}>
         <ItemFilterModal />
       </ItemContext.Provider>
+      
       <div className="flex flex-wrap">
         <ItemCardList items={filteredItems} />
-      </div>
-      <div className="max-w-screen-lg mx-auto">
-        <div className="grid grid-cols-3 gap-4">
-          </div>
-          <div className="col-span-2">
-            <ReviewCardList reviews={reviews} />
-          </div>
       </div>
     </>
   )
 })
 
+Index.displayName = "Index"
 export default Index
 
-export const getStaticProps: GetStaticProps = async() =>  {
-  //const staticReviews = await getReviewList()
-  //Itemを取得する関数を使用して、変数に代入
-  //関数3つ用意しなくても、1つ用意してbrand,series,position全て取得する方がいい
-  //ItemInformation{Positionlist,BrandList,SeriesList}という形で取得できそう
+export const getStaticProps: GetStaticProps<{
+  staticItems: Item[]
+  staticItemMetaData: StaticItemMetaDataType;
+  }> = async() =>  {
   const staticItems = await getItemList()
   const staticItemMetaData = await getItemMetaDataList()
 
@@ -101,6 +93,5 @@ export const getStaticProps: GetStaticProps = async() =>  {
       staticItems,
       staticItemMetaData,
     },
-    revalidate: 86400
   }
 }

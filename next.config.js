@@ -4,5 +4,5 @@ module.exports = {
   images: {
     domains: ['localhost'],
   },
-  reactStrictMode: true,
+  // reactStrictMode: true,
 }

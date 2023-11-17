@@ -1,38 +1,28 @@
 import * as actions from './actions';
-
 import {
   createAsyncThunk,
   createSlice,
   PayloadAction,
 } from '@reduxjs/toolkit'
+import { Review, } from 'types/types'
+import { handleActionError } from 'lib/utils/handleActionError';
 
-interface Review {
-  id: string
-  user: {
-    name: string;
-    image: string;
-    id: string;
-  };
-  productId: number;
-  title: string;
-  content: string;
-  image: string;
-  favorites_count: number;
-}
-
-interface ReviewState {
+interface InitialState {
   reviews: Review[],
   myReview: Review[],
   isNewReview: boolean,
-  isReviewLoading: boolean,
+  isEditReview:boolean,
+  reviewError:string | null,
   isDeleteReview: boolean,
+  
 }
 
-const initialState:ReviewState = {
+const initialState:InitialState = {
   reviews: [],
   myReview:[],
   isNewReview: false,
-  isReviewLoading: false,
+  isEditReview:false,
+  reviewError:'',
   isDeleteReview: false,
 }
 
@@ -53,10 +43,13 @@ export const reviewSlice = createSlice({
       state.isNewReview = false
     },
     setIsEditReview(state) {
-      state.isReviewLoading = true
+      state.isEditReview = true
     },
     resetIsEditReview(state) {
-      state.isReviewLoading = false
+      state.isEditReview = false
+    },
+    resetIsReviewErrorMessage(state) {
+      state.reviewError = ""
     },
     setIsDeleteReview(state) {
       state.isDeleteReview = true
@@ -65,9 +58,8 @@ export const reviewSlice = createSlice({
       state.isDeleteReview = false
     }
   },
-  //各非同期関数の処理が終了した後の処理。
   extraReducers: (builder) => {
-    builder.addCase(actions.fetchAsyncGetMyReview.fulfilled,
+    builder.addCase(actions.fetchAsyncMyReview.fulfilled,
       (state,action:PayloadAction<Review[]>) => {
         return {
           ...state,
@@ -75,43 +67,38 @@ export const reviewSlice = createSlice({
         }
       }
     )
-    builder.addCase(actions.fetchAsyncNewReview.pending,
-      (state) => {
-        
-      })
+    builder.addCase(actions.fetchAsyncMyReview.rejected, 
+      (state,action) => {
+        handleActionError(state, action, 'マイレビュー取得に失敗しました。','reviewError')
+    })
+
     builder.addCase(actions.fetchAsyncNewReview.fulfilled,
       (state, action: PayloadAction<Review>) => {
         return {
           ...state,
           reviews: [...state.reviews, action.payload],
-          isNewReview: true,
-          isloading:false,
         };
       })
-      builder.addCase(actions.fetchAsyncEditReview.pending,
-        (state) => {
-          
-        })
+      builder.addCase(actions.fetchAsyncNewReview.rejected, 
+        (state,action) => {
+          handleActionError(state, action, 'レビュー作成に失敗しました。','reviewError')
+      })
     builder.addCase(actions.fetchAsyncEditReview.fulfilled,
       (state, action:PayloadAction<Review>) => {
-        return {
-          ...state,
-          reviews: [...state.reviews, action.payload],
-          
+        const index = state.reviews.findIndex(review => review.id === action.payload.id);
+        if (index !== -1) {
+          state.reviews[index] = action.payload;
         }
       })
-    builder.addCase(actions.fetchAsyncDeleteReview.pending,
-      (state) => {
-        
+      builder.addCase(actions.fetchAsyncEditReview.rejected, 
+        (state,action) => {
+          handleActionError(state, action, 'レビュー編集に失敗しました','reviewError')
       })
-    builder.addCase(actions.fetchAsyncDeleteReview.fulfilled,
-      (state, action) => {
-        return {
-          ...state,
-          isDeleteReview: true,
-          
-        }
-      })
+      builder.addCase(actions.fetchAsyncDeleteReview.fulfilled,
+        (state, action) => {
+          const reviewId = action.meta.arg;  // 削除されたレビューのIDを取得
+          state.myReview = state.myReview.filter(review => review.id !== reviewId);  // ステートから削除
+      });
    },
 })
 

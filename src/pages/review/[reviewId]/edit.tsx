@@ -1,174 +1,96 @@
-import { useEffect, useCallback,useState } from 'react'
+import { useEffect, useCallback,useState,useRef } from 'react'
 import { 
-  GetStaticPaths,
-  GetStaticProps,
-  GetStaticPropsContext,
-  InferGetStaticPropsType,
   NextPage,
 } from 'next'
-
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch,shallowEqual } from 'react-redux'
 import { useRouter } from 'next/router'
 import { AppDispatch, RootState } from 'app/store'
-import { 
-  resetIsEditReview,
-} from 'features/review/slice/reducers'
-import { fetchAsyncEditReview } from 'features/review/slice/actions'
-import { getReviewIds, getReviewDetail,getItemIds, } from '../../../lib/posts'
-import useSWR ,{SWRResponse} from 'swr'
-import { Rings } from 'react-loader-spinner'
+import { fetchAsyncEditReview, } from 'features/review/slice/actions'
 import Head from 'next/head'
 import { useForm,FormProvider,SubmitHandler} from 'react-hook-form'
-import { fetcherWithCredential } from '../../../lib/posts'
-import ReviewForm from 'components/ReviewForm'
-// import { NewReviewFormData } from 'types'
-import { setIsLoading,resetIsLoading, } from 'features/app/appSlice'
-import LoadingSpinner from 'components/LoadingSpinner'
+import ReviewForm from 'components/organisms/ReviewForm'
+import { fetchAsyncMyReview } from 'features/review/slice/actions'
+import { useAuthGuard } from 'hooks/auth'
+import { setIsEditReview } from 'features/review/slice'
+import { EditReviewSubmitData } from 'types/reviewTypes'
+import useNavigation from 'hooks/utils/useNavigation'
 
-// type ReviewPageProps = InferGetStaticPropsType<typeof getStaticProps>
 
-export interface NewReviewFormData {
-  title: string;
-  content: string;
-  image: string | null;
-}
-
-interface SubmitFormData {
-  title: string;
-  content: string;
-  image: File | null;
-}
-
-type ReviewData = NewReviewFormData & { id: number }
-//役割...データの用意、子コンポーネントとの値の授受、
-const EditReview:NextPage = () => {
+const EditReview = () => {
+  console.log("editR")
   const dispatch:AppDispatch = useDispatch()
   const router = useRouter()
-  const reviewId = router.query.reviewId
-  console.log(reviewId)
-  //const isReviewLoading = useSelector((state:RootState) => state.review.isLoadingReview)
-  // const isEditReview = useSelector((state:RootState) => state.review.isEditReview)
-  
-  //ここで定義しなくてもItem.tsxで取得した値をそのまんま使い回せばいい？
-  const { data: review,error,mutate:mutateMyReview} = useSWR<ReviewData | undefined>(
-    reviewId ? `${process.env.NEXT_PUBLIC_API_URL}/api/review_detail/${reviewId}/`: null,
-    url => fetcherWithCredential(url, 'get',null,true),
-  )
-  
-  useEffect (() => {
-    mutateMyReview()
-  },[review])
-  console.log("review"+review)
+  const reviewId = typeof router.query.reviewId === "string" ? router.query.reviewId : undefined;
+  const itemId = parseInt(router.query.itemId as string)
+  console.log("itemId"+itemId)
+  console.log("reviewId"+reviewId)
+  useAuthGuard()
+  const { navigateTo } = useNavigation()
+  const handleReviewList = useCallback(() => {
+    navigateTo(`/review/review-list/${itemId}`);
+  }, [navigateTo, itemId]);
 
-       
-  //子コンポーネントに渡す初期値
-  const methods = useForm<NewReviewFormData>({
-    
-    defaultValues: {
-      title:review?.title,
-      content:review?.content,
-      image:review?.image,
-    },
-    mode: 'onChange',
-  }) 
+  const handleMyReviewList = useCallback(() => {
+    navigateTo("/account/mypage/myreview-list/");
+  }, [navigateTo])
 
-  //必要...フォームのリロード対策。
-  //setValueでフォームに初期値を格納し直している
-  //このコードをreviewformで応用すれば、
-  //入力値がある状態でリロードしても、状態を維持できるかもしれない
-  useEffect(() => {
-    
-    if (review) {
-      methods.setValue("title", review.title);
-      methods.setValue("content", review.content);
-      methods.setValue("image", review.image);
+  const handleBack = () => {
+    if (itemId) {
+      handleReviewList()
+    } else {
+      handleMyReviewList()
     }
-  }, [review])
+  }
   
   //編集データを送信
-  const onSubmit:SubmitHandler<SubmitFormData> = async (editData) => {
-    if (!review) {
-      // review が undefined の場合のエラーハンドリングを追加
-      console.error("Review data is not available.")
+  const onSubmit = useCallback<SubmitHandler<EditReviewSubmitData>>(async (editData) => {
+    if (!editData || !reviewId) {
+      console.log("editno")
       return
     }
-    const packet = {
-      id: review.id,
+   
+    const submitData:EditReviewSubmitData = {
+      reviewId: reviewId,
       title: editData.title,
-      content:editData.content,
-      image:editData.image
+      content: editData.content,
+      image: editData.image,
     }
 
-    //アクション、非同期関数名を変更
-    if (dispatch && dispatch !== null && dispatch !== undefined ) {
-      dispatch(setIsLoading())
-      const resultAction = await dispatch(fetchAsyncEditReview(packet));
-      if (fetchAsyncEditReview.fulfilled.match(resultAction)) {
-        router.back()
-        setTimeout(() => {
-          dispatch(resetIsLoading())
-        }, 500)
-      }
+    try {
+      const result = await dispatch(fetchAsyncEditReview(submitData));
+      if (fetchAsyncEditReview.fulfilled.match(result) && result.payload) {
+        dispatch(fetchAsyncMyReview())
+        dispatch(setIsEditReview())
+        handleBack()
+        }
+    } catch(error) {
+      console.error("EditReview:"+error)
     }
-  }
-
-  if (!reviewId) {
-  console.error("Review ID is not available.");
-  return <div>Review ID is missing!</div>;
-  }
-
-  if (error) {
-    console.error("Failed to fetch review data.");
-    return <div>Failed to fetch review data. Please try again later.</div>;
-  }
-
-  if (!review && !error) {
-    return <div>Loading...</div>;
-  }
-
-
+  }, [reviewId])
+  
   return (
     <>
-    {review ? (
       <div>
-      <Head>
-        <title>SoftTennisAceReviews | 投稿編集</title>
-      </Head>
-      <div className="text-center text-2xl mb-5">投稿編集</div>
-      <FormProvider {...methods}>
-        <ReviewForm onSubmit={onSubmit} />
-      </FormProvider>
-    </div>
-    ) :
-      <div></div>
-    }
+        <Head>
+          <title>レビュー編集</title>
+        </Head>
+        <div className="text-center text-2xl mb-5">投稿編集</div>
+        <ReviewForm onSubmit={onSubmit} reviewId={reviewId} />
+      </div>
     </>
   )
 }
 
 export default EditReview
 
-// export const getStaticPaths: GetStaticPaths = async () => {
-//   const paths = await getReviewIds()
-//   return {
-//     paths,
-//     fallback: false,
-//   }
-// }
 
-// export const getStaticProps: GetStaticProps = async (context) => {
-//   if (!context.params?.reviewId) {
-//     throw new Error('id is undefined')
-//   }
+// const isFirstRender = useRef(true);
 
-//   const id = String(context.params.reviewId)
-//   const staticReview = await getReviewDetail(id)
-
-//   return {
-//     props: {
-//       id: staticReview.id,
-//       staticReview,
-//     },
-//   }
-// }
-
+  // useEffect(() => {
+  //   if (isFirstRender.current && router.query.alert === 'success') {
+  //     alert("編集が完了しました。");
+  //     isFirstRender.current = false;
+  //   } else {
+  //     isFirstRender.current = false;
+  //   }
+  // }, [router.query]);

@@ -1,6 +1,5 @@
-import { useState } from 'react'
+import React,{ useState,useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useRouter } from 'next/router'
 import { 
   fetchAsyncRegister,
   fetchAsyncLogin,
@@ -9,48 +8,47 @@ import {
   } from 'features/account/accountSlice/'
 import Head from 'next/head'
 import { AppDispatch, RootState } from 'app/store'
-import { NextPage } from 'next'
 import { setIsLoading,resetIsLoading } from 'features/app/appSlice'
-import { Credential } from 'features/account/AccountTypes'
-import AccountSinginForm from 'components/AccountSigninForm'
+import { Credential } from 'types/accountTypes'
+import AccountSinginForm from 'components/organisms/AccountSigninForm'
+import { setIsRegister } from 'features/account/accountSlice/'
+import useNavigation from 'hooks/utils/useNavigation'
+import { AlertMessage } from 'components/Atoms/AlertMessage'
+import { useAlertReviewMessage } from 'hooks/review/useAlertReviewMessage'
+
+
 
 const Register = () => {
   const dispatch:AppDispatch = useDispatch()
-  const router = useRouter()
-  const isAuthenticated = useSelector((state:RootState) => state.account.isAuthenticated)
-  const authError = useSelector((state: RootState) => state.account.authError)
-
+  const { handleHome } = useNavigation()
+  const { showMessage } = useAlertReviewMessage()
   const onSubmit = async (credential: Credential) => {
-    try {
-      dispatch(setIsLoading())
-      if (dispatch && dispatch !== null && dispatch !== undefined) {
-        await dispatch(fetchAsyncRegister(credential))
-      }
-        const result = await dispatch(fetchAsyncLogin(credential))
-        if (fetchAsyncLogin.fulfilled.match(result)) {
-          await dispatch(setIsAuthenticated())
-          // await dispatch(fetchAsyncCheckAuth())
-        }
-      
-    } finally {
-        setTimeout(() => {
-          dispatch(resetIsLoading())
-        }, 200)
+    if (!credential) {
+      return 
     }
-  }
-
-  if (typeof window !== 'undefined' && isAuthenticated) {
-    router.push('/')
+    try {
+      const result = await dispatch(fetchAsyncRegister(credential))
+      if (fetchAsyncRegister.fulfilled.match(result)) {
+        await dispatch(fetchAsyncLogin(credential))
+        await dispatch(fetchAsyncCheckAuth())
+        dispatch(setIsRegister())
+        handleHome()
+      }  
+    } catch(error) {
+      console.error("Register:"+error)
+    }
   }
 
   return (
     <>
       <Head>
-        <title>AceRacketRealm | アカウント登録</title>
+        <title>アカウント登録</title>
       </Head>
-
       <div className="text-center text-2xl mb-5">アカウント登録</div>
-      <AccountSinginForm onSubmit={onSubmit} authError={authError} />
+      {showMessage.show && (
+        <AlertMessage message={showMessage.message} color={showMessage.color} />
+      )}
+      <AccountSinginForm onSubmit={onSubmit} />
     </>
   )
 }

@@ -1,20 +1,17 @@
-import { NextPage,GetServerSideProps} from 'next';
+import { NextPage,GetServerSideProps} from 'next'; 
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from 'app/store';
 import useSWR, { mutate } from 'swr';
 import { useState,useEffect } from 'react';
 import { HiHeart, HiOutlineHeart } from 'react-icons/hi';
-import { fetcherWithCredential } from 'lib/posts';
-import axios, { AxiosError } from 'axios'
+import { fetcherWithCredential } from 'lib/utils';
 import { useDebouncedCallback } from 'use-debounce'
+import FavoriteButton from './FavoriteButton';
+import useFavoritesCount from 'hooks/review/useFavoriteCount';
+import { useIsFavorite } from 'hooks/review/useFavoriteResponse';
+import { fetchAsyncToggleFavorite } from './slice';
 
-
-type Review = {
-  id: string
-  user: string
-  item: string
-  text: string
-  created_at: string
-  favorites_count: number
-}
 
 type Props = {
   userId: string;
@@ -28,37 +25,22 @@ type SSRProps = {favorites_count:number}
 
 //userIdを使わないのであればpageの方でuserIdを送らないようにする
 //1つ1つのいいねのマークとカウントを表示させる
-const FavoriteReview: NextPage<Props> = ({ reviewId, }) => {
-  //対象のreviewidを持つレビュー情報を取得 
-  //reviewのカウントだけを返す関数に変更
-  //ReviewDetailView
-  const {data:reviewSWR,error} = useSWR<FavoritesCount>(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/review/favorites_count/${reviewId}/`, 
-    url => fetcherWithCredential(url, 'get',),
-    {
-      revalidateOnMount: true,  // SWRがマウント時に再検証するようにします
-      // fallbackData: { favorites_count: initialFavoritesCount }
-    }
-  )
-
-  const reviewData = reviewSWR
+const FavoriteReview: React.FC<Props> = ({ reviewId, }) => {
+  const dispatch:AppDispatch = useDispatch()
+  const reviewData = useFavoritesCount(reviewId)
+  // console.log("reviewD"+reviewData.favorites_count)
+  // console.log("reviewS"+reviewSWR.favorites_count)
   const [isFavorite, setIsFavorite] = useState<boolean>()
 
   //新コード
 
   //いいねがあるかないかを返却
-  const {data:isFavoriteSWR,} = useSWR<FavoriteResponse>(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/review/${reviewId}/favorite/`, 
-      url => {
-      return fetcherWithCredential(url, 'get',)
-    })
-    
-    useEffect(() => {
-      if (isFavoriteSWR !== undefined) {
-        setIsFavorite(isFavoriteSWR.isFavorite)
-      }
-    }, [isFavoriteSWR]
-  )
+  const isFavoriteSWR = useIsFavorite(reviewId)
+  useEffect(() => {
+    if (isFavoriteSWR !== undefined) {
+      setIsFavorite(isFavoriteSWR.isFavorite)
+    }
+  }, [isFavoriteSWR])
 
   
   const toggleFavorite = useDebouncedCallback(async () => {
@@ -66,81 +48,34 @@ const FavoriteReview: NextPage<Props> = ({ reviewId, }) => {
       return
     }
     //いいねの数 フロントエンドでしか行われない処理
-    //mutate(`${process.env.NEXT_PUBLIC_API_URL}/api/review/favorite_count/${reviewId}/`, { ...reviewData, favorites_count: newFavoriteCount }, false)
-    //いいねがあるかどうか
+    //reviewIdとloginUser.idを使っていいねがあるかどうかを返す
     //GetFavoriteReviewView
     //第１引数がisFavoriteのbool値を返してくるので、そのbool値を反転させたものがキャッシュに保存される
     mutate(`${process.env.NEXT_PUBLIC_API_URL}/api/review/${reviewId}/favorite/`, !isFavorite, false)
     
     try {
-      //関数化すること
-      const response = await axios({
-        //FavoriteViewSet
-        url: `${process.env.NEXT_PUBLIC_API_URL}/api/review/set/${reviewId}/`,
-        method: isFavorite ? 'DELETE' : 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        withCredentials: true,
-      })
+      const resultAction = await dispatch(fetchAsyncToggleFavorite({ reviewId, isFavorite }))
 
-      if (isFavorite && response.status !== 204) {
-        throw new Error('Failed to delete favorite');
-      } else if (!isFavorite && !response.data) {
-        throw new Error('Failed to create favorite');
+      if (fetchAsyncToggleFavorite.fulfilled.match(resultAction)) {
+        mutate(`${process.env.NEXT_PUBLIC_API_URL}/api/review/${reviewId}/favorite/`);
+        mutate(`${process.env.NEXT_PUBLIC_API_URL}/api/review/favorites_count/${reviewId}/`);
+      } else {
+        throw new Error('Failed to update favorite');
       }
-
-      // Revalidate SWR cache after successful mutation
-      //mutate(`${process.env.NEXT_PUBLIC_API_URL}/api/review/favorite_count/${reviewId}/`)
-      //reviewIdとloginUserの情報を使い、いいねがあるかないかを返却
-      //GetFavoriteReviewView
-      mutate(`${process.env.NEXT_PUBLIC_API_URL}/api/review/${reviewId}/favorite/`)
-      //ReviewDetailView
-      mutate(`${process.env.NEXT_PUBLIC_API_URL}/api/review/favorites_count/${reviewId}/`)
-      
     } catch (error) {
-      console.error('Failed to update favorite:', error);
-      // If the mutation fails, revert the local data
-      //エラーが出たら、値を元に戻す
-      mutate(`${process.env.NEXT_PUBLIC_API_URL}/api/review/${reviewId}/favorite/`,isFavorite, false)
-      mutate(`${process.env.NEXT_PUBLIC_API_URL}/api/review/favorites_count/${reviewId}/`,reviewData, false)
+      console.error('Favorite:', error);
+      mutate(`${process.env.NEXT_PUBLIC_API_URL}/api/review/${reviewId}/favorite/`, !isFavorite, false);
+      mutate(`${process.env.NEXT_PUBLIC_API_URL}/api/review/favorites_count/${reviewId}/`, reviewData, false);
     }
-    
+      
   }, 300)
   
 
   return (
     <div>
-      
-      <button
-        className="inline-flex space-x-2 items-center"
-        onClick={toggleFavorite}
-      >
-        {isFavorite ? (
-          <HiHeart className="text-pink-500" size={20} />
-        ) : (
-          <HiOutlineHeart className="text-gray-500" size={20} />
-        )}
-        <span>いいね</span>
-        <span>{reviewSWR?.favorites_count}</span>
-      </button>
+      <FavoriteButton isFavorite={!!isFavorite} onClick={toggleFavorite} count={reviewData.favorites_count} />
     </div>
   );
 };
 
 export default FavoriteReview
-
-//いいねの数をSSRで取得する
-export const getServerSideProps :GetServerSideProps<SSRProps> = async (context)  => {
-  const reviewId = context.params?.reviewId as string
-  //これも関数にする
-  const data = await fetcherWithCredential(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/review/favorites_count/${reviewId}/`
-    ,'get'
-  )
-  return {
-    props: {
-      favorites_count: data.favorites_count
-    }
-  }
-}

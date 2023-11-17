@@ -1,79 +1,56 @@
 import { useState, useEffect,useCallback } from 'react'
 import { AppDispatch } from 'app/store'
 import { useSelector, useDispatch } from 'react-redux'
-import { useRouter } from 'next/router'
+import { RootState } from 'app/store'
 import { 
   fetchAsyncEditProfile,
   resetIsEditProfile,
-  fetchAsyncCheckAuth 
+  fetchAsyncCheckAuth, 
+  setIsEditProfile
 } from 'features/account/accountSlice/'
-import { setIsLoading,resetIsLoading } from 'features/app/appSlice'
-import { RootState } from 'app/store'
-import { FILE } from 'types'
+import Head from 'next/head'
 import { useForm,FormProvider,SubmitHandler } from 'react-hook-form'
-import AccountProfileForm from 'components/AccountProfileForm'
-import { SubmitFormData } from 'features/account/AccountTypes'
-import LoadingSpinner from 'components/LoadingSpinner'
+import AccountProfileForm from 'components/organisms/AccountProfileForm'
+import { ProfileInputData,ProfileSubmitData,SubmitFormData } from 'types/accountTypes'
+import LoadingSpinner from 'components/Atoms/LoadingSpinner'
+import { useAuthGuard } from 'hooks/auth'
+import { selectLoginUser } from 'features/account/accountSlice/'
+import useNavigation from 'hooks/utils/useNavigation'
 
-type ProfileFormData = {
-  editName: string;
-  image: string | null;
-}
-//ログイン時にユーザー情報を取得してreduxに保存している
-//要検討...型指定について。ProfileFormDataとProfileには重複項目があるので、editNameをnameにすれば解決しそう？
-const Profile = () => {
+const ProfileEdit = () => {
   const dispatch:AppDispatch = useDispatch()
-  const router = useRouter()
-  const loginUser = useSelector((state:RootState) => state.account.loginUser)
+  const loginUser = useSelector(selectLoginUser)
+  useAuthGuard()
+  const { navigateTo } = useNavigation()
+  const handleGoToMypage = () => navigateTo('/account/mypage?alert=success_edit')
 
-  //子コンポーネントに渡す初期値
-  const methods = useForm<ProfileFormData>({
-    defaultValues: {
-      editName: loginUser.name,
-      image: loginUser.image,
-    },
-    mode: 'onChange',
-  })
-  //必要のリロード対策
-  useEffect(() => {
-    if (loginUser) {
-      methods.setValue("editName", loginUser.name);
-      methods.setValue("image", loginUser.image);
-    }
-  }, [loginUser])
-
-  const onSubmit:SubmitHandler<SubmitFormData> = useCallback(async (data) => {
-    const packet = {
+  const onSubmit:SubmitHandler<ProfileInputData> = async (data) => {
+    if (!data || !loginUser) {
+      return
+    } 
+    const submitData:ProfileSubmitData = {
       id:loginUser.id,
-      name:data.editName,
+      name:data.name,
       image:data.image,
     }
 
-    if (dispatch && dispatch !== null && dispatch !== undefined && loginUser) {
-      //これはextraReducerに記述すれば良い
-      dispatch(setIsLoading())
-
-      const resultAction = await dispatch(fetchAsyncEditProfile(packet))
-      if (fetchAsyncEditProfile.fulfilled.match(resultAction)) {
-        
-        router.push('/')
-        setTimeout(async() => {
-          await dispatch(fetchAsyncCheckAuth())
-          dispatch(resetIsLoading())
-        }, 200)
-      }
+    const result = await dispatch(fetchAsyncEditProfile(submitData))
+    if (fetchAsyncEditProfile.fulfilled.match(result)) {
+      await dispatch(fetchAsyncCheckAuth())
+      dispatch(setIsEditProfile())
+      handleGoToMypage()
     }
-  },[dispatch])
-
-  // プロフィール編集成功
+    
+  }
 
   return (
     <>
-    <FormProvider {...methods}>
+      <Head>
+        <title>プロフィール編集</title>
+      </Head>
       <AccountProfileForm onSubmit={onSubmit} />
-    </FormProvider>
     </>
   )
 }
 
-export default Profile
+export default ProfileEdit

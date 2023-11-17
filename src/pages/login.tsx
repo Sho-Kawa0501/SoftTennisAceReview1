@@ -1,49 +1,45 @@
-import { useSelector, useDispatch } from 'react-redux'
-import { useRouter } from 'next/router'
+import React,{useEffect} from 'react'
+import { useSelector, useDispatch} from 'react-redux'
 //ログイン関数
 import { AppDispatch } from 'app/store'
-import { Credential } from 'features/account/AccountTypes'
+import { Credential } from 'types/accountTypes'
 import { 
   fetchAsyncLogin,
   setIsAuthenticated,
-  fetchAsyncCheckAuth
+  fetchAsyncCheckAuth,
+  selectIsAuthenticated,
+  
 } from 'features/account/accountSlice/'
+import { fetchAsyncMyReview } from 'features/review/slice'
 import Head from 'next/head'
-import { RootState } from 'app/store'
 import { setIsLoading,resetIsLoading } from 'features/app/appSlice'
-import AccountSinginForm from 'components/AccountSigninForm'
-import AppBackButton from 'components/AppBackButton'
+import AccountSinginForm from 'components/organisms/AccountSigninForm'
+import { setIsLogin } from 'features/account/accountSlice/'
+import AppButton from 'components/Atoms/AppButton'
+import useNavigation from 'hooks/utils/useNavigation'
 
 
 const Login = () => {
   const dispatch:AppDispatch = useDispatch()
-  const router = useRouter()
-  //state.accountはstore.tsのreducerの中のaccountを指している
-  const isAuthenticated = useSelector((state:RootState) => state.account.isAuthenticated)
-  const authError = useSelector((state: RootState) => state.account.authError)
-  // const isLoading = useSelector((state:RootState) => state.app.isLoading)
-
+  const isAuthenticated = useSelector(selectIsAuthenticated)
+  console.log("ログインisA"+isAuthenticated)
+  const { handleHome } = useNavigation()
+  
   const onSubmit = async (credential: Credential) => {
+    if(!credential) {
+      return
+    } 
     try {
-    dispatch(setIsLoading())
-    // if (dispatch && dispatch !==null && dispatch !== undefined) {
-    //   await dispatch(fetchAsyncLogin(credential))
-    // }
-
     const result = await dispatch(fetchAsyncLogin(credential))
       if (fetchAsyncLogin.fulfilled.match(result)) {
         await dispatch(fetchAsyncCheckAuth())
-        await dispatch(setIsAuthenticated())
+        await dispatch(fetchAsyncMyReview())
+        dispatch(setIsLogin())
+        handleHome()
       }
-    } finally {
-      setTimeout(() => {
-        dispatch(resetIsLoading())
-      }, 200)
-  }
-  }
-
-  if (typeof window !== 'undefined' && isAuthenticated) {
-    router.push('/')
+    } catch(error){
+      console.error("Login:"+error)
+    }
   }
 
   return (
@@ -51,8 +47,7 @@ const Login = () => {
       <Head>
         <title>ログイン</title>
       </Head>
-      <AccountSinginForm onSubmit={onSubmit} authError={authError} />
-      {/* <AppBackButton /> */}
+      <AccountSinginForm onSubmit={onSubmit} />
     </>
   )
 }

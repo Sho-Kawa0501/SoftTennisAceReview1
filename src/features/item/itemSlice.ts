@@ -4,10 +4,8 @@ import {
   createSlice,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import { ItemProps,Brand,Series,Position,ItemFilter } from 'types'
-import { Item } from './ItemTypes';
+import { Item,Brand,Series,Position,ItemFilter } from 'types/itemTypes'
 import axios from 'axios';
-import { handleAxiosError } from 'lib/HandleAxiosError';
 import { AppDispatch,RootState } from 'app/store';
 
 type AsyncThunkConfig = {
@@ -18,16 +16,18 @@ type AsyncThunkConfig = {
   serializedErrorType?: unknown;
 };
 
+//この関数は使わない説ある
+//理由...通常の関数を実行して、その結果をsetItems関数に渡せばreduxのstateに格納されるため
 export const fetchAsyncItemList = createAsyncThunk(
-  'item/itemlist',
-  async (_,thunkAPI) => {
+  'item/ItemList',
+  async (_,{rejectWithValue}) => {
   try {
     const res = await axios(`${process.env.NEXT_PUBLIC_API_URL}/api/item/item_list/`,{
       withCredentials: true,
   })
   return res.data
   } catch(error:unknown) {
-    return handleAxiosError(error, thunkAPI)
+    return rejectWithValue(error)
   }
 })
 
@@ -41,12 +41,12 @@ interface InitialState {
 }
 
 const initialState:InitialState = {
-  items: [],
-  brands: [],
+  items: [], //初回に入ってくるアイテム一覧
+  brands: [], //初回に取得するアイテム情報
   series: [],
   positions: [],
-  filteredItems:[],
-  filter: {
+  filteredItems:[], //フィルタリングされたアイテムリスト
+  filter: { //フィルタリングされた各項目
     item_brand: null,
     item_series: null,
     item_position: null,
@@ -60,16 +60,26 @@ const itemSlice = createSlice({
   initialState,
   reducers: {
     setItems: (state, action: PayloadAction<Item[]>) => {
-      state.items = action.payload
-      state.filteredItems = [...action.payload] // 初回はフィルタリングせず、すべてのアイテムを表示します
+      if (!state.filter.item_brand && !state.filter.item_series && !state.filter.item_position) {
+        // 初回ロード時またはフィルタリングが適用されていない場合のみ、アイテムリストを更新
+        state.items = action.payload;
+        state.filteredItems = action.payload;
+      }
     },
+    //絞り込みボタンが押される時に実行される
     setFilter: (state, action: PayloadAction<ItemFilter>) => {
+      //filterに格納
       state.filter = action.payload
+      //フィルタリングされたアイテムリストを格納
       state.filteredItems = [...state.items]
       // ブランドでフィルタリング
+      //item_brandはItemFilterModalから送られてきたSetFilterの引数
+      //filter.item_brandが存在し、配列が0以上なら、
       if (state.filter.item_brand && state.filter.item_brand.length > 0) {
-        state.filteredItems = state.filteredItems.filter(item =>
-        state.filter.item_brand!.some(brand => brand.name === item.brand.name));
+        //最終的には配列にフィルタリングされたアイテムが格納される。
+        // state.filteredItems = state.filteredItems.filter(item =>
+        // //フィルタリングで選択されたブランド銘のいずれかが一致すればTrue
+        // state.filter.item_brand!.some(brand => brand.name === item.brand.name));
       }
       //シリーズ
       if (state.filter.item_series && state.filter.item_series.length > 0) {
@@ -79,7 +89,7 @@ const itemSlice = createSlice({
       //ポジション  
       if (state.filter.item_position && state.filter.item_position.length > 0) {
         state.filteredItems = state.filteredItems.filter(item =>
-        state.filter.item_position!.some(position => position.name === item.position.name));
+        state.filter.item_position!.some(position => position.name === item.item_position.name));
       }
     },
     setBrands: (state, action: PayloadAction<Brand[]>) => {
@@ -87,13 +97,14 @@ const itemSlice = createSlice({
     },
     setSeries: (state, action: PayloadAction<Series[]>) => {
       state.series = action.payload
+      console.log()
     },
     setPositions: (state, action: PayloadAction<Position[]>) => {
       state.positions = action.payload
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchAsyncItemList.fulfilled, (state, action) => {
+    builder.addCase(fetchAsyncItemList.fulfilled, (state, action: PayloadAction<Item[]>) => {
       return {
         ...state,
         items: action.payload,
@@ -104,5 +115,11 @@ const itemSlice = createSlice({
 
 export const { setItems, setFilter,setBrands, setSeries, setPositions, } = itemSlice.actions;
 export const selectItems = (state: RootState) => state.item.items
-
+export const selectBrands = (state: RootState) => state.item.brands
+export const selectSeries = (state: RootState) => state.item.series
+export const selectPositions = (state: RootState) => state.item.positions
+export const selectFilterdItems = (state: RootState) => state.item.filteredItems
+export const selectFilterdSeries = (state: RootState) => state.item.filter.item_series
+console.log("series"+selectSeries)
+console.log("series"+selectFilterdSeries)
 export default itemSlice.reducer
