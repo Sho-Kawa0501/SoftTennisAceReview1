@@ -1,16 +1,13 @@
-import React from "react";
-import { Review } from "types/types";
-import useSWR,{ useSWRConfig } from "swr";
-import { fetcherWithCredential } from "lib/utils";
-import { handleAxiosError } from "lib/utils/HandleAxiosError";
-type UseReviewProps = {
-  initial?: Review[];
-};
+import React from 'react'
+import { Review } from 'types/types'
+import useSWR from 'swr'
+import { fetcherWithCredential } from 'lib/utils'
+import { handleAxiosError } from 'lib/utils/HandleAxiosError'
 
 type FavoriteReview = {
-  favorites_count: number | undefined;
-  isError: any;
-};
+  favorites_count: number | undefined
+  isError: any
+}
 
 type FavoritesCount = {favorites_count: number}
 
@@ -21,7 +18,7 @@ const useFavoritesCount = (reviewId:string): FavoriteReview => {
     {
       revalidateOnMount: true,
     }
-  );
+  )
 
   return { 
     favorites_count: data?.favorites_count,

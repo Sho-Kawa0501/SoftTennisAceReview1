@@ -2,25 +2,25 @@ import {
   createAsyncThunk,
   createSlice,
   PayloadAction,
-} from '@reduxjs/toolkit';
+} from '@reduxjs/toolkit'
 import axios,{ AxiosError } from 'axios'
-import { AppDispatch,AppThunk } from 'app/store';
-import { stringify } from 'querystring';
-import { Review,LoginUserInfo } from 'types/types';
-// import { handleAsyncThunkAxiosError } from 'lib/utils/HandleAsyncThunkAxiosError';
-import { handleAxiosError } from 'lib/utils/HandleAxiosError';
-import { Credential,ProfileSubmitData } from 'types/accountTypes';
+import { AppDispatch} from 'app/store'
+import { LoginUserInfo } from 'types/types'
+import { handleAxiosError } from 'lib/utils/HandleAxiosError'
+import { Credential,ProfileSubmitData } from 'types/accountTypes'
 
 
 axios.defaults.withCredentials = true
 
 type AsyncThunkConfig = {
-  state?: unknown;
-  dispatch?: AppDispatch;
-  extra?: unknown;
-  rejectValue?: unknown;
-  serializedErrorType?: unknown;
+  state?: unknown
+  dispatch?: AppDispatch
+  extra?: unknown
+  rejectValue?: unknown
+  serializedErrorType?: unknown
 }
+
+type AuthResponse = LoginUserInfo | { error: string } | string
 
 //使ってない
 export const fetchSession = createAsyncThunk(
@@ -32,12 +32,12 @@ export const fetchSession = createAsyncThunk(
       )
       
       const data = await response.data
-      return data;
+      return data
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(error.message)
     }
   }
-);
+)
 
 export const fetchAsyncLogin = createAsyncThunk<
   { data: Credential },
@@ -66,7 +66,6 @@ export const fetchAsyncLogin = createAsyncThunk<
   }
 )
 
-//新規登録した後、プロフィール編集画面に遷移すると、デフォルトで設定したニックネームと画像が非表示になっている。
 //プロフィールを変更後に再取得する処理が抜けている？
 export const fetchAsyncRegister = createAsyncThunk<
   { data: Credential },
@@ -86,15 +85,11 @@ export const fetchAsyncRegister = createAsyncThunk<
     },
   )
     return res.data
-
-} catch(error:unknown) {
-  return rejectWithValue(error)
+  } catch(error:unknown) {
+    return rejectWithValue(error)
   }
 })
 
-type AuthResponse = LoginUserInfo | { error: string } | string
-
-//UserViewと連動している関数 //reduxtoolkitのまま定義→認証済みかどうかをstateで管理するため
 export const fetchAsyncCheckAuth = createAsyncThunk<
   AuthResponse,
   void
@@ -111,7 +106,6 @@ export const fetchAsyncCheckAuth = createAsyncThunk<
   }
 })
 
-//RootAPIで使用
 export const fetchAsyncRefreshToken = createAsyncThunk<
   {refresh: string },
   void,
@@ -145,13 +139,13 @@ export const fetchAsyncNewAccessToken = createAsyncThunk<
         {
           withCredentials: true,
           headers: {
-            "Content-Type": "application/json; charset=utf-8",
+            "Content-Type": "application/json charset=utf-8",
             "X-CSRFToken": csrfToken,
           },
         }
-      );
+      )
       
-      return res.data;
+      return res.data
 
     } catch (error: unknown) {
       return rejectWithValue(error)
@@ -159,12 +153,8 @@ export const fetchAsyncNewAccessToken = createAsyncThunk<
   }
 )
 
-
-
 //RootAPIで使用
 //csrfトークンの取得
-//関数名も後ほど変更する
-//thunkAPIがなくても使えるようにしたい
 export const fetchCsrfToken = async (): Promise<string> => {
   try {
     const res = await axios.get(
@@ -173,11 +163,11 @@ export const fetchCsrfToken = async (): Promise<string> => {
         withCredentials: true,
       }
     )
-    return res.data.csrfToken;
+    return res.data.csrfToken
   } catch (error:unknown) {
     return handleAxiosError(error)
   }
-};
+}
 
 
 export const fetchAsyncLogout = createAsyncThunk<
@@ -196,8 +186,8 @@ export const fetchAsyncLogout = createAsyncThunk<
         },
         withCredentials: true,
       },
-    );
-    return res.data;
+    )
+    return res.data
     } catch (error:unknown) {
       return rejectWithValue(error)
     }
@@ -228,9 +218,6 @@ export const fetchAsyncDeleteUser = createAsyncThunk<
   }
 )
 
-//プロフィール編集
-//変更した後、プロフィール編集画面に遷移すると、変更前のプロフィールが表示される。
-//プロフィールを変更後に再取得する処理が抜けている？
 export const fetchAsyncEditProfile = createAsyncThunk<
   ProfileSubmitData,
   ProfileSubmitData,

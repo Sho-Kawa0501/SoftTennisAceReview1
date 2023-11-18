@@ -1,4 +1,4 @@
-interface InputErrorMessageProps {
+type InputErrorMessageProps = {
   errorMessage:string | null
 }
 
@@ -10,7 +10,3 @@ const InputErrorMessage = ({errorMessage}:InputErrorMessageProps) => {
 
 InputErrorMessage.displayName = "InputErrorMessage"
 export default InputErrorMessage
-
-// {errors.password && 
-//   <InputErrorMessage errorMessage={errors.password.message || null} />
-// }

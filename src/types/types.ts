@@ -1,9 +1,3 @@
-//Account
-export interface FILE extends Blob {
-  readonly lastModified: number;
-  name: string;
-}
-
 export interface Review {
   id:string,
   title:string,

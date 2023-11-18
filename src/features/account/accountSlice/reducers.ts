@@ -1,10 +1,9 @@
-import { createSlice } from '@reduxjs/toolkit';
-import * as actions from './actions';
-import { handleActionError } from 'lib/utils/handleActionError';
+import { createSlice } from '@reduxjs/toolkit'
+import * as actions from './actions'
+import { handleActionError } from 'lib/utils/handleActionError'
 
-//favorited→favorite
-interface InitialState {
-  loginUser: { //ログインしているユーザー情報
+type InitialState = {
+  loginUser: {
     id: string,
     name:string,
     email:string,
@@ -29,7 +28,7 @@ interface InitialState {
 }
 
 const initialState: InitialState = {
-  loginUser: { //ログインしているユーザー情報
+  loginUser: {
     id: '',
     name:'',
     email:'',
@@ -102,7 +101,7 @@ export const accountSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(actions.fetchSession.fulfilled, 
       (state, action) => {
-        state.isAuthenticated = action.payload.isAuthenticated;
+        state.isAuthenticated = action.payload.isAuthenticated
     })
     builder.addCase(actions.fetchAsyncLogin.fulfilled,
       (state) => {
@@ -127,7 +126,7 @@ export const accountSlice = createSlice({
     builder.addCase(actions.fetchAsyncCheckAuth.fulfilled, 
       (state, action) => {
         if (typeof action.payload === 'string' || 'error' in action.payload) {
-          return state;
+          return state
         }
         return {
           ...state,
@@ -168,7 +167,7 @@ export const accountSlice = createSlice({
     //       ...state.loginUser,
     //       name: action.payload.name,
     //       image: action.payload.image, 
-    //     };
+    //     }
     // })
     builder.addCase(actions.fetchAsyncEditProfile.rejected,
       (state, action) => {

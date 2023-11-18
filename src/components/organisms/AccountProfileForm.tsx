@@ -1,10 +1,7 @@
 import React,{ useState,useEffect,useCallback,} from 'react'
-import { NextPage } from 'next'
-import { Rings } from 'react-loader-spinner'
 import { useForm,FormProvider,useFormContext,SubmitHandler } from 'react-hook-form'
 import { useSelector} from 'react-redux'
 import TextInput from '../Atoms/TextInput'
-import { RootState } from 'app/store'
 import ImagePreview from '../Atoms/ImagePreview'
 import InputImage from '../Atoms/InputImage'
 import { AppDispatch } from 'app/store'
@@ -21,8 +18,8 @@ import {
 import useNavigation from 'hooks/utils/useNavigation'
 
 export type ProfileFormData = {
-  name: string;
-  image: string | null;
+  name: string
+  image: string | null
 }
 
 interface AccountProfileFormProps {
@@ -54,10 +51,10 @@ const AccountProfileForm = ({onSubmit}:AccountProfileFormProps) => {
 
   useEffect(() => {
     // const absoluteImageUrl = getValues("image")
-    setImagePreviewUrl(loginUserImage);
+    setImagePreviewUrl(loginUserImage)
   }, [loginUser,loginUserImage])
   useEffect(() => {
-    setValue("image", imagePreviewUrl);
+    setValue("image", imagePreviewUrl)
   }, [imagePreviewUrl])
   
   const handleImageChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,16 +62,16 @@ const AccountProfileForm = ({onSubmit}:AccountProfileFormProps) => {
     setImage(file)
     if (file) {
       convertFileToDataURL(file, dataUrl => {
-        setImagePreviewUrl(dataUrl); // 画像をstring型としてsetImagePreviewUrlに設定
-        setValue('image', dataUrl);
-      });
+        setImagePreviewUrl(dataUrl) // 画像をstring型としてsetImagePreviewUrlに設定
+        setValue('image', dataUrl)
+      })
     }
   },[])
 
 return (
   <FormProvider {...methods}>
   <form className="w-1/2 mx-auto" onSubmit={handleSubmit(data => {
-    onSubmit({...data, image});
+    onSubmit({...data, image})
   })}>
     {authError && 
       <InputErrorMessage errorMessage={authError} />
@@ -91,7 +88,6 @@ return (
         label="ニックネーム"
         type="text"
         placeholder="ニックネーム"
-        
         {...register('name',{
           required:'ニックネームは必須です。',
           maxLength:{

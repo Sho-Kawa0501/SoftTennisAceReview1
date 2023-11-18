@@ -1,11 +1,10 @@
 import { useFormContext } from 'react-hook-form'
 import React, { ForwardRefRenderFunction } from 'react'
 
-// TextAreaコンポーネントのProps型
 type TextAreaProps = {
-  name: string;
-  label?: string;
-  placeholder: string;
+  name: string
+  label?: string
+  placeholder: string
   errorMessage?: string
 }
 

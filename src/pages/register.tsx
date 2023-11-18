@@ -3,20 +3,16 @@ import { useSelector, useDispatch } from 'react-redux'
 import { 
   fetchAsyncRegister,
   fetchAsyncLogin,
-  setIsAuthenticated,
   fetchAsyncCheckAuth,
   } from 'features/account/accountSlice/'
 import Head from 'next/head'
-import { AppDispatch, RootState } from 'app/store'
-import { setIsLoading,resetIsLoading } from 'features/app/appSlice'
+import { AppDispatch, } from 'app/store'
 import { Credential } from 'types/accountTypes'
 import AccountSinginForm from 'components/organisms/AccountSigninForm'
 import { setIsRegister } from 'features/account/accountSlice/'
 import useNavigation from 'hooks/utils/useNavigation'
 import { AlertMessage } from 'components/Atoms/AlertMessage'
 import { useAlertReviewMessage } from 'hooks/review/useAlertReviewMessage'
-
-
 
 const Register = () => {
   const dispatch:AppDispatch = useDispatch()

@@ -37,12 +37,12 @@ const ItemFilterModal = () => {
   const [initialSelectedSeries, setInitialSelectedSeries] = useState<Series[]>([])
   console.log("itemfilterseries"+selectedSeries)
   useEffect(() => {
-    setSelectedSeries(filterdSeries || []);
-  }, [filterdSeries]);
+    setSelectedSeries(filterdSeries || [])
+  }, [filterdSeries])
 
   useEffect(() => {
     if (modalIsOpen) {
-      setInitialSelectedSeries(selectedSeries);
+      setInitialSelectedSeries(selectedSeries)
       console.log("modalopenitemfilterseries/"+selectedSeries)
     }
   }, [modalIsOpen,])
@@ -55,41 +55,30 @@ const ItemFilterModal = () => {
   //ブランドごとにシリーズをまとめる
   const seriesByBrand = useMemo(() => {
     return series.reduce((acc: Record<number, Series[]>, s) => {
-      const brandId = s.brand.id;
+      const brandId = s.brand.id
       if (!acc[brandId]) {
-        acc[brandId] = [];
+        acc[brandId] = []
       }
-      acc[brandId] = [...acc[brandId], s];
-      return acc;
-    }, {});
-  }, [series]);
+      acc[brandId] = [...acc[brandId], s]
+      return acc
+    }, {})
+  }, [series])
   
   const selectAllSeries = () => {
-    setSelectedSeries(series);
-  };
-
-  //絞り込みチェックボックス
-  // const handleCheck = 
-  // //セットするための関数がセッター
-  //   (value: CheckedItem, setter: React.Dispatch<React.SetStateAction<CheckedItem[]>>) => 
-  //     (e: React.ChangeEvent<HTMLInputElement>) => {
-  //     //チェックがされているかどうかを確認
-  //       const checked = e.target.checked
-  //     //チェックされているなら、valueを追加、されていないなら、vがvalueと等しくない場合にtrueが帰る
-  //     setter(prev => checked ? [...prev, value] : prev.filter(v => v !== value))
-  //   }
+    setSelectedSeries(series)
+  }
 
   const handleCheck = (value: Series, setter: React.Dispatch<React.SetStateAction<Series[]>>) => 
   (e: React.ChangeEvent<HTMLInputElement>) => {
-    const checked = e.target.checked;
+    const checked = e.target.checked
     setter(prev => {
       if (checked) {
-        return [...prev, value]; // チェックされた項目を追加
+        return [...prev, value] // チェックされた項目を追加
       } else {
-        return prev.filter(v => v.id !== value.id); // チェックが外れた項目を除外
+        return prev.filter(v => v.id !== value.id) // チェックが外れた項目を除外
       }
-    });
-  };
+    })
+  }
 
   const closeModal = () => {
     dispatch(setActiveModal(null))
@@ -101,14 +90,14 @@ const ItemFilterModal = () => {
     dispatch(setFilter({ 
       item_brand: selectedBrand, 
       item_series: selectedSeries, 
-      item_position: selectedPosition
+      position: selectedPosition
     }))
   }
 
   const clearAll = () => {
-    setSelectedBrand([]);
-    setSelectedSeries([]);
-    setSelectedPosition([]);
+    setSelectedBrand([])
+    setSelectedSeries([])
+    setSelectedPosition([])
   }
   return (
     <>
@@ -121,8 +110,8 @@ const ItemFilterModal = () => {
         onRequestClose={() => dispatch(setActiveModal(null))} 
         ariaHideApp={false}
         contentLabel="Delete Confirmation"
-        className="w-4/5 mt-20 mx-auto bg-white p-6 rounded" // Adjust width and styling here
-        overlayClassName="fixed inset-0 bg-black bg-opacity-50" // Add overlay styling
+        className="w-4/5 mt-20 mx-auto bg-white p-6 rounded"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-50"
         shouldCloseOnOverlayClick={false}
         shouldFocusAfterRender={true}
       >

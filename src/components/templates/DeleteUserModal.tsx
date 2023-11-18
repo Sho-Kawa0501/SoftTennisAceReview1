@@ -28,12 +28,6 @@ const DeleteUserModal = () => {
   }
 
   const { handleHome } = useNavigation()
-  //要変更
-  // if (isDeleteUser) {
-  //   router.reload()
-  //   dispatch(resetIsDeleteUser())
-  //   closeModal()
-  // }
 
   const deleteUser = async () => {
     //logoutを実行する？

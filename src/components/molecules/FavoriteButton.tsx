@@ -1,11 +1,11 @@
-import React from "react";
-import { HiHeart,HiOutlineHeart } from "react-icons/hi";
+import React from 'react'
+import { HiHeart,HiOutlineHeart } from 'react-icons/hi'
 
 type FavoriteButtonProps = {
-  isFavorite: boolean;
-  onClick: () => void;
-  count: number | undefined;
-};
+  isFavorite: boolean
+  onClick: () => void
+  count: number | undefined
+}
 
 const FavoriteButton = React.memo(({ isFavorite, onClick, count }: FavoriteButtonProps) => (
   <button

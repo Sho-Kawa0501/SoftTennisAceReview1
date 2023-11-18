@@ -5,17 +5,13 @@ import { AppDispatch } from 'app/store'
 import { Credential } from 'types/accountTypes'
 import { 
   fetchAsyncLogin,
-  setIsAuthenticated,
   fetchAsyncCheckAuth,
   selectIsAuthenticated,
-  
 } from 'features/account/accountSlice/'
 import { fetchAsyncMyReview } from 'features/review/slice'
 import Head from 'next/head'
-import { setIsLoading,resetIsLoading } from 'features/app/appSlice'
 import AccountSinginForm from 'components/organisms/AccountSigninForm'
 import { setIsLogin } from 'features/account/accountSlice/'
-import AppButton from 'components/Atoms/AppButton'
 import useNavigation from 'hooks/utils/useNavigation'
 
 
@@ -24,7 +20,6 @@ const Login = () => {
   const isAuthenticated = useSelector(selectIsAuthenticated)
   console.log("ログインisA"+isAuthenticated)
   const { handleHome } = useNavigation()
-  
   const onSubmit = async (credential: Credential) => {
     if(!credential) {
       return

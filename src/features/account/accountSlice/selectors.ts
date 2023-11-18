@@ -1,6 +1,5 @@
 import type { RootState } from "app/store"
 
-
 export const selectLoginUser = (state: RootState) => state.account.loginUser
 export const selectAuthError = (state: RootState) => state.account.authError
 export const selectIsAuthenticated = (state: RootState) => state.account.isAuthenticated

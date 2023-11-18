@@ -1,11 +1,7 @@
 import React, { useState,useEffect,useCallback,useMemo } from 'react'
-import { AppDispatch } from 'app/store'
-import { useSelector, useDispatch ,shallowEqual} from 'react-redux'
-import { RootState } from 'app/store'
+import { useSelector} from 'react-redux'
 import { useRouter } from 'next/router'
-import { useForm,FormProvider, useFormContext,SubmitHandler } from 'react-hook-form'
-import { Rings } from 'react-loader-spinner'
-import { fetchAsyncNewReview } from 'features/review/slice/actions'
+import { useForm,FormProvider,SubmitHandler } from 'react-hook-form'
 import InputImage from 'components/Atoms/InputImage'
 import TextArea from 'components/Atoms/TextArea'
 import AppButton from '../Atoms/AppButton'
@@ -20,9 +16,9 @@ import { selectReviewError } from 'features/review/slice'
 import useNavigation from 'hooks/utils/useNavigation'
 
 interface SubmitFormData {
-  title: string;
-  content: string;
-  image: File | null;
+  title: string
+  content: string
+  image: File | null
 }
 
 interface ReviewFormProps {
@@ -34,17 +30,16 @@ interface ReviewFormProps {
 const ReviewForm = ({ onSubmit,reviewId }: ReviewFormProps,) => {
   const reviewError = useSelector(selectReviewError)
   console.log("reviewE"+reviewError)
-  // const dispatch: AppDispatch = useDispatch()
   const router = useRouter()
   const { itemId } = router.query
   const { navigateTo } = useNavigation()
   const handleReviewList = useCallback(() => {
-    navigateTo(`/review/review-list/${itemId}`);
-  }, [navigateTo, itemId]);
+    navigateTo(`/review/review-list/${itemId}`)
+  }, [navigateTo, itemId])
 
   const handleMyReviewList = useCallback(() => {
-    navigateTo("/account/mypage/myreview-list/");
-  }, [navigateTo]);
+    navigateTo("/account/mypage/myreview-list/")
+  }, [navigateTo])
 
   const myReview:Review[] = useSelector(selectMyReviews)
   const isMyReview = myReview.find(review => review.id === reviewId)
@@ -57,16 +52,16 @@ const ReviewForm = ({ onSubmit,reviewId }: ReviewFormProps,) => {
       content: isMyReview?.content || '',
       image: imagePreviewUrl,
     }
-  });
+  })
   
   const { register, handleSubmit, formState: { errors },setValue } = methods
   //プレビューに渡す画像
 
   useEffect(() => {
-    setValue("title", isMyReview?.title || '');
-    setValue("content", isMyReview?.content || '');
+    setValue("title", isMyReview?.title || '')
+    setValue("content", isMyReview?.content || '')
     setValue("image",isMyReview?.image || '', )
-    // setValue("image", isMyReview?.image || null);
+    // setValue("image", isMyReview?.image || null)
   }, [isMyReview,])
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -75,9 +70,9 @@ const ReviewForm = ({ onSubmit,reviewId }: ReviewFormProps,) => {
     if (file) {
       console.log("fileeeeeeeee"+file)
       convertFileToDataURL(file, dataUrl => {
-        setImagePreviewUrl(dataUrl); // 画像をstring型としてsetImagePreviewUrlに設定
+        setImagePreviewUrl(dataUrl) // 画像をstring型としてsetImagePreviewUrlに設定
         setValue('image', dataUrl)
-      });
+      })
     }
   }
 
@@ -87,13 +82,12 @@ const handleBack = () => {
   } else {
     handleMyReviewList()
   }
-};
-
+}
 
   return (
     <FormProvider {...methods}>
     <form className="md:w-1/2 mx-auto" onSubmit={handleSubmit(data => {
-      onSubmit({...data, image});
+      onSubmit({...data, image})
     })}>
       {reviewError && 
         <InputErrorMessage errorMessage={reviewError} />
@@ -114,7 +108,6 @@ const handleBack = () => {
             },
           })}
         />
-        
       </div>
       <div className="mb-4">
         <div className="mb-1">画像</div>
@@ -137,18 +130,16 @@ const handleBack = () => {
                 message: '説明は140文字以内で入力してください。',
               },
             })}
-            // errorMessage={errors.content && errors.content.message}
           />
           {errors.content && 
             <InputErrorMessage errorMessage={errors.content.message || null} />
           }
-      </div>
+        </div>
       <div className="flex justify-center">
-          <div>
-            <AppButton text="送信" type={"submit"} color="blue" />
-            <AppButton text="戻る" type="button" onClick={handleBack} color="blue" />
-           
-          </div>
+        <div>
+          <AppButton text="送信" type={"submit"} color="blue" />
+          <AppButton text="戻る" type="button" onClick={handleBack} color="blue" />
+        </div>
       </div>
     </form>
   </FormProvider>
