@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { AppDispatch, RootState } from 'app/store'
 import { fetchAsyncLogout } from 'features/account/accountSlice/actions'
 import { useDispatch } from 'react-redux' 
-import { setIsLoading,resetIsLoading } from 'features/app/appSlice'
 import { setIsLogout } from 'features/account/accountSlice'
 import useNavigation from 'hooks/utils/useNavigation'
 
@@ -16,7 +15,6 @@ export const HomeIconComponent = () => (
   </div>
 )
 
-
 export const LogoutIconComponent = () => {
   const dispatch:AppDispatch = useDispatch()
   const { handleHome } = useNavigation()
@@ -27,8 +25,8 @@ export const LogoutIconComponent = () => {
         dispatch(setIsLogout())
         handleHome()
       }
-    } finally {
-     
+    } catch(error) {
+      console.log(error)
     }
   },[dispatch,])
   return (

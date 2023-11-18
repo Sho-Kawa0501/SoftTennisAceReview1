@@ -1,7 +1,6 @@
 
 import React,{ useState,useEffect,useMemo,useContext,useRef } from 'react'
-import { useSelector, useDispatch,shallowEqual} from 'react-redux'
-import axios from 'axios'
+import { useSelector, useDispatch,} from 'react-redux'
 import { 
   GetStaticPaths,
   GetStaticProps,
@@ -9,64 +8,40 @@ import {
   InferGetStaticPropsType,
   NextPage,
 } from 'next'
-import { fetcherWithCredential } from 'lib/utils'
 import { AppDispatch,RootState } from 'app/store'
 import { 
   getItemDetail,
   getItemIds
 }from 'lib/item'
 import { fetchAsyncMyReview } from 'features/review/slice'
-import { setIsDeleteReview,resetIsDeleteReview } from 'features/review/slice'
-import useSWR,{ mutate } from 'swr'
 import Head from 'next/head'
 import Link from 'next/link'
-import Image from 'next/image'
-// import { Review } from 'types'
 import { Item } from 'types/itemTypes'
-import { PlusCircleIcon } from '@heroicons/react/outline'
+import { PencilAltIcon } from '@heroicons/react/outline'
 import ReviewDeleteModal from 'components/templates/ReviewDeleteModal'
 import ItemDetail from 'components/molecules/ItemDetailCard'
 import ReviewCard from 'components/molecules/ReviewCard'
 import ReviewCardList from 'components/organisms/ReviewCardList'
 import { AlertMessage } from 'components/Atoms/AlertMessage'
 import { useAlertReviewMessage } from 'hooks/review/useAlertReviewMessage'
-import useReviewList from 'hooks/review/useReviewList'
 import { selectLoginUser,selectIsAuthenticated } from 'features/account/accountSlice'
 import { selectMyReviews } from 'features/review/slice'
 import AppButton from 'components/Atoms/AppButton'
 import useNavigation from 'hooks/utils/useNavigation'
 import { Review } from 'types/types'
-
-// export interface Review {
-//   id:string,
-//   title:string,
-//   content:string,
-//   image: string,
-//   favorites_count:number,
-//   user:{
-//     id:string,
-//     name:string,
-//     image:string,
-//   },
-//   item:{
-//     id:number,
-//   }
-// }
-
+import useAllReview from 'hooks/review/useAllReview'
+import useOtherUserReviews from 'hooks/review/useOtherUsersReviews'
 
 type ReviewPageProps = InferGetStaticPropsType<typeof getStaticProps>
 
-//変更点...
-//Itemの情報をSSGではなくてcontextから取得する
-//レビューリストはSSRで取得
 export const ReviewListPage: NextPage<ReviewPageProps> = ({staticItem}:ReviewPageProps) => {
   const loginUser = useSelector(selectLoginUser)
   const isAuthenticated = useSelector(selectIsAuthenticated)
   const myReview:Review[] = useSelector(selectMyReviews) //ここがうまくいってない
   const isMyReview = loginUser.id ? myReview.find(review => review.item.id === staticItem.id) : null
-  console.log('isMyReview'+isMyReview+myReview+staticItem.id)
   const { showMessage } = useAlertReviewMessage()
-  const reviews = useReviewList({itemId: staticItem.id, isAuthenticated})
+  const allReview = useAllReview({ itemId: staticItem.id })
+  const otherUserReviews = useOtherUserReviews({ itemId: staticItem.id })
 
   useEffect(() => {
     if (loginUser.id) {
@@ -86,16 +61,15 @@ export const ReviewListPage: NextPage<ReviewPageProps> = ({staticItem}:ReviewPag
       )}
       <AppButton text="ホームに戻る" type="button" onClick={handleHome} color="blue" />
       <ItemDetail item={staticItem} />
-      
       {!isAuthenticated && (
-        <ReviewCardList reviews={reviews} />
+        <ReviewCardList reviews={allReview.review} />
       )}
   
       {isAuthenticated && (
         <>
           {isMyReview && isMyReview.id ? (
             <>
-              <p>投稿済み</p>
+              <p>自分のレビュー</p>
               <ReviewCard review={isMyReview} />
               <div>
                 {loginUser && loginUser.id === isMyReview.user.id && (
@@ -109,12 +83,21 @@ export const ReviewListPage: NextPage<ReviewPageProps> = ({staticItem}:ReviewPag
               </div>
             </>
           ) : (
-            <Link href={`/review/new?itemId=${staticItem.id}`}>
-              <PlusCircleIcon className="h-7 w-7" />
-            </Link>
+            <div className="flex justify-center">
+              <Link href={`/review/new?itemId=${staticItem.id}`}>
+                <div className="inline-flex items-center border rounded-md p-4 hover:bg-gray-100 hover:scale-110 transition-transform duration-300">
+                  <PencilAltIcon className="h-7 w-7"/>
+                  <span className="ttext-base sm:text-2xl ml-2">新規投稿</span>
+                </div>
+              </Link>
+            </div>
           )}
           <div className="col-span-2">
-            {reviews && <ReviewCardList reviews={reviews} />}
+            {isAuthenticated && (
+              <div className="col-span-2">
+                <ReviewCardList reviews={otherUserReviews.review}/>
+              </div>
+            )}
           </div>
         </>
       )}
@@ -126,7 +109,6 @@ export default ReviewListPage
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const paths = await getItemIds()
-
   return {
     paths,
     fallback: false,
@@ -135,7 +117,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async ({ params } :GetStaticPropsContext) => {
   if (!params) {
-    throw new Error('params is undefined')
+    throw new Error("params is undefined")
   }
 
   const itemNumberId = Number(params.itemId)

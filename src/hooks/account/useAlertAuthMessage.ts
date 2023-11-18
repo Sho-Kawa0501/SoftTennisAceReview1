@@ -1,21 +1,20 @@
-import React,{useEffect,useState} from "react";
-import { AppDispatch } from "app/store";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import React,{useEffect,useState} from 'react'
+import { AppDispatch } from 'app/store'
+import { useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { 
   selectIsDeleteUser,
   selectIsRegister,
   selectIsLogin,
   selectIsLogout,
   selectIsEditProfile,
-} from "features/account/accountSlice";
+} from 'features/account/accountSlice'
 
 
 import { 
   resetIsDeleteUser,resetIsLogin,resetIsRegister,resetIsLogout,resetIsEditProfile
-} from "features/account/accountSlice";
-import AlertMessage from "components/Atoms/AlertMessage";
-// hooks/useAlertMessage.ts
+} from 'features/account/accountSlice'
+
 export const useAlertAuthMessage = () => {
   const dispatch:AppDispatch = useDispatch()
   const isLogin = useSelector(selectIsLogin)
@@ -33,50 +32,50 @@ export const useAlertAuthMessage = () => {
 
   const handleShowMessage = () => {
     setTimeout(() => {
-      setShowMessage(prevState => ({ ...prevState, show: false }));
-    }, 2000);
-  };
+      setShowMessage(prevState => ({ ...prevState, show: false }))
+    }, 2000)
+  }
   
   useEffect(() => {
     if (isLogin) {
-      setShowMessage({ message: "ログインが完了しました", show: true,color:"blue", });
+      setShowMessage({ message: "ログインが完了しました", show: true,color:"blue", })
       handleShowMessage()
-      dispatch(resetIsLogin());
+      dispatch(resetIsLogin())
     }
-  }, [isLogin]);
+  }, [isLogin])
 
   useEffect(() => {
     if (isLogout) {
-      setShowMessage({ message: "ログアウトが完了しました", show: true,color:"blue", });
+      setShowMessage({ message: "ログアウトが完了しました", show: true,color:"blue", })
       handleShowMessage()
-      dispatch(resetIsLogout());
+      dispatch(resetIsLogout())
     }
-  }, [isLogout]);
+  }, [isLogout])
 
   useEffect(() => {
     if (isRegister) {
-      setShowMessage({ message: "新規登録が完了しました", show: true,color:"blue", });
+      setShowMessage({ message: "新規登録が完了しました", show: true,color:"blue", })
       handleShowMessage()
-      dispatch(resetIsRegister());
+      dispatch(resetIsRegister())
     }
-  }, [isRegister]);
+  }, [isRegister])
 
   useEffect(() => {
     if (isDeleteUser) {
-      setShowMessage({ message: "アカウント削除が完了しました", show: true,color:"blue", });
+      setShowMessage({ message: "アカウント削除が完了しました", show: true,color:"blue", })
       handleShowMessage()
-      dispatch(resetIsDeleteUser());
+      dispatch(resetIsDeleteUser())
     }
-  }, [isDeleteUser]);
+  }, [isDeleteUser])
   useEffect(() => {
     if (isEditProfile) {
-      setShowMessage({ message: "プロフィール編集が完了しました", show: true,color:"blue", });
+      setShowMessage({ message: "プロフィール編集が完了しました", show: true,color:"blue", })
       handleShowMessage()
-      dispatch(resetIsEditProfile());
+      dispatch(resetIsEditProfile())
     }
-  }, [isEditProfile]);
+  }, [isEditProfile])
  
   return {
     showMessage
   }
-};
+}

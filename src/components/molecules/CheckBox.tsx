@@ -1,7 +1,7 @@
 interface CheckBoxProps {
-  label: string;
-  isChecked: boolean;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  label: string
+  isChecked: boolean
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 const CheckBox = ({ label, isChecked, onChange }: CheckBoxProps) => {
@@ -15,4 +15,4 @@ const CheckBox = ({ label, isChecked, onChange }: CheckBoxProps) => {
   )
 }
 
-export default CheckBox;
+export default CheckBox

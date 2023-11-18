@@ -1,22 +1,18 @@
-import React,{ForwardRefRenderFunction} from "react";
-import Image from "next/image"
-import { useFormContext,useWatch } from "react-hook-form";
+import React,{ForwardRefRenderFunction} from 'react'
+import Image from 'next/image'
+import { useFormContext,useWatch } from 'react-hook-form'
 
-interface ImagePreviewProps {
-  imagePreviewUrl: string | null;
-}
-
-const ImagePreviewComponent: React.ForwardRefRenderFunction<HTMLDivElement> = (_,ref) => {
-  const { control,getValues } = useFormContext();
+const ImagePreviewComponent: ForwardRefRenderFunction<HTMLDivElement> = (_,ref) => {
+  const { control,getValues } = useFormContext()
     const imagePreviewUrl = useWatch({
       control,
       name: 'image',
       defaultValue: getValues('image'),
-    });
+    })
      console.log("imgPU"+imagePreviewUrl)
 
   if (!imagePreviewUrl) {
-    return null;
+    return null
   }
 
   return (
@@ -26,8 +22,8 @@ const ImagePreviewComponent: React.ForwardRefRenderFunction<HTMLDivElement> = (_
       <Image 
         src={imagePreviewUrl}
         alt="プレビュー画像"
-        width={800}
-        height={800}
+        width={250}
+        height={250}
       />
     </div>
     </>
@@ -35,5 +31,5 @@ const ImagePreviewComponent: React.ForwardRefRenderFunction<HTMLDivElement> = (_
 }
 
 ImagePreviewComponent.displayName = "ImagePreviewComponent"
-const ImagePreview = React.forwardRef(ImagePreviewComponent);
-export default React.memo(ImagePreview);
+const ImagePreview = React.forwardRef(ImagePreviewComponent)
+export default React.memo(ImagePreview)

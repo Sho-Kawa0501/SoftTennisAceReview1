@@ -6,7 +6,6 @@ type TextInputProps = {
   label?: string
   type?: string
   placeholder?: string
-  // register: any
 }
 
 const TextInputComponent: ForwardRefRenderFunction<HTMLInputElement, TextInputProps> = 
@@ -32,5 +31,5 @@ const TextInputComponent: ForwardRefRenderFunction<HTMLInputElement, TextInputPr
 }
 
 // export default React.memo(React.forwardRef(TextInput))
-const TextInput = React.forwardRef(TextInputComponent);
-export default React.memo(TextInput);
+const TextInput = React.forwardRef(TextInputComponent)
+export default React.memo(TextInput)

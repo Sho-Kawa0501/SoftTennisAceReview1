@@ -7,9 +7,6 @@ import { fetchAsyncNewReview,fetchAsyncMyReview } from 'features/review/slice/ac
 import { AppDispatch, RootState } from 'app/store'
 import { useForm,FormProvider,SubmitHandler } from 'react-hook-form'
 import ReviewForm from 'components/organisms/ReviewForm'
-// import { NewReviewFormData } from 'types'
-import { setIsLoading,resetIsLoading, } from 'features/app/appSlice'
-import LoadingSpinner from 'components/Atoms/LoadingSpinner'
 import { useAuthGuard } from 'hooks/auth'
 import { ReviewInputData } from 'types/reviewTypes'
 import { setIsNewReview } from 'features/review/slice'
@@ -36,23 +33,21 @@ const NewReview = () => {
       image:data.image
     }
     try {
-    const resultAction = await dispatch(fetchAsyncNewReview(submitData))
-    if (fetchAsyncNewReview.fulfilled.match(resultAction)) {
-      dispatch(fetchAsyncMyReview())
-      dispatch(setIsNewReview())
-      if (router.query.itemId) {
-        navigateTo(`/review/review-list/${itemId}?alert=success_new`)
+      const resultAction = await dispatch(fetchAsyncNewReview(submitData))
+      if (fetchAsyncNewReview.fulfilled.match(resultAction)) {
+        dispatch(fetchAsyncMyReview())
+        dispatch(setIsNewReview())
+        if (router.query.itemId) {
+          navigateTo(`/review/review-list/${itemId}?alert=success_new`)
+        }
       }
+    } catch(error) {
+      console.error("NewReview:"+error)
     }
-  } catch(error) {
-    console.error("NewReview:"+error)
-  }
   },[itemId])
-
 
   return (
     <>
-    
     <div>
       <Head>
         <title>新規投稿</title>

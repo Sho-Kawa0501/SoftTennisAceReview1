@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "axios"
 type HttpMethod = 'get' | 'post' | 'delete' | 'put'
 
 

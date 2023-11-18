@@ -13,13 +13,13 @@ export const AlertMessage = ({message,color}:AlertMessageProps) => {
     red: 'bg-red-200',
     green: 'bg-green-200',
     blue: 'bg-blue-200',
-  };
+  }
 
   const textColors = {
     red: 'text-red-700',
     green: 'text-green-700',
     blue: 'text-blue-700',
-  };
+  }
   
   return (
     <>

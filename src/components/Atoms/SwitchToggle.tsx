@@ -1,8 +1,7 @@
-// Tailwind CSSを使用したスイッチトグルとして機能するコンポーネント
-interface CheckBoxProps {
-  label: string;
-  isChecked: boolean;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+type CheckBoxProps = {
+  label: string
+  isChecked: boolean
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 const SwitchToggle = ({ label, isChecked, onChange }: CheckBoxProps) => {
@@ -20,4 +19,4 @@ const SwitchToggle = ({ label, isChecked, onChange }: CheckBoxProps) => {
   )
 }
 
-export default SwitchToggle;
+export default SwitchToggle

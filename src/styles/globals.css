@@ -13,14 +13,14 @@
 
 html,
 body {
-  font-size: 2.667vw;
+  font-size: 2.667vw
 }
 
 /* タブレットサイズ以降（768px以上） */
 @media screen and (min-width: 768px) {
   html,
   body {
-    font-size: min(2.667vw, 14px);
+    font-size: min(2.667vw, 14px)
   }
 }
 
@@ -28,6 +28,6 @@ body {
 @media screen and (min-width: 1024px) {
   html,
   body {
-    font-size: min(2.667vw, 16px);
+    font-size: min(2.667vw, 16px)
   }
 }

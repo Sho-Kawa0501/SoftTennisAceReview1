@@ -1,32 +1,19 @@
 //これを使用する
-import { configureStore, ThunkAction, Action,combineReducers,PayloadAction,AnyAction } from '@reduxjs/toolkit';
-import { ThunkDispatch } from 'redux-thunk';
+import { configureStore, ThunkAction, Action,combineReducers,PayloadAction,AnyAction } from '@reduxjs/toolkit'
+import { ThunkDispatch } from 'redux-thunk'
 import accountReducer from '../features/account/accountSlice/reducers'
 import reviewReducer from '../features/review/slice/reducers'
-import itemReducer from 'features/item/itemSlice';
-import appReducer from 'features/app/appSlice';
-import thunkMiddleware from 'redux-thunk'
-import { persistStore, persistReducer } from 'redux-persist';
-import {
-  FLUSH,
-  REHYDRATE,
-  PAUSE,
-  PERSIST,
-  PURGE,
-  REGISTER,
-} from 'redux-persist'
+import itemReducer from 'features/item/itemSlice'
+import appReducer from 'features/app/appSlice'
+import { persistStore, persistReducer } from 'redux-persist'
 import createWebStorage from 'redux-persist/lib/storage/createWebStorage'
-// import storage from 'redux-persist/lib/storage'
-
-//store定義、slice管理
-
 
 const rootReducer = combineReducers({
   app: appReducer,
   account: accountReducer,
   review: reviewReducer,
   item: itemReducer,
-});
+})
 
 const createNoopStorage = () => {
   return {
@@ -50,7 +37,7 @@ const persistConfig = {
   key: 'root',
   storage,
   whitelist: ['account','item'], // 永続化したいstateを指定
-};
+}
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 
@@ -65,12 +52,12 @@ export const store = configureStore({
 })
 
 export type AsyncThunkConfig = {
-  state?: unknown;
+  state?: unknown
   dispatch?: ThunkDispatch<unknown, unknown, AnyAction>
-  extra?: unknown;
-  serializedErrorType?: unknown;
+  extra?: unknown
+  serializedErrorType?: unknown
   rejectWithValue: (value: unknown) => PayloadAction<unknown>
-};
+}
 
 //型定義  typeofで型を指定
 export type RootState = ReturnType<typeof store.getState>
@@ -79,6 +66,6 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   RootState,
   unknown,
   Action<string>
->;
+>
 export type AppDispatch = typeof store.dispatch
-export const persistor = persistStore(store);
+export const persistor = persistStore(store)

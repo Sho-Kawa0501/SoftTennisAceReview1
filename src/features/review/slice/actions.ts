@@ -2,29 +2,15 @@ import {
   createAsyncThunk,
   createSlice,
   PayloadAction,
-} from '@reduxjs/toolkit';
+} from '@reduxjs/toolkit'
 import axios from 'axios'
-import { AppDispatch } from 'app/store';
-import { id } from 'date-fns/locale';
-
-import type { RootState } from 'app/store';
-import { NewReviewSubmitData,EditReviewSubmitData } from 'types/reviewTypes';// import { handleAsyncThunkAxiosError } from 'lib/utils/HandleAsyncThunkAxiosError';
-import { Review } from 'types/types';
+import { AppDispatch } from 'app/store'
+import { NewReviewSubmitData,EditReviewSubmitData } from 'types/reviewTypes'// import { handleAsyncThunkAxiosError } from 'lib/utils/HandleAsyncThunkAxiosError'
+import { Review } from 'types/types'
 axios.defaults.withCredentials = true
 
 
-interface FavoriteReview {
-  id: number;
-  title: string;
-  content: string;
-  favorites_count: number;
-}
-
-interface FavoriteState {
-  favoritedReviews: number[];
-}
-
-export interface EditReview {
+interface EditReview {
   reviewId: string
   title: string
   content: string
@@ -33,26 +19,26 @@ export interface EditReview {
 
 
 type AsyncThunkConfig = {
-  state?: unknown;
-  dispatch?: AppDispatch;
-  extra?: unknown;
-  rejectValue?: unknown;
-  serializedErrorType?: unknown;
-};
+  state?: unknown
+  dispatch?: AppDispatch
+  extra?: unknown
+  rejectValue?: unknown
+  serializedErrorType?: unknown
+}
 
 type ToggleFavoriteParams = {
-  reviewId: string;
-  isFavorite: boolean;
-};
+  reviewId: string
+  isFavorite: boolean
+}
 //型...
 //戻り値
 //関数に使用する引数
 //thunk
 
 export const fetchAsyncMyReview = createAsyncThunk<
-Review[],//返り値の型
-void,//引数の型
-AsyncThunkConfig
+  Review[],//返り値の型
+  void,//引数の型
+  AsyncThunkConfig
 >(
   'review/MyReview',
   async (_,{ rejectWithValue }) => {
@@ -73,7 +59,6 @@ AsyncThunkConfig
 }
 )
 
-//CreateReviewView
 export const fetchAsyncNewReview = createAsyncThunk<
   Review,
   NewReviewSubmitData,
@@ -104,11 +89,10 @@ export const fetchAsyncNewReview = createAsyncThunk<
   }
 )
 
-//ReviewViewSet...reviewsは全てReviewViewSet
 export const fetchAsyncEditReview = createAsyncThunk<
-Review,
-EditReviewSubmitData,
-AsyncThunkConfig
+  Review,
+  EditReviewSubmitData,
+  AsyncThunkConfig
 >(
   'review/EditReview',
   async (editReview: EditReviewSubmitData,{ rejectWithValue }) => {
@@ -136,12 +120,10 @@ AsyncThunkConfig
   }
 )
 
-
-//ReviewViewSet review_delete
 export const fetchAsyncDeleteReview = createAsyncThunk<
-void,
-string,
-AsyncThunkConfig
+  void,
+  string,
+  AsyncThunkConfig
 >(
   'review/DeleteReview',
   async (reviewId: string,{ rejectWithValue }) => {
@@ -160,15 +142,14 @@ AsyncThunkConfig
 )
 
 export const fetchAsyncToggleFavorite = createAsyncThunk<
-  boolean, // Return type of the payload creator
-  ToggleFavoriteParams, // First argument to the payload creator
+  boolean,
+  ToggleFavoriteParams,
   AsyncThunkConfig
 >(
   'favorites/ToggleFavorite',
   async ({reviewId, isFavorite,},{ rejectWithValue }) => {
     try {
       const response = await axios({
-        //urlに対して条件分岐を行う
         url: isFavorite ?  
           `${process.env.NEXT_PUBLIC_API_URL}/api/review/set/${reviewId}/unfavorite/`
           : `${process.env.NEXT_PUBLIC_API_URL}/api/review/set/${reviewId}/favorite/`,
@@ -177,16 +158,16 @@ export const fetchAsyncToggleFavorite = createAsyncThunk<
           'Content-Type': 'application/json',
         },
         withCredentials: true,
-      });
+      })
 
       if (isFavorite && response.status !== 204) {
-        throw new Error('Failed to delete favorite');
+        throw new Error('Failed to delete favorite')
       } else if (!isFavorite && !response.data) {
-        throw new Error('Failed to create favorite');
+        throw new Error('Failed to create favorite')
       }
-      return true;
+      return true
     } catch (error:unknown) {
       return rejectWithValue(error)
     }
   },
-);
+)

@@ -1,4 +1,4 @@
-import React,{useMemo,useEffect,useCallback} from 'react'
+import React,{useMemo,useEffect,} from 'react'
 import { useForm,FormProvider, } from 'react-hook-form'
 import { AppDispatch } from 'app/store'
 import { useDispatch,useSelector } from 'react-redux'
@@ -10,11 +10,9 @@ import { resetIsAuthErrorMessage } from 'features/account/accountSlice'
 import { selectAuthError } from 'features/account/accountSlice'
 import useNavigation from 'hooks/utils/useNavigation'
 
-//型定義
 type AccountSigninFormProps = {
   onSubmit:(data:Credential) => void
 }
-
 
 //propsを受け取る関数定義
 const AccountSinginForm = React.memo(({onSubmit,} : AccountSigninFormProps) => {
@@ -22,9 +20,9 @@ const AccountSinginForm = React.memo(({onSubmit,} : AccountSigninFormProps) => {
   //バリデーションエラーの表示をリセットするためのコード
   //現在他の方法を模索中
   useEffect(() => {
-    console.log("AccountFo Component Mounted");
+    console.log("AccountFo Component Mounted")
     dispatch(resetIsAuthErrorMessage())
-  }, []);
+  }, [])
   const authError = useSelector(selectAuthError)
   const methods = useForm<Credential>()
   const {

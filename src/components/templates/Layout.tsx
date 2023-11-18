@@ -6,39 +6,26 @@ import Footer from '../organisms/Footer'
 import { selectActiveModal } from 'features/app/appSlice'
 import { AppDispatch,RootState } from 'app/store'
 
-
-interface LayoutProps {
+type LayoutProps = {
   children: ReactNode
 }
-
 
 const Layout:React.FC<LayoutProps> = ({children}) => {
   const isActiveModal = useSelector(selectActiveModal)
   useEffect(() => {
-    console.log("Layout Component Mounted");
-  }, []);
+    console.log("Layout Component Mounted")
+  }, [])
 
   useEffect(() => {
     if (isActiveModal) {
-      document.body.classList.add('overflow-hidden');
+      document.body.classList.add('overflow-hidden')
     } else {
-      document.body.classList.remove('overflow-hidden');
+      document.body.classList.remove('overflow-hidden')
     }
-  }, [isActiveModal]);
+  }, [isActiveModal])
   
   return (
     <>
-      {/* <div className="flex flex-col min-h-screen">
-        <Head>
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-        </Head>
-        <Header />
-        <div className="flex-grow max-w-7xl mx-auto px-8 py-6">
-          {children}
-        </div>
-        <Footer />
-      </div> */}
-      
       <div className="min-h-screen">
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -52,6 +39,5 @@ const Layout:React.FC<LayoutProps> = ({children}) => {
     </>
   )
 }
-
 
 export default React.memo(Layout)

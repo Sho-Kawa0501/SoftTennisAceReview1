@@ -9,16 +9,16 @@ import { setActiveModal, selectActiveModal } from 'features/app/appSlice'
 import AppButton from 'components/Atoms/AppButton'
 
 
-interface ReviewDeleteModalProps {
-  reviewId: string;
+type ReviewDeleteModalProps = {
+  reviewId: string
 }
 const ReviewDeleteModal = ({ reviewId }: ReviewDeleteModalProps) => {
   const dispatch: AppDispatch = useDispatch()
   const activeModal = useSelector(selectActiveModal)
-  const modalIsOpen = activeModal === 'ReviewDeleteModal'
+  const modalIsOpen = activeModal === "ReviewDeleteModal"
 
   const openModal = () => {
-    dispatch(setActiveModal('ReviewDeleteModal'))
+    dispatch(setActiveModal("ReviewDeleteModal"))
   }
 
   const closeModal = () => {

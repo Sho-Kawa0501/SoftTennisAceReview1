@@ -1,6 +1,6 @@
-import ItemCard from "../molecules/ItemCard"
-import { Item } from "types/itemTypes"
-import React from "react"
+import ItemCard from '../molecules/ItemCard'
+import { Item } from 'types/itemTypes'
+import React from 'react'
 
 type ItemCardListProps = {
   items: Item[]

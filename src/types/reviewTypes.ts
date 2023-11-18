@@ -1,8 +1,8 @@
 export interface EditReviewSubmitData {
   reviewId:string
-  title: string;
-  content: string;
-  image: File | null;
+  title: string
+  content: string
+  image: File | null
 }
 
 export interface NewReviewSubmitData {
@@ -13,13 +13,13 @@ export interface NewReviewSubmitData {
 }
 
 export interface ReviewInputData {
-  title: string;
-  content: string;
-  image: string | null;
+  title: string
+  content: string
+  image: string | null
 }
 
 export interface ReviewSubmitData {
-  title: string;
-  content: string;
-  image: File | null;
+  title: string
+  content: string
+  image: File | null
 }

@@ -1,5 +1,4 @@
-import { useState, useEffect,useCallback,useRef } from 'react'
-import { AppDispatch } from 'app/store'
+import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Head from 'next/head'
 import ReviewCardList from 'components/organisms/ReviewCardList'
@@ -13,7 +12,7 @@ const FavoriteReviewsPage = () => {
   const isAuthenticated = useSelector(selectIsAuthenticated)
   useAuthGuard()
   const favoriteReviewData = useFavoriteReview()
-  const review = isAuthenticated ? favoriteReviewData.review : null;
+  const review = isAuthenticated ? favoriteReviewData.review : null
   const { navigateTo } = useNavigation()
   const handleMyPage = () => navigateTo("/account/mypage/")
   

@@ -1,5 +1,5 @@
-import axios from "axios";
-import { handleAxiosError } from "./utils/HandleAxiosError";
+import axios from "axios"
+import { handleAxiosError } from "./utils/HandleAxiosError"
 
 export const fetchCsrfToken = async (): Promise<string> => {
   try {
@@ -8,8 +8,8 @@ export const fetchCsrfToken = async (): Promise<string> => {
       withCredentials: true,
     }
     )
-    return res.data.csrfToken;
+      return res.data.csrfToken
   } catch (error) {
     throw handleAxiosError(error)
   }
-};
+}

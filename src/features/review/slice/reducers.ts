@@ -1,13 +1,13 @@
-import * as actions from './actions';
+import * as actions from './actions'
 import {
   createAsyncThunk,
   createSlice,
   PayloadAction,
 } from '@reduxjs/toolkit'
 import { Review, } from 'types/types'
-import { handleActionError } from 'lib/utils/handleActionError';
+import { handleActionError } from 'lib/utils/handleActionError'
 
-interface InitialState {
+type InitialState = {
   reviews: Review[],
   myReview: Review[],
   isNewReview: boolean,
@@ -77,7 +77,7 @@ export const reviewSlice = createSlice({
         return {
           ...state,
           reviews: [...state.reviews, action.payload],
-        };
+        }
       })
       builder.addCase(actions.fetchAsyncNewReview.rejected, 
         (state,action) => {
@@ -85,9 +85,9 @@ export const reviewSlice = createSlice({
       })
     builder.addCase(actions.fetchAsyncEditReview.fulfilled,
       (state, action:PayloadAction<Review>) => {
-        const index = state.reviews.findIndex(review => review.id === action.payload.id);
+        const index = state.reviews.findIndex(review => review.id === action.payload.id)
         if (index !== -1) {
-          state.reviews[index] = action.payload;
+          state.reviews[index] = action.payload
         }
       })
       builder.addCase(actions.fetchAsyncEditReview.rejected, 
@@ -96,9 +96,9 @@ export const reviewSlice = createSlice({
       })
       builder.addCase(actions.fetchAsyncDeleteReview.fulfilled,
         (state, action) => {
-          const reviewId = action.meta.arg;  // 削除されたレビューのIDを取得
-          state.myReview = state.myReview.filter(review => review.id !== reviewId);  // ステートから削除
-      });
+          const reviewId = action.meta.arg  // 削除されたレビューのIDを取得
+          state.myReview = state.myReview.filter(review => review.id !== reviewId)  // ステートから削除
+      })
    },
 })
 

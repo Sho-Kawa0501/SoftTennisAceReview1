@@ -1,4 +1,4 @@
-import React,{memo} from 'react'
+import React from 'react'
 import {
   HomeIconComponent,
   LogoutIconComponent,
@@ -10,9 +10,6 @@ import Link from 'next/link'
 import { useSelector } from 'react-redux'
 import { selectIsAuthenticated } from 'features/account/accountSlice'
 import { selectActiveModal } from 'features/app/appSlice'
-import DeleteUserModal from 'components/templates/DeleteUserModal'
-
-
 
 export const HeaderContent = () => {
   const isAuthenticated = useSelector(selectIsAuthenticated)
@@ -22,7 +19,7 @@ export const HeaderContent = () => {
     <div className={`sticky top-0 bg-white z-10 ${isActiveModal ? 'pointer-events-none' : ''}`}>
       <div className="border-b py-3">
         <div className="max-w-5xl mx-auto flex justify-between px-4">
-          <div className="text-lg font-extrabold sm:text-base font-extrabold">
+          <div className="font-extrabold test-lg sm:text-xl font-extrabold">
             <Link href="/" legacyBehavior>
               SoftTennisAceReviews
             </Link>
@@ -31,14 +28,14 @@ export const HeaderContent = () => {
             <HomeIconComponent />
             {isAuthenticated ? (
               <div className="flex space-x-4">
-              <UserIconComponent />
-              <LogoutIconComponent />
-          </div>
+                <UserIconComponent />
+                <LogoutIconComponent />
+              </div>
             ) : (
               <div className="flex space-x-4">
-            <LoginIconComponent />
-            <RegisterIconComponent />
-        </div>
+                <LoginIconComponent />
+                <RegisterIconComponent />
+              </div>
             )}
           </div>
         </div>
