@@ -50,7 +50,7 @@ const Index:NextPage<ReviewPageProps> = React.memo(({ staticItems,staticItemMeta
   return (
     <>
       <Head>
-        <title>AceRacketRealm</title>
+        <title>SoftTennisAceReview</title>
       </Head>
       {showMessage.show &&
       <> 
