@@ -102,7 +102,7 @@ const ItemFilterModal = () => {
   return (
     <>
       <Head>
-        <title>AceRacketRealm</title>
+        <title>SoftTennisAceReview</title>
       </Head>
       <AppButton onClick={() => dispatch(setActiveModal('ItemFilterModal'))} text="Search" type="submit" color="green"/>
       <Modal 
