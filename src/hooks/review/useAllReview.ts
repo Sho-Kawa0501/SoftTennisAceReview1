@@ -18,7 +18,7 @@ const useAllReview = (
   { itemId, initial }: UseReviewProps
 ): UseReview => {
   const { data, error } = useSWR<Review[]>(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/review_list/${itemId}`,
+    `${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review_list/${itemId}`,
     (url: string) => fetcherWithCredential(url, 'get')
   )
 

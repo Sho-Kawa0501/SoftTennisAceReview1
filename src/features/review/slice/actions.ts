@@ -44,7 +44,7 @@ export const fetchAsyncMyReview = createAsyncThunk<
   async (_,{ rejectWithValue }) => {
     try {
     const response = await axios.get<Review[]>(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/myreview_list/`,
+      `${process.env.NEXT_PUBLIC_API_BASE_PATHE_PATH}/api/myreview_list/`,
       {
         headers: {
           'content-type': 'multipart/form-data',
@@ -73,7 +73,7 @@ export const fetchAsyncNewReview = createAsyncThunk<
 
     try {
       const response = await axios.post<Review>(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/review/create/${newReview.itemId}/`,
+        `${process.env.NEXT_PUBLIC_API_BASE_PATHE_PATHE_PATH}/api/review/create/${newReview.itemId}/`,
         uploadData,
         {
           headers: {
@@ -103,7 +103,7 @@ export const fetchAsyncEditReview = createAsyncThunk<
     
     try {
       const response = await axios.patch<Review>(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/reviews/${editReview.reviewId}/`,
+        `${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/reviews/${editReview.reviewId}/`,
         uploadData,
         {
           headers: {
@@ -128,7 +128,7 @@ export const fetchAsyncDeleteReview = createAsyncThunk<
   'review/DeleteReview',
   async (reviewId: string,{ rejectWithValue }) => {
     try{
-    const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/api/reviews/${reviewId}/`, 
+    const res = await axios.delete(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/reviews/${reviewId}/`, 
       {
         headers: {
           'Content-Type': 'application/json',
@@ -151,8 +151,8 @@ export const fetchAsyncToggleFavorite = createAsyncThunk<
     try {
       const response = await axios({
         url: isFavorite ?  
-          `${process.env.NEXT_PUBLIC_API_URL}/api/review/set/${reviewId}/unfavorite/`
-          : `${process.env.NEXT_PUBLIC_API_URL}/api/review/set/${reviewId}/favorite/`,
+          `${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review/set/${reviewId}/unfavorite/`
+          : `${process.env.NEXT_PUBLIC_API_BASE_PATHE_PATHE_PATHE_PATHE_PATHE_PATH}/api/review/set/${reviewId}/favorite/`,
         method: isFavorite ? 'DELETE' : 'POST',
         headers: {
           'Content-Type': 'application/json',

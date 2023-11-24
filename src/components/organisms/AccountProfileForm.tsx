@@ -36,7 +36,7 @@ const AccountProfileForm = ({onSubmit}:AccountProfileFormProps) => {
   const authError = useSelector(selectAuthError)
   const loginUser = useSelector(selectLoginUser)
   //ImagePreviewに送る画像データ
-  const loginUserImage = `${process.env.NEXT_PUBLIC_API_URL}${loginUser.image}`
+  const loginUserImage = `${process.env.NEXT_PUBLIC_API_BASE_PATH}${loginUser.image}`
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(loginUserImage)
   //保存するデータ
   const [image, setImage] = useState<File | null>(null)

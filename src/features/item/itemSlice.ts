@@ -16,7 +16,7 @@ export const fetchAsyncItemList = createAsyncThunk(
   'item/ItemList',
   async (_,{rejectWithValue}) => {
   try {
-    const res = await axios(`${process.env.NEXT_PUBLIC_API_URL}/api/item/item_list/`,{
+    const res = await axios(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/item/item_list/`,{
       withCredentials: true,
   })
   return res.data

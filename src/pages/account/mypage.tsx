@@ -28,7 +28,7 @@ const MyPage = () => {
           }
           <div className="flex flex-col items-center justify-center mb-6">
             <Image 
-              src={`${process.env.NEXT_PUBLIC_API_URL}` + loginUser.image}
+              src={`${process.env.NEXT_PUBLIC_API_BASE_PATHE_PATH}` + loginUser.image}
               width="60"
               height="60"
               alt="loginUser.image"
