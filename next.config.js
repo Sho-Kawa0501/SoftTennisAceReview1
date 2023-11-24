@@ -21,6 +21,9 @@
 // };
 
 const nextConfig = {
+  images: {
+    domains: ['api-gsv9.onrender.com'],
+  },
   async rewrites() {
     return [
       {
