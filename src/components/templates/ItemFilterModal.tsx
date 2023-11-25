@@ -12,30 +12,15 @@ import AppButton from 'components/Atoms/AppButton'
 import { Series,Brand } from 'types/itemTypes'
 
 
-interface CheckedItem {
-  id:number,
-  name:string,
-}
-
-//プランAとプランBを用意する
-
-//処理の流れ
-//アクセスしたらアイテムリスト、アイテムデータリストをreduxに格納(setItems,SSG,など)
-//モーダルのチェックボックスで絞り込みをすると、state.filter~にそれぞれ選択された値だけが格納される(SetFilter)...
-//元々全てのアイテムを格納しているfilterdItems.brand.nameと、state.filter.brandに格納された値が一致していたら、↓
-//新たなfilterItemsにそれが格納される。つまり、filterItemsは、絞り込み前は全ての値、絞り込み後は絞り込みされた値だけが格納される。
-//補足...filterは対象のデータを新しい配列に格納し、配列を作成する。some...条件を満たせるかどうかをbool値で返す
-//型を指定せよ
+//将来的にbrandとpositionを絞り込みに使用する可能性あり
 const ItemFilterModal = () => {
   const dispatch = useDispatch()
-  //モーダルコントロール
   const activeModal = useSelector(selectActiveModal)
   const filterdSeries = useSelector(selectFilterdSeries)
   const modalIsOpen = activeModal === 'ItemFilterModal'
   const { brands, series, positions } = useContext(ItemContext)
   const [selectedSeries, setSelectedSeries] = useState<Series[]>(filterdSeries || [])
   const [initialSelectedSeries, setInitialSelectedSeries] = useState<Series[]>([])
-  console.log("itemfilterseries"+selectedSeries)
   useEffect(() => {
     setSelectedSeries(filterdSeries || [])
   }, [filterdSeries])
@@ -47,9 +32,7 @@ const ItemFilterModal = () => {
     }
   }, [modalIsOpen,])
   
-  //絞り込み機能 //指定された項目が配列として格納される
   const [selectedBrand, setSelectedBrand] = useState<Brand[]>([])
-  
   const [selectedPosition,setSelectedPosition] = useState<Position[]>([])
 
   //ブランドごとにシリーズをまとめる
@@ -122,7 +105,7 @@ const ItemFilterModal = () => {
             <div key={brand.id} className="border p-4 rounded-lg">
               <h3 className="text-lg font-bold">{brand.name}</h3>
               <div className="mt-2">
-              {seriesByBrand[brand.id]?.map(s => (  // seriesByBrand[brand.id] が undefined の場合を考慮
+              {seriesByBrand[brand.id]?.map(s => (
                 <CheckBox 
                   key={s.id} 
                   label={s.name} 

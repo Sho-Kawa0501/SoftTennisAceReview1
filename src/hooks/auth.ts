@@ -1,7 +1,6 @@
 import React,{useEffect,} from "react"
 import { useRouter } from "next/router"
 import { useSelector, } from 'react-redux'
-import { AppDispatch, RootState } from 'app/store'
 import { 
   selectIsAuthenticated,
 } from "features/account/accountSlice"

@@ -3,7 +3,7 @@ import { handleAxiosError } from "./utils/HandleAxiosError"
 
 export const fetchCsrfToken = async (): Promise<string> => {
   try {
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/csrf-token/`,
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_PATHE_PATH}/api/auth/csrf-token/`,
     {
       withCredentials: true,
     }

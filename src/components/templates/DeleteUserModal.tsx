@@ -11,10 +11,8 @@ import useNavigation from 'hooks/utils/useNavigation'
 
 const DeleteUserModal = () => {
   const dispatch: AppDispatch = useDispatch()
-  //変更
   const activeModal = useSelector(selectActiveModal)
   const modalIsOpen = activeModal === 'DeleteUserModal'
-
   const openModal = () => {
     dispatch(setActiveModal('DeleteUserModal'))
   }
@@ -30,15 +28,12 @@ const DeleteUserModal = () => {
   const { handleHome } = useNavigation()
 
   const deleteUser = async () => {
-    //logoutを実行する？
-    // setShowMessage({message:"削除が完了しました",show:true})
-    
-      if (dispatch && dispatch !== null && dispatch !== undefined) {
-        dispatch(fetchAsyncDeleteUser())
-      }
-      dispatch(setIsDeleteUser())
-      closeModal() 
-      handleHome()
+    if (dispatch && dispatch !== null && dispatch !== undefined) {
+      dispatch(fetchAsyncDeleteUser())
+    }
+    dispatch(setIsDeleteUser())
+    closeModal() 
+    handleHome()
   }
 
   return (

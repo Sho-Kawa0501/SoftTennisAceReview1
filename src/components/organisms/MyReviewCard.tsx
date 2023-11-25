@@ -31,7 +31,7 @@ const MyReviewCard = React.memo(({review} :ReviewCardProps) => {
               src={review.image}
               alt={review.title}
               className="object-cover rounded-lg"
-              width={150} // Default size
+              width={150} 
               height={150}
               priority
             />

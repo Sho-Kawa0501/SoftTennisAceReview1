@@ -31,13 +31,13 @@ export interface Position {
   name: string,
 }
 
+//将来的にシリーズ以外の項目でもアイテムの絞り込みを行う可能性があるため
 export interface ItemFilter {
   item_brand:Brand[] | null,
   item_series:Series[] | null,
   position:Position[] | null,
 }
 
-//seriesだけ配列じゃない？？
 export interface ItemFilterModalProps {
   items: Item[],
   brands: Brand[],

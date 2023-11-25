@@ -11,7 +11,6 @@ import AlertMessage from 'components/Atoms/AlertMessage'
 import AppButton from 'components/Atoms/AppButton'
 import useNavigation from 'hooks/utils/useNavigation'
 
-//ログイン時にユーザー情報を取得してreduxに保存している
 const MyReviewList = () => {
   const myReview:Review[] = useSelector(selectMyReviews)
   console.log(myReview)

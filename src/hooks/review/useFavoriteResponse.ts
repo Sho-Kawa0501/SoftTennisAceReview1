@@ -13,7 +13,7 @@ type FavoriteResponse = {
 
 export const useIsFavorite = (reviewId: string):FavoriteReview => {
   const { data,error } = useSWR<FavoriteResponse>(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/review/${reviewId}/favorite/`,
+    `${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review/${reviewId}/favorite/`,
     (url:string) => fetcherWithCredential(url, 'get'),
   )
 

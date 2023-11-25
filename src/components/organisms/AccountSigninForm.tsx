@@ -14,11 +14,9 @@ type AccountSigninFormProps = {
   onSubmit:(data:Credential) => void
 }
 
-//propsを受け取る関数定義
 const AccountSinginForm = React.memo(({onSubmit,} : AccountSigninFormProps) => {
   const dispatch:AppDispatch = useDispatch()
-  //バリデーションエラーの表示をリセットするためのコード
-  //現在他の方法を模索中
+  //バリデーションエラーの表示をリセットするためのコード。現在他の方法を模索中
   useEffect(() => {
     console.log("AccountFo Component Mounted")
     dispatch(resetIsAuthErrorMessage())
@@ -73,10 +71,10 @@ const AccountSinginForm = React.memo(({onSubmit,} : AccountSigninFormProps) => {
           }
         </div>
       <div className="flex justify-center">
-          <div>
-            <AppButton text="送信" type={"submit"} color="blue" />
-            <AppButton text="戻る" type={"button"} color="blue" onClick={handleBack} />
-          </div>
+        <div>
+          <AppButton text="送信" type={"submit"} color="blue" />
+          <AppButton text="戻る" type={"button"} color="blue" onClick={handleBack} />
+        </div>
       </div>
     </form>
     </FormProvider>

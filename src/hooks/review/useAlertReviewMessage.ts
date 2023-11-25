@@ -13,7 +13,6 @@ import {
   resetIsDeleteReview
 } from 'features/review/slice'
 
-//改善の余地あり useEffectを使用した同じような構文が多すぎる
 export const useAlertReviewMessage = () => {
   const dispatch:AppDispatch = useDispatch()
   const isNewReview = useSelector(selectIsNewReview)

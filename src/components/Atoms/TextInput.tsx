@@ -18,18 +18,18 @@ const TextInputComponent: ForwardRefRenderFunction<HTMLInputElement, TextInputPr
 
   return (
     <div className="mb-4">
-  <label htmlFor={name} className="block text-gray-700 italic text-sm mb-2">{label}</label>
-  <input 
-    type={type}
-    placeholder={placeholder}
-    {...register(name)}
-    ref={ref}
-    className="w-full px-3 py-2 border border-gray-300 rounded focus:border-4 hover:bg-gray-100"
-  />
-</div>
+      <label htmlFor={name} className="block text-gray-700 italic text-sm mb-2">{label}</label>
+      <input 
+        type={type}
+        placeholder={placeholder}
+        {...register(name)}
+        ref={ref}
+        className="w-full px-3 py-2 border border-gray-300 rounded focus:border-4 hover:bg-gray-100"
+      />
+    </div>
   )
 }
 
-// export default React.memo(React.forwardRef(TextInput))
+
 const TextInput = React.forwardRef(TextInputComponent)
 export default React.memo(TextInput)

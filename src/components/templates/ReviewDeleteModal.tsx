@@ -12,6 +12,7 @@ import AppButton from 'components/Atoms/AppButton'
 type ReviewDeleteModalProps = {
   reviewId: string
 }
+
 const ReviewDeleteModal = ({ reviewId }: ReviewDeleteModalProps) => {
   const dispatch: AppDispatch = useDispatch()
   const activeModal = useSelector(selectActiveModal)

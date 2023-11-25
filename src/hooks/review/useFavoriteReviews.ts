@@ -14,7 +14,7 @@ type UseReview = {
 
 const useFavoriteReview = (): UseReview => {
   const { data, error } = useSWR<Review[]>(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/favorite_list/`,
+    `${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/favorite_list/`,
     (url: string) => fetcherWithCredential(url, 'get')
   )
 
