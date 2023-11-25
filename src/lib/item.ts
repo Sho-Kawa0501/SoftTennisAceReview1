@@ -3,7 +3,6 @@ import { StaticItemMetaDataType, } from "types/itemTypes"
 import { Item } from 'types/itemTypes'
 import { handleAxiosError } from "./utils/HandleAxiosError"
 
-//アイテムデータがItemの配列状態で返ってくる
 export const getItemList = async (): Promise<Item[]> => {
   try {
     const response = await axios.get<Item[]>
@@ -34,8 +33,6 @@ export const getItemMetaDataList = async(): Promise<StaticItemMetaDataType> => {
   }
 }
 
-
-//ItemIdはパス生成に使用する
 export const getItemIds = async (): Promise<{ params: { itemId: string } }[]> => {
   try {
     const response = await axios.get<{ id: string }[]>

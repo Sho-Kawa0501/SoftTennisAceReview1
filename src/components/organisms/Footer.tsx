@@ -8,17 +8,6 @@ const Footer = memo(() => {
         <h3 className="text-lg">SoftTennisAceReview</h3>
         <p>© {new Date().getFullYear()} All rights reserved.</p>
       </div>
-      <div className="">
-        {/* <Link href="/terms">
-          <a className="text-white hover:text-gray-300">Terms & Conditions</a>
-        </Link>
-        <Link href="/privacy">
-          <a className="text-white hover:text-gray-300">Privacy Policy</a>
-        </Link>
-        <Link href="/contact">
-          <a className="text-white hover:text-gray-300">Contact Us</a>
-        </Link> */}
-      </div>
     </div>
   </footer>
   )

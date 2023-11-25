@@ -26,7 +26,6 @@ interface ReviewFormProps {
   reviewId?:string | string[]
 }
 
-//表示用コンポーネントへ渡す値を用意、入力値を親コンポーネントに渡す
 const ReviewForm = ({ onSubmit,reviewId }: ReviewFormProps,) => {
   const reviewError = useSelector(selectReviewError)
   console.log("reviewE"+reviewError)
@@ -55,20 +54,16 @@ const ReviewForm = ({ onSubmit,reviewId }: ReviewFormProps,) => {
   })
   
   const { register, handleSubmit, formState: { errors },setValue } = methods
-  //プレビューに渡す画像
-
   useEffect(() => {
     setValue("title", isMyReview?.title || '')
     setValue("content", isMyReview?.content || '')
     setValue("image",isMyReview?.image || '', )
-    // setValue("image", isMyReview?.image || null)
   }, [isMyReview,])
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null
     setImage(file)
     if (file) {
-      console.log("fileeeeeeeee"+file)
       convertFileToDataURL(file, dataUrl => {
         setImagePreviewUrl(dataUrl) // 画像をstring型としてsetImagePreviewUrlに設定
         setValue('image', dataUrl)

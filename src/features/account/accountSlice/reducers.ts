@@ -95,7 +95,6 @@ export const accountSlice = createSlice({
     resetIsDeleteUser(state) {
       state.isDeleteUser = false
     },
-    
   },
   
   extraReducers: (builder) => {
@@ -161,14 +160,6 @@ export const accountSlice = createSlice({
         handleActionError(state, action, 'アカウント情報取得に失敗しました','authError')
       }
     )
-    // builder.addCase(actions.fetchAsyncEditProfile.fulfilled,
-    //   (state, action) => {
-    //     state.loginUser = {
-    //       ...state.loginUser,
-    //       name: action.payload.name,
-    //       image: action.payload.image, 
-    //     }
-    // })
     builder.addCase(actions.fetchAsyncEditProfile.rejected,
       (state, action) => {
         handleActionError(state, action, 'プロフィール保存に失敗しました','authError')

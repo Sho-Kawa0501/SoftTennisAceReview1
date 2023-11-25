@@ -30,14 +30,10 @@ type ToggleFavoriteParams = {
   reviewId: string
   isFavorite: boolean
 }
-//型...
-//戻り値
-//関数に使用する引数
-//thunk
 
 export const fetchAsyncMyReview = createAsyncThunk<
-  Review[],//返り値の型
-  void,//引数の型
+  Review[],
+  void,
   AsyncThunkConfig
 >(
   'review/MyReview',

@@ -26,8 +26,7 @@ interface AccountProfileFormProps {
   onSubmit: SubmitHandler<SubmitFormData>
 }
 
-//useFormでバリデーションチェック
-//
+
 const AccountProfileForm = ({onSubmit}:AccountProfileFormProps) => {
   const dispatch: AppDispatch = useDispatch()
   useEffect(() => {

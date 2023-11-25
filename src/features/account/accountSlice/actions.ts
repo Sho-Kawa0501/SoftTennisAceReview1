@@ -46,7 +46,6 @@ export const fetchAsyncLogin = createAsyncThunk<
 >
   (
     'account/Login',
-    //payloadCreator
     async (auth:Credential,{ rejectWithValue }) => {
       try {
       const res = await axios.post<{data: Credential}>(
@@ -66,7 +65,7 @@ export const fetchAsyncLogin = createAsyncThunk<
   }
 )
 
-//プロフィールを変更後に再取得する処理が抜けている？
+
 export const fetchAsyncRegister = createAsyncThunk<
   { data: Credential },
   Credential,
@@ -123,11 +122,11 @@ export const fetchAsyncRefreshToken = createAsyncThunk<
   }
 })
 
-//RootAPIで使用
+
 //newToken 取得したrefreshtokenとcsrftokenを使ってアクセストークンを新発行
 export const fetchAsyncNewAccessToken = createAsyncThunk<
   { data: string },
-  { refresh: string; csrfToken: string },//型を作成？
+  { refresh: string; csrfToken: string },
   AsyncThunkConfig
 >(
   'account/NewAccessToken',
@@ -153,7 +152,6 @@ export const fetchAsyncNewAccessToken = createAsyncThunk<
   }
 )
 
-//RootAPIで使用
 //csrfトークンの取得
 export const fetchCsrfToken = async (): Promise<string> => {
   try {
