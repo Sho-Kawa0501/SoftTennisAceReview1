@@ -32,27 +32,24 @@ const FavoriteReview: React.FC<Props> = ({ reviewId, }) => {
     if (isFavorite === undefined || !reviewData) {
       return
     }
-    //いいねの数 フロントエンドでしか行われない処理
     //reviewIdとloginUser.idを使っていいねがあるかどうかを返す
     //GetFavoriteReviewView
     //第１引数がisFavoriteのbool値を返してくるので、そのbool値を反転させたものがキャッシュに保存される
-    mutate(`${process.env.NEXT_PUBLIC_API_URL}/api/review/${reviewId}/favorite/`, !isFavorite, false)
+    mutate(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review/${reviewId}/favorite/`, !isFavorite, false)
     
     try {
       const resultAction = await dispatch(fetchAsyncToggleFavorite({ reviewId, isFavorite }))
-
       if (fetchAsyncToggleFavorite.fulfilled.match(resultAction)) {
-        mutate(`${process.env.NEXT_PUBLIC_API_URL}/api/review/${reviewId}/favorite/`)
-        mutate(`${process.env.NEXT_PUBLIC_API_URL}/api/review/favorites_count/${reviewId}/`)
+        mutate(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review/${reviewId}/favorite/`)
+        mutate(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review/favorites_count/${reviewId}/`)
       } else {
         throw new Error('Failed to update favorite')
       }
     } catch (error) {
       console.error('Favorite:', error)
-      mutate(`${process.env.NEXT_PUBLIC_API_URL}/api/review/${reviewId}/favorite/`, !isFavorite, false)
-      mutate(`${process.env.NEXT_PUBLIC_API_URL}/api/review/favorites_count/${reviewId}/`, reviewData, false)
+      mutate(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review/${reviewId}/favorite/`, !isFavorite, false)
+      mutate(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review/favorites_count/${reviewId}/`, reviewData, false)
     }
-      
   }, 300)
   
   return (

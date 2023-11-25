@@ -96,8 +96,8 @@ export const reviewSlice = createSlice({
       })
       builder.addCase(actions.fetchAsyncDeleteReview.fulfilled,
         (state, action) => {
-          const reviewId = action.meta.arg  // 削除されたレビューのIDを取得
-          state.myReview = state.myReview.filter(review => review.id !== reviewId)  // ステートから削除
+          const reviewId = action.meta.arg
+          state.myReview = state.myReview.filter(review => review.id !== reviewId)
       })
    },
 })

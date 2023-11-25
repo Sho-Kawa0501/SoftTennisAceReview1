@@ -18,9 +18,7 @@ const MyApp = ({ Component, pageProps }:AppProps) => {
     // Modalのルート要素を設定
     Modal.setAppElement('body')
   }, [])
-  //const store = useStore(pageProps.initialReduxState)
-  //全てのコンポーネントでstoreの情報を扱えるようにするためにProviderを使用する
-  //reactでいうuseContextのようなもの
+
   return (
   
     <Provider store={store}>

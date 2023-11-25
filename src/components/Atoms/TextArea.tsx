@@ -22,7 +22,6 @@ const TextArea: ForwardRefRenderFunction<HTMLTextAreaElement, TextAreaProps> = (
         {...register(name, )}
         ref={ref}
       />
-      {/* {errorMessage && <p className="text-red-600">{errorMessage}</p>} */}
     </div>
   )
 }

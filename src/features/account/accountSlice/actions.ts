@@ -28,7 +28,7 @@ export const fetchSession = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/session/`, 
+        `${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/auth/session/`, 
       )
       
       const data = await response.data
@@ -46,11 +46,10 @@ export const fetchAsyncLogin = createAsyncThunk<
 >
   (
     'account/Login',
-    //payloadCreator
     async (auth:Credential,{ rejectWithValue }) => {
       try {
       const res = await axios.post<{data: Credential}>(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login/`, 
+        `${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/auth/login/`, 
         auth,
         {
           headers: {
@@ -66,7 +65,7 @@ export const fetchAsyncLogin = createAsyncThunk<
   }
 )
 
-//プロフィールを変更後に再取得する処理が抜けている？
+
 export const fetchAsyncRegister = createAsyncThunk<
   { data: Credential },
   Credential,
@@ -75,7 +74,7 @@ export const fetchAsyncRegister = createAsyncThunk<
   'account/Register',
   async (auth:Credential,{ rejectWithValue }) => {
     try {
-    const res = await axios.post<{ data: Credential }>(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/register/`, 
+    const res = await axios.post<{ data: Credential }>(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/auth/register/`, 
       auth,
       {
       headers: {
@@ -97,7 +96,7 @@ export const fetchAsyncCheckAuth = createAsyncThunk<
   'account/CheckAuth',
   async (_,{ rejectWithValue }) => {
   try {
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/loginuser-information/`,{
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/auth/loginuser-information/`,{
       withCredentials: true,
     })
     return res.data
@@ -114,7 +113,7 @@ export const fetchAsyncRefreshToken = createAsyncThunk<
   'account/Refresh',
   async (_,{rejectWithValue}) => {
   try {
-    const res = await axios.get<{refresh:string}>(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh-token/`,{
+    const res = await axios.get<{refresh:string}>(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/auth/refresh-token/`,{
       withCredentials: true,
   })
   return res.data
@@ -123,18 +122,18 @@ export const fetchAsyncRefreshToken = createAsyncThunk<
   }
 })
 
-//RootAPIで使用
+
 //newToken 取得したrefreshtokenとcsrftokenを使ってアクセストークンを新発行
 export const fetchAsyncNewAccessToken = createAsyncThunk<
   { data: string },
-  { refresh: string; csrfToken: string },//型を作成？
+  { refresh: string; csrfToken: string },
   AsyncThunkConfig
 >(
   'account/NewAccessToken',
   async ({ refresh, csrfToken }, { rejectWithValue }) => {
     try {
       const res = await axios.post<{ data: string }>(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/token/refresh/`,
+        `${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/auth/token/refresh/`,
           {refresh:refresh},
         {
           withCredentials: true,
@@ -153,12 +152,11 @@ export const fetchAsyncNewAccessToken = createAsyncThunk<
   }
 )
 
-//RootAPIで使用
 //csrfトークンの取得
 export const fetchCsrfToken = async (): Promise<string> => {
   try {
     const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/auth/csrf-token/`,
+      `${process.env.NEXT_PUBLIC_API_BASE_PATHE_PATHE_PATHE_PATH}/api/auth/csrf-token/`,
       {
         withCredentials: true,
       }
@@ -179,7 +177,7 @@ export const fetchAsyncLogout = createAsyncThunk<
   async (_,{ rejectWithValue }) => {
     try {
     const res = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout/`,
+      `${process.env.NEXT_PUBLIC_API_BASE_PATHE_PATH}/api/auth/logout/`,
       {
         headers: {
           'Content-Type':'application/json',
@@ -203,7 +201,7 @@ export const fetchAsyncDeleteUser = createAsyncThunk<
   async (_,{ rejectWithValue }) => {
     try {
     const res = await axios.delete(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/auth/user/delete/`,  
+      `${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/auth/user/delete/`,  
       {
         headers: {
           'Content-Type':'application/json',
@@ -230,7 +228,7 @@ export const fetchAsyncEditProfile = createAsyncThunk<
     newProfile.image && uploadData.append("image", newProfile.image)
     try {
       const res = await axios.patch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/users/${newProfile.id}/`,
+        `${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/auth/users/${newProfile.id}/`,
         uploadData, 
         {
           headers: {

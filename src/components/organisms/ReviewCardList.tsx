@@ -2,7 +2,6 @@ import React from 'react'
 import ReviewCard from '../molecules/ReviewCard'
 import { Review } from 'types/types'
 
-
 interface ReviewCardListProps {
   reviews: Review[] | undefined
 }

@@ -9,14 +9,11 @@ import axios from 'axios'
 import { AppDispatch,RootState } from 'app/store'
 
 
-
-//この関数は使わない説ある
-//理由...通常の関数を実行して、その結果をsetItems関数に渡せばreduxのstateに格納されるため
 export const fetchAsyncItemList = createAsyncThunk(
   'item/ItemList',
   async (_,{rejectWithValue}) => {
   try {
-    const res = await axios(`${process.env.NEXT_PUBLIC_API_URL}/api/item/item_list/`,{
+    const res = await axios(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/item/item_list/`,{
       withCredentials: true,
   })
   return res.data
@@ -36,19 +33,18 @@ type InitialState = {
 
 const initialState:InitialState = {
   items: [], //初回に入ってくるアイテム一覧
-  brands: [], //初回に取得するアイテム情報
-  series: [],
-  positions: [],
+  brands: [], //初回に取得するアイテムブランド情報
+  series: [], //シリーズ
+  positions: [], //ポジション
   filteredItems:[], //フィルタリングされたアイテムリスト
-  filter: { //フィルタリングされた各項目
+  filter: { //フィルタリングされた各アイテム情報
     item_brand: null,
     item_series: null,
     position: null,
   },
 }
-//Item一覧、 Item所属情報もcreateAsyncThunkで取得してもいいかもしれない
 
-// スライスの作成
+
 const itemSlice = createSlice({
   name: "item",
   initialState,
@@ -60,16 +56,12 @@ const itemSlice = createSlice({
         state.filteredItems = action.payload
       }
     },
-    //絞り込みボタンが押される時に実行される
+    
     setFilter: (state, action: PayloadAction<ItemFilter>) => {
       //filterに格納
       state.filter = action.payload
       //フィルタリングされたアイテムリストを格納
       state.filteredItems = [...state.items]
-      // ブランドでフィルタリング
-      //item_brandはItemFilterModalから送られてきたSetFilterの引数
-      //filter.item_brandが存在し、配列が0以上なら、
-      //シリーズ
       if (state.filter.item_series && state.filter.item_series.length > 0) {
         state.filteredItems = state.filteredItems.filter(item =>
         state.filter.item_series!.some(series => series.name === item.series.name))
