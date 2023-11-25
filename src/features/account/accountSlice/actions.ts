@@ -156,7 +156,7 @@ export const fetchAsyncNewAccessToken = createAsyncThunk<
 export const fetchCsrfToken = async (): Promise<string> => {
   try {
     const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_BASE_PATHE_PATHE_PATHE_PATH}/api/auth/csrf-token/`,
+      `${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/auth/csrf-token/`,
       {
         withCredentials: true,
       }
@@ -177,7 +177,7 @@ export const fetchAsyncLogout = createAsyncThunk<
   async (_,{ rejectWithValue }) => {
     try {
     const res = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_BASE_PATHE_PATH}/api/auth/logout/`,
+      `${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/auth/logout/`,
       {
         headers: {
           'Content-Type':'application/json',
