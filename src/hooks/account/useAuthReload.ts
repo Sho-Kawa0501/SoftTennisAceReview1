@@ -25,10 +25,10 @@ export const useAuthReload = () => {
 
       try {
         const resultRefreshToken = await dispatch(fetchAsyncRefreshToken())
-        const resultCsrfToken = await fetchCsrfToken()
-        if (fetchAsyncRefreshToken.fulfilled.match(resultRefreshToken) && resultCsrfToken) {
+        const csrfToken = await fetchCsrfToken()
+        if (fetchAsyncRefreshToken.fulfilled.match(resultRefreshToken) && csrfToken) {
           await dispatch(fetchAsyncNewAccessToken(
-            { refresh: resultRefreshToken.payload.refresh, csrfToken: resultCsrfToken }
+            { refresh: resultRefreshToken.payload.refresh, csrfToken: csrfToken }
           ))
           await dispatch(fetchAsyncMyReview())
           await dispatch(fetchAsyncCheckAuth())
