@@ -12,4 +12,4 @@ export const fetchCsrfToken = async (): Promise<string> => {
   } catch (error) {
     throw handleAxiosError(error)
   }
-}
+} 
