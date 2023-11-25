@@ -13,7 +13,7 @@ type FavoritesCount = {favorites_count: number}
 
 const useFavoritesCount = (reviewId:string): FavoriteReview => {
   const { data, error } = useSWR<FavoritesCount>(
-    `${process.env.NEXT_PUBLIC_API_BASE_PATHE_PATH}/api/review/favorites_count/${reviewId}/`,
+    `${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review/favorites_count/${reviewId}/`,
     (url: string) => fetcherWithCredential(url, 'get'),
     {
       revalidateOnMount: true,
