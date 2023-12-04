@@ -2,7 +2,10 @@
 
 const nextConfig = {
   images: {
-    domains: ['api-gsv9.onrender.com'],
+    domains: [
+      'api-2i7c.onrender.com',
+      'soft-tennis-ace-review-bucket2.s3.amazonaws.com'
+    ],
   },
   async rewrites() {
     return [
