@@ -32,7 +32,7 @@ export const useAuthReload = () => {
           ))
           await dispatch(fetchAsyncMyReview())
           await dispatch(fetchAsyncCheckAuth())
-        } 
+        }
       } catch (error) {
         console.error('Authentication failed:', error)
         handleHome()
