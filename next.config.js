@@ -3,7 +3,7 @@
 const nextConfig = {
   images: {
     domains: [
-      'https://softtennisacereview-api1.onrender.com',
+      'soft-tennis-star-review.com',
       'soft-tennis-ace-review-bucket2.s3.amazonaws.com'
     ],
   },
