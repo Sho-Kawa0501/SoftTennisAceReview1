@@ -21,7 +21,7 @@ export const InputImage:ForwardRefRenderFunction<HTMLInputElement,InputImageProp
         accept="image/*"
         onChange={onChange}
         ref={fileInputRef}
-        className="hidden"
+        
       />
       <button 
         onClick={handleButtonClick} 
