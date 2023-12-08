@@ -16,6 +16,7 @@ export const InputImage:ForwardRefRenderFunction<HTMLInputElement,InputImageProp
   
   return (
     <div className="mb-4">
+      <div>
       <input
         type="file"
         accept="image/*"
@@ -23,6 +24,7 @@ export const InputImage:ForwardRefRenderFunction<HTMLInputElement,InputImageProp
         ref={fileInputRef}
         className="cursor-pointer border border-gray-300 hover:bg-gray-100 text-gray-800 py-2 px-4 rounded"
       />
+      </div>
       <button 
         onClick={handleButtonClick} 
         className="cursor-pointer border border-gray-300 hover:bg-gray-100 text-gray-800 py-2 px-4 rounded"
