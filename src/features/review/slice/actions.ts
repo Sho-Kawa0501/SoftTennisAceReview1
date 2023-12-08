@@ -65,7 +65,7 @@ export const fetchAsyncNewReview = createAsyncThunk<
     const uploadData = new FormData()
     uploadData.append("title", newReview.title)
     uploadData.append("content", newReview.content)
-    newReview.image && uploadData.append("image", newReview.image, newReview.image.name)
+    newReview.image && uploadData.append("image", newReview.image)
 
     try {
       const response = await axios.post<Review>(
