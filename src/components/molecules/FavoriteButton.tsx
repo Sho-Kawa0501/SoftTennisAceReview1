@@ -1,5 +1,5 @@
 import React from 'react'
-import { HiHeart,HiOutlineHeart } from 'react-icons/hi'
+import { FaRegStar,FaStar } from "react-icons/fa6"
 
 type FavoriteButtonProps = {
   isFavorite: boolean
@@ -13,9 +13,9 @@ const FavoriteButton = React.memo(({ isFavorite, onClick, count }: FavoriteButto
     onClick={onClick}
   >
     {isFavorite ? (
-      <HiHeart className="text-pink-500" size={20} />
+      <FaStar className="text-yellow-500" size={20} />
     ) : (
-      <HiOutlineHeart className="text-gray-500" size={20} />
+      <FaRegStar className="text-gray-500" size={20} />
     )}
     <span>いいね</span>
     <span>{count}</span>

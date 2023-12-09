@@ -8,7 +8,7 @@ interface ReviewCardListProps {
 
 const ReviewCardList = React.memo(({reviews}: ReviewCardListProps) => {
   if (!reviews) {
-    return <div>Loading reviews...</div>
+    return
   }
 
   return (
