@@ -5,12 +5,14 @@ type FavoriteButtonProps = {
   isFavorite: boolean
   onClick: () => void
   count: number | undefined
+  disabled: boolean
 }
 
-const FavoriteButton = React.memo(({ isFavorite, onClick, count }: FavoriteButtonProps) => (
+const FavoriteButton = React.memo(({ isFavorite, onClick, count,disabled }: FavoriteButtonProps) => (
   <button
-    className="inline-flex space-x-2 items-center"
+    className="inline-flex space-x-2 items-center cursor-pointer"
     onClick={onClick}
+    disabled={disabled}
   >
     {isFavorite ? (
       <FaStar className="text-yellow-500" size={20} />
