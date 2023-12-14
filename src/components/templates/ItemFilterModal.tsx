@@ -123,7 +123,6 @@ const ItemFilterModal = () => {
           <AppButton text="全て選択" onClick={selectAllSeries} type="button" color="blue" />
           <AppButton text="選択を全て外す" onClick={clearAll} type="button" color="blue" />
           <AppButton text="閉じる" onClick={closeModal} type="button" color="blue" />
-          
         </div>
       </Modal>
     </>

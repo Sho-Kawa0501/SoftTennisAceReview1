@@ -31,6 +31,7 @@ import useNavigation from 'hooks/utils/useNavigation'
 import { Review } from 'types/types'
 import useAllReview from 'hooks/review/useAllReview'
 import useOtherUserReviews from 'hooks/review/useOtherUsersReviews'
+import DeleteReviewButton from 'components/Atoms/DeleteReviewButton'
 
 type ReviewPageProps = InferGetStaticPropsType<typeof getStaticProps>
 
@@ -64,7 +65,6 @@ export const ReviewListPage: NextPage<ReviewPageProps> = ({staticItem}:ReviewPag
       {!isAuthenticated && (
         <ReviewCardList reviews={allReview.review} />
       )}
-  
       {isAuthenticated && (
         <>
           {isMyReview && isMyReview.id ? (
@@ -77,7 +77,7 @@ export const ReviewListPage: NextPage<ReviewPageProps> = ({staticItem}:ReviewPag
                     <Link href={`/review/${isMyReview.id}/edit?itemId=${staticItem.id}`}>
                       編集
                     </Link>
-                    <ReviewDeleteModal reviewId={isMyReview.id} {...isMyReview} />
+                    <DeleteReviewButton reviewId={isMyReview.id}/>
                   </div>
                 )}
               </div>

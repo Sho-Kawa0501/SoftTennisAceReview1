@@ -5,31 +5,27 @@ import { AppDispatch,RootState } from 'app/store'
 import { setIsDeleteReview } from 'features/review/slice/reducers'
 import { resetIsDeleteReview,} from 'features/review/slice/reducers'
 import { fetchAsyncDeleteReview } from 'features/review/slice/actions'
-import { setActiveModal, selectActiveModal } from 'features/app/appSlice'
+import { setActiveModal, selectActiveModal,selectSelectedReviewId } from 'features/app/appSlice'
 import AppButton from 'components/Atoms/AppButton'
+import { setSelectedReviewId } from 'features/app/appSlice'
 
 
-type ReviewDeleteModalProps = {
-  reviewId: string
-}
-
-const ReviewDeleteModal = ({ reviewId }: ReviewDeleteModalProps) => {
+const ReviewDeleteModal = () => {
   const dispatch: AppDispatch = useDispatch()
   const activeModal = useSelector(selectActiveModal)
+  const selectedReviewId = useSelector(selectSelectedReviewId)
   const modalIsOpen = activeModal === "ReviewDeleteModal"
-
-  const openModal = () => {
-    dispatch(setActiveModal("ReviewDeleteModal"))
-  }
 
   const closeModal = () => {
     dispatch(setActiveModal(null))
   }
 
   const deleteReview = async () => {
-    dispatch(fetchAsyncDeleteReview(reviewId))
-    dispatch(setIsDeleteReview())
-    closeModal()
+    if (selectedReviewId) {
+      dispatch(fetchAsyncDeleteReview(selectedReviewId));
+      dispatch(setIsDeleteReview())
+      closeModal()
+    }
   }
 
   const handleClick = () => {
@@ -38,13 +34,12 @@ const ReviewDeleteModal = ({ reviewId }: ReviewDeleteModalProps) => {
 
   return (
     <div>
-      <button onClick={openModal}>Delete</button>
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         contentLabel="Delete Confirmation"
-        className="w-1/2 mt-10 mx-auto bg-white p-6 rounded" // Adjust width and styling here
-        overlayClassName="fixed inset-0 bg-black bg-opacity-50" // Add overlay styling
+        className="w-1/2 mt-10 mx-auto bg-white p-6 rounded"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-50"
         shouldCloseOnOverlayClick={false}
         shouldFocusAfterRender={true}
       >

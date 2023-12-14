@@ -4,13 +4,15 @@ import { RootState } from '../../app/store'
 interface AppState {
   activeModal: string | null,
   isLoading:boolean,
-  isModalOpen: boolean,
+  // isModalOpen: boolean,
+  selectedReviewId: string | null,
 }
 
 const initialState: AppState = {
   activeModal: null,
   isLoading:false,
-  isModalOpen: false,
+  // isModalOpen: false,
+  selectedReviewId: null,
 }
 
 export const appSlice = createSlice({
@@ -26,13 +28,15 @@ export const appSlice = createSlice({
     resetIsLoading:(state) => {
       state.isLoading = false
     },
-    setIsModalOpen:(state) => {
-      state.isModalOpen = true
+    // setIsModalOpen:(state) => {
+    //   state.isModalOpen = true
+    // },
+    // resetIsModalOpen:(state) => {
+    //   state.isModalOpen = false
+    // },
+    setSelectedReviewId: (state, action: PayloadAction<string | null>) => {
+      state.selectedReviewId = action.payload
     },
-    resetIsModalOpen:(state) => {
-      state.isModalOpen = false
-    }
-    
   }
 })
 
@@ -40,9 +44,10 @@ export const {
   setActiveModal,
   setIsLoading,
   resetIsLoading,
+  setSelectedReviewId,
 } = appSlice.actions
 export const selectActiveModal = (state: RootState) => state.app.activeModal
 export const selectIsLoading = (state: RootState) => state.app.isLoading
-export const selectIsOpenModal = (state:RootState) => state.app.isModalOpen
+export const selectSelectedReviewId = (state: RootState) => state.app.selectedReviewId
 
 export default appSlice.reducer

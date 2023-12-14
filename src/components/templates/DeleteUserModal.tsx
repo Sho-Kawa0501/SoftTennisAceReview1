@@ -2,10 +2,8 @@ import { useState } from 'react'
 import Modal from 'react-modal'
 import { useSelector, useDispatch } from 'react-redux'
 import { AppDispatch,RootState } from 'app/store'
-//変更
 import { setIsDeleteUser,fetchAsyncDeleteUser, } from 'features/account/accountSlice/'
 import { setActiveModal, selectActiveModal } from 'features/app/appSlice'
-import AlertMessage from '../Atoms/AlertMessage'
 import AppButton from '../Atoms/AppButton'
 import useNavigation from 'hooks/utils/useNavigation'
 
