@@ -30,12 +30,6 @@ export const reviewSlice = createSlice({
   name: 'review',
   initialState,
   reducers: {
-    fetchReviewStart(state) {
-  
-    },
-    fetchReviewEnd(state) {
-      
-    },
     setIsNewReview(state) {
       state.isNewReview = true
     },
@@ -71,7 +65,6 @@ export const reviewSlice = createSlice({
       (state,action) => {
         handleActionError(state, action, 'マイレビュー取得に失敗しました。','reviewError')
     })
-
     builder.addCase(actions.fetchAsyncNewReview.fulfilled,
       (state, action: PayloadAction<Review>) => {
         return {
@@ -79,10 +72,10 @@ export const reviewSlice = createSlice({
           reviews: [...state.reviews, action.payload],
         }
       })
-      builder.addCase(actions.fetchAsyncNewReview.rejected, 
-        (state,action) => {
-          handleActionError(state, action, 'レビュー作成に失敗しました。','reviewError')
-      })
+    builder.addCase(actions.fetchAsyncNewReview.rejected, 
+      (state,action) => {
+        handleActionError(state, action, 'レビュー作成に失敗しました。','reviewError')
+    })
     builder.addCase(actions.fetchAsyncEditReview.fulfilled,
       (state, action:PayloadAction<Review>) => {
         const index = state.reviews.findIndex(review => review.id === action.payload.id)
@@ -90,22 +83,20 @@ export const reviewSlice = createSlice({
           state.reviews[index] = action.payload
         }
       })
-      builder.addCase(actions.fetchAsyncEditReview.rejected, 
-        (state,action) => {
-          handleActionError(state, action, 'レビュー編集に失敗しました','reviewError')
-      })
-      builder.addCase(actions.fetchAsyncDeleteReview.fulfilled,
-        (state, action) => {
-          const reviewId = action.meta.arg
-          state.myReview = state.myReview.filter(review => review.id !== reviewId)
-      })
-   },
+    builder.addCase(actions.fetchAsyncEditReview.rejected, 
+      (state,action) => {
+        handleActionError(state, action, 'レビュー編集に失敗しました','reviewError')
+    })
+    builder.addCase(actions.fetchAsyncDeleteReview.fulfilled,
+      (state, action) => {
+        const reviewId = action.meta.arg
+        state.myReview = state.myReview.filter(review => review.id !== reviewId)
+    })
+  },
 })
 
 
 export const {
-  fetchReviewStart,
-  fetchReviewEnd,
   setIsNewReview,
   resetIsNewReview,
   setIsEditReview,

@@ -1,11 +1,9 @@
 import {
   createAsyncThunk,
-  createSlice,
-  PayloadAction,
 } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { AppDispatch } from 'app/store'
-import { NewReviewSubmitData,EditReviewSubmitData } from 'types/reviewTypes'// import { handleAsyncThunkAxiosError } from 'lib/utils/HandleAsyncThunkAxiosError'
+import { NewReviewSubmitData,EditReviewSubmitData } from 'types/reviewTypes'
 import { Review } from 'types/types'
 axios.defaults.withCredentials = true
 
