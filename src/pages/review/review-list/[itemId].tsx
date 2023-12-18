@@ -26,23 +26,34 @@ import { AlertMessage } from 'components/Atoms/AlertMessage'
 import { useAlertReviewMessage } from 'hooks/review/useAlertReviewMessage'
 import { selectLoginUser,selectIsAuthenticated } from 'features/account/accountSlice'
 import { selectMyReviews } from 'features/review/slice'
+import { selectItems } from 'features/item/itemSlice'
 import AppButton from 'components/Atoms/AppButton'
 import useNavigation from 'hooks/utils/useNavigation'
 import { Review } from 'types/types'
-import useAllReview from 'hooks/review/useAllReview'
-import useOtherUserReviews from 'hooks/review/useOtherUsersReviews'
+import getAllReview from 'lib/review/getAllReview'
+import getOtherUserReviews from 'lib/review/getOtherUsersReviews'
 import DeleteReviewButton from 'components/Atoms/DeleteReviewButton'
+import { checkUserAuthentication } from 'lib/account'
 
-type ReviewPageProps = InferGetStaticPropsType<typeof getStaticProps>
+type ServerSideProps = {
+  itemId: number,
+  reviews: Review[];
+};
 
-export const ReviewListPage: NextPage<ReviewPageProps> = ({staticItem}:ReviewPageProps) => {
+//アイテム詳細をreduxで取得
+//SSRでレビュー取得を
+export const ReviewListPage: NextPage<ServerSideProps> = ({itemId,reviews}) => {
   const loginUser = useSelector(selectLoginUser)
   const isAuthenticated = useSelector(selectIsAuthenticated)
-  const myReview:Review[] = useSelector(selectMyReviews) //ここがうまくいってない
-  const isMyReview = loginUser.id ? myReview.find(review => review.item.id === staticItem.id) : null
+  const items = useSelector(selectItems)
+  const itemDetail = itemId ? items.find(item => item.id === itemId) : null
+  console.log("itemdetail"+itemDetail)
+
+  const myReview:Review[] = useSelector(selectMyReviews)
+  const isMyReview = loginUser.id ? myReview.find(review => review.item.id === itemId) : null
   const { showMessage } = useAlertReviewMessage()
-  const allReview = useAllReview({ itemId: staticItem.id })
-  const otherUserReviews = useOtherUserReviews({ itemId: staticItem.id })
+
+  
 
   useEffect(() => {
     if (loginUser.id) {
@@ -61,9 +72,9 @@ export const ReviewListPage: NextPage<ReviewPageProps> = ({staticItem}:ReviewPag
         <AlertMessage message={showMessage.message} color={showMessage.color} />
       )}
       <AppButton text="ホームに戻る" type="button" onClick={handleHome} color="blue" />
-      <ItemDetail item={staticItem} />
+      <ItemDetail item={itemDetail} />
       {!isAuthenticated && (
-        <ReviewCardList reviews={allReview.review} />
+        <ReviewCardList reviews={reviews} />
       )}
       {isAuthenticated && (
         <>
@@ -74,7 +85,7 @@ export const ReviewListPage: NextPage<ReviewPageProps> = ({staticItem}:ReviewPag
               <div>
                 {loginUser && loginUser.id === isMyReview.user.id && (
                   <div className="text-sm flex space-x-4">
-                    <Link href={`/review/${isMyReview.id}/edit?itemId=${staticItem.id}`}>
+                    <Link href={`/review/${isMyReview.id}/edit?itemId=${itemId}`}>
                       編集
                     </Link>
                     <DeleteReviewButton reviewId={isMyReview.id}/>
@@ -84,7 +95,7 @@ export const ReviewListPage: NextPage<ReviewPageProps> = ({staticItem}:ReviewPag
             </>
           ) : (
             <div className="flex justify-center">
-              <Link href={`/review/new?itemId=${staticItem.id}`}>
+              <Link href={`/review/new?itemId=${itemId}`}>
                 <div className="inline-flex items-center border rounded-md p-4 hover:bg-gray-100 hover:scale-110 transition-transform duration-300">
                   <PencilAltIcon className="h-7 w-7"/>
                   <span className="ttext-base sm:text-2xl ml-2">新規投稿</span>
@@ -95,7 +106,7 @@ export const ReviewListPage: NextPage<ReviewPageProps> = ({staticItem}:ReviewPag
           <div className="col-span-2">
             {isAuthenticated && (
               <div className="col-span-2">
-                <ReviewCardList reviews={otherUserReviews.review}/>
+                <ReviewCardList reviews={reviews}/>
               </div>
             )}
           </div>
@@ -107,26 +118,24 @@ export const ReviewListPage: NextPage<ReviewPageProps> = ({staticItem}:ReviewPag
 
 export default ReviewListPage
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const paths = await getItemIds()
-  return {
-    paths,
-    fallback: false,
-  }
-}
+export const getServerSideProps = async (context) => {
+  const { params } = context;
+  const itemId = Number(params.itemId) // URLからitemIdを取得
+  const isLogin = checkUserAuthentication(context);
+  // itemIdを使用して必要なデータを取得
+  // const item = await getItemDetail(Number(itemId));
 
-export const getStaticProps: GetStaticProps = async ({ params } :GetStaticPropsContext) => {
-  if (!params) {
-    throw new Error("params is undefined")
-  }
+  const reviewsData = isLogin
+    ? await getOtherUserReviews({ itemId })
+    : await getAllReview({ itemId });
+  // console.log("islogin"+isLogin)
 
-  const itemNumberId = Number(params.itemId)
-  const staticItem:Item = await getItemDetail(itemNumberId)
-
+  // itemデータをpropsとしてページコンポーネントに渡す
   return {
     props: {
-      staticItem,
-    },
-    revalidate: 64800,
+      itemId: itemId,
+      reviews: reviewsData.review
+    }
   }
+  
 }
