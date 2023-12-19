@@ -121,7 +121,7 @@ export default ReviewListPage
 export const getServerSideProps = async (context) => {
   const { params } = context;
   const itemId = Number(params.itemId) // URLからitemIdを取得
-  const isLogin = checkUserAuthentication(context);
+  const isLogin = await checkUserAuthentication(context);
   // itemIdを使用して必要なデータを取得
   // const item = await getItemDetail(Number(itemId));
 
