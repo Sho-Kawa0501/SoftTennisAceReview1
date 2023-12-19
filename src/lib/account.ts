@@ -16,19 +16,18 @@ export const fetchCsrfToken = async (): Promise<string> => {
   }
 } 
 
-export const checkUserAuthentication = (context: GetServerSidePropsContext) => {
-  const jwtToken = context.req.cookies['access_token'];
-  console.log('JWT Token:', jwtToken); // JWTトークンの出力
+export const checkUserAuthentication = async (context: GetServerSidePropsContext) => {
 
-  if (!jwtToken) {
-    console.log('No JWT token found');
-    return false;
-  }
+  // // const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/auth/loginuser-information/`,{
+  //   withCredentials: true,
+  // })
+  // return res.data
 
   try {
-    const decoded = jwt.verify(jwtToken, process.env.JWT_SECRET);
-    console.log('Decoded JWT:', decoded); // デコードされたJWTの出力
-    return !!decoded;
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/auth/loginuser-information/`,{
+      withCredentials: true,
+    })
+    return res.data.isAccessAuthenticated
   } catch (error) {
     console.error('Error verifying JWT:', error); // エラーの出力
     return false;
