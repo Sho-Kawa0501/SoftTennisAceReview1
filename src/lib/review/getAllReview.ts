@@ -20,6 +20,7 @@ const getAllReview = async (
 ): Promise<GetReview> => {
   try {
     const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review_list/${itemId}`, {
+      withCredentials: true, 
     });
 
     return {
