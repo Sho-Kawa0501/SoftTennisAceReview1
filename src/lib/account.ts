@@ -16,23 +16,23 @@ export const fetchCsrfToken = async (): Promise<string> => {
   }
 } 
 
-export const checkUserAuthentication = async (context: GetServerSidePropsContext) => {
+// export const checkUserAuthentication = async (context: GetServerSidePropsContext) => {
 
-  // // const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/auth/loginuser-information/`,{
-  //   withCredentials: true,
-  // })
-  // return res.data
+//   // // const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/auth/loginuser-information/`,{
+//   //   withCredentials: true,
+//   // })
+//   // return res.data
 
-  try {
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/auth/loginuser-information/`,{
-      withCredentials: true,
-    })
-    return res.data.isAccessAuthenticated
-  } catch (error) {
-    console.error('Error verifying JWT:', error); // エラーの出力
-    return false;
-  }
-};
+//   try {
+//       const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/auth/loginuser-information/`,{
+//       withCredentials: true,
+//     })
+//     return res.data.isAccessAuthenticated
+//   } catch (error) {
+//     console.error('Error verifying JWT:', error); // エラーの出力
+//     return false;
+//   }
+// };
 
 
 

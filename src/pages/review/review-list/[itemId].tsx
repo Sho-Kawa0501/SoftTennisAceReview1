@@ -33,7 +33,7 @@ import { Review } from 'types/types'
 import getAllReview from 'lib/review/getAllReview'
 import getOtherUserReviews from 'lib/review/getOtherUsersReviews'
 import DeleteReviewButton from 'components/Atoms/DeleteReviewButton'
-import { checkUserAuthentication } from 'lib/account'
+import { checkUserAuthentication } from 'pages/api/checkAuth'
 
 type ServerSideProps = {
   itemId: number,
@@ -52,8 +52,6 @@ export const ReviewListPage: NextPage<ServerSideProps> = ({itemId,reviews}) => {
   const myReview:Review[] = useSelector(selectMyReviews)
   const isMyReview = loginUser.id ? myReview.find(review => review.item.id === itemId) : null
   const { showMessage } = useAlertReviewMessage()
-
-  
 
   useEffect(() => {
     if (loginUser.id) {
@@ -121,21 +119,13 @@ export default ReviewListPage
 export const getServerSideProps = async (context) => {
   const { params } = context;
   const itemId = Number(params.itemId) // URLからitemIdを取得
-  const isLogin = await checkUserAuthentication(context);
-  // itemIdを使用して必要なデータを取得
-  // const item = await getItemDetail(Number(itemId));
 
-  const reviewsData = isLogin
-    ? await getOtherUserReviews({ itemId })
-    : await getAllReview({ itemId });
-  // console.log("islogin"+isLogin)
+  const reviewsData = await getAllReview({ itemId })
 
-  // itemデータをpropsとしてページコンポーネントに渡す
   return {
     props: {
       itemId: itemId,
-      reviews: reviewsData.review
+      reviews: reviewsData.review,
     }
   }
-  
 }
