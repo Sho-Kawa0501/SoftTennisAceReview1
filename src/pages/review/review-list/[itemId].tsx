@@ -71,9 +71,6 @@ export const ReviewListPage: NextPage<ServerSideProps> = ({itemId,reviews}) => {
       )}
       <AppButton text="ホームに戻る" type="button" onClick={handleHome} color="blue" />
       <ItemDetail item={itemDetail} />
-      {!isAuthenticated && (
-        <ReviewCardList reviews={reviews} />
-      )}
       {isAuthenticated && (
         <>
           {isMyReview && isMyReview.id ? (
@@ -102,11 +99,11 @@ export const ReviewListPage: NextPage<ServerSideProps> = ({itemId,reviews}) => {
             </div>
           )}
           <div className="col-span-2">
-            {isAuthenticated && (
+            
               <div className="col-span-2">
                 <ReviewCardList reviews={reviews}/>
               </div>
-            )}
+            
           </div>
         </>
       )}
