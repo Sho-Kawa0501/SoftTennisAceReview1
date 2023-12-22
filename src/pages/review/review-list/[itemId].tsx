@@ -118,11 +118,13 @@ export const getServerSideProps = async (context) => {
   const itemId = Number(params.itemId) // URLからitemIdを取得
 
   const reviewsData = await getAllReview({ itemId })
+  console.log(reviewsData)
+  const reviews = reviewsData.review ?? [];
 
   return {
     props: {
       itemId: itemId,
-      reviews: reviewsData.review,
+      reviews: reviews
     }
   }
 }
