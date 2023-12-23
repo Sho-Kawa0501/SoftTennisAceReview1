@@ -8,6 +8,7 @@ import {
   InferGetStaticPropsType,
   NextPage,
 } from 'next'
+import axios from 'axios'
 import { AppDispatch,RootState } from 'app/store'
 import { 
   getItemDetail,
@@ -41,7 +42,8 @@ type ServerSideProps = {
 };
 
 //アイテム詳細をreduxで取得
-//SSRでレビュー取得を
+//SSGで1つの関数を実行（サーバーサイドのビュークラスでログインの有無を判定させる）
+//
 export const ReviewListPage: NextPage<ServerSideProps> = ({itemId,reviews}) => {
   const loginUser = useSelector(selectLoginUser)
   const isAuthenticated = useSelector(selectIsAuthenticated)
@@ -113,18 +115,47 @@ export const ReviewListPage: NextPage<ServerSideProps> = ({itemId,reviews}) => {
 
 export default ReviewListPage
 
-export const getServerSideProps = async (context) => {
-  const { params } = context;
-  const itemId = Number(params.itemId) // URLからitemIdを取得
-
-  const reviewsData = await getAllReview({ itemId })
-  console.log(reviewsData)
-  const reviews = reviewsData.review ?? [];
-
+export const getStaticPaths: GetStaticPaths = async () => {
+  const paths = await getItemIds()
   return {
-    props: {
-      itemId: itemId,
-      reviews: reviews
-    }
+    paths,
+    fallback: false,
   }
 }
+
+export const getStaticProps: GetStaticProps = async ({ params } :GetStaticPropsContext) => {
+  if (!params) {
+    throw new Error("params is undefined")
+  }
+
+  const itemId = Number(params.itemId)
+  const reviewsData = await getAllReview({ itemId });
+  // console.log("islogin"+isLogin)
+
+  // itemデータをpropsとしてページコンポーネントに渡す
+  return {
+    props: {
+      reviews: reviewsData.review
+    },
+    revalidate: 8,
+  }
+}
+
+// export const getServerSideProps = async (context) => {
+//   const { params } = context;
+//   const itemId = Number(params.itemId) // URLからitemIdを取得
+
+//   // const reviewsData = await getAllReview({ itemId })
+//   const reviewsData = await axios.get<Review[]>(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review_list/${itemId}`, {
+//     withCredentials: true, 
+//   });
+//   console.log(reviewsData)
+//   const reviews = reviewsData.data ?? [];
+
+//   return {
+//     props: {
+//       itemId: itemId,
+//       reviews: reviews
+//     }
+//   }
+// }
