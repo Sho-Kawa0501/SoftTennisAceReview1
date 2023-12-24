@@ -46,19 +46,13 @@ const FavoriteReview: React.FC<Props> = ({ reviewId, }) => {
     setIsFavorite(newFavoriteStatus);
     setFavoriteCount(newFavoriteStatus ? favoriteCount + 1 : favoriteCount - 1);
 
-    
-    // setIsFavorite(newFavoriteStatus);  // ここで即座に状態を更新
-    // setFavoriteCount(newFavoriteCount);
-    //reviewIdとloginUser.idを使っていいねがあるかどうかを返す
-    //GetFavoriteReviewView
-    //第１引数がisFavoriteのbool値を返してくるので、そのbool値を反転させたものがキャッシュに保存される
-    // mutate(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review/${reviewId}/favorite/`, !isFavorite, false)
+   
     
     try {
       const resultAction = await dispatch(fetchAsyncToggleFavorite({ reviewId, isFavorite }))
       if (fetchAsyncToggleFavorite.fulfilled.match(resultAction)) {
-        setIsFavorite(newFavoriteStatus);
-        setFavoriteCount(newFavoriteStatus ? favoriteCount + 1 : favoriteCount - 1);
+        // setIsFavorite(newFavoriteStatus);
+        // setFavoriteCount(newFavoriteStatus ? favoriteCount + 1 : favoriteCount - 1);
         mutate(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review/${reviewId}/favorite/`) //お気に入りをしているかが返ってくる
         mutate(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review/favorites_count/${reviewId}/`) //お気に入りのカウント数が返ってくる
       } else {
@@ -68,8 +62,8 @@ const FavoriteReview: React.FC<Props> = ({ reviewId, }) => {
       console.error('Favorite:', error)
       setIsFavorite(!newFavoriteStatus);  // エラー時は状態を元に戻す
       setFavoriteCount(favoriteCount); 
-      // mutate(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review/${reviewId}/favorite/`, !isFavorite, false)
-      // mutate(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review/favorites_count/${reviewId}/`, reviewData, false)
+      mutate(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review/${reviewId}/favorite/`, !isFavorite, false)
+      mutate(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review/favorites_count/${reviewId}/`, reviewData, false)
     } finally {
       setIsUpdating(false)
     }
@@ -83,3 +77,11 @@ const FavoriteReview: React.FC<Props> = ({ reviewId, }) => {
 }
 
 export default FavoriteReview
+
+
+  // setIsFavorite(newFavoriteStatus);  // ここで即座に状態を更新
+  // setFavoriteCount(newFavoriteCount);
+  //reviewIdとloginUser.idを使っていいねがあるかどうかを返す
+  //GetFavoriteReviewView
+  //第１引数がisFavoriteのbool値を返してくるので、そのbool値を反転させたものがキャッシュに保存される
+  // mutate(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review/${reviewId}/favorite/`, !isFavorite, false)

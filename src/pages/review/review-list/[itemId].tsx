@@ -1,4 +1,3 @@
-
 import React,{ useState,useEffect,useMemo,useContext,useRef } from 'react'
 import { useSelector, useDispatch,} from 'react-redux'
 import { 
@@ -17,6 +16,7 @@ import {
 import { fetchAsyncMyReview } from 'features/review/slice'
 import Head from 'next/head'
 import Link from 'next/link'
+import useSWR from 'swr'
 import { Item } from 'types/itemTypes'
 import { PencilAltIcon } from '@heroicons/react/outline'
 import ReviewDeleteModal from 'components/templates/ReviewDeleteModal'
@@ -31,37 +31,72 @@ import { selectItems } from 'features/item/itemSlice'
 import AppButton from 'components/Atoms/AppButton'
 import useNavigation from 'hooks/utils/useNavigation'
 import { Review } from 'types/types'
-import getAllReview from 'lib/review/getAllReview'
-import getOtherUserReviews from 'lib/review/getOtherUsersReviews'
+import { fetcherWithCredential } from 'lib/utils'
 import DeleteReviewButton from 'components/Atoms/DeleteReviewButton'
 import { checkUserAuthentication } from 'pages/api/checkAuth'
 
-type ServerSideProps = {
-  itemId: number,
-  reviews: Review[];
-};
+type ReviewPageProps = InferGetStaticPropsType<typeof getStaticProps>
 
 //アイテム詳細をreduxで取得
-//SSGで1つの関数を実行（サーバーサイドのビュークラスでログインの有無を判定させる）
-//
-export const ReviewListPage: NextPage<ServerSideProps> = ({itemId,reviews}) => {
+//SSGでレビューを全取得する関数、APIを実行する
+//以下の2つから選択
+//マイレビューをUserReviewモデルからアイテムidとユーザーidを使って絞り込んで取得する関数、APIを作成する
+//取得したすべてのレビューをfilterで回し、マイレビューを取得
+export const ReviewListPage: NextPage<ReviewPageProps> = ({itemId,reviews}) => {
   const loginUser = useSelector(selectLoginUser)
   const isAuthenticated = useSelector(selectIsAuthenticated)
   const items = useSelector(selectItems)
   const itemDetail = itemId ? items.find(item => item.id === itemId) : null
   console.log("itemdetail"+itemDetail)
 
-  const myReview:Review[] = useSelector(selectMyReviews)
-  const isMyReview = loginUser.id ? myReview.find(review => review.item.id === itemId) : null
   const { showMessage } = useAlertReviewMessage()
+  // const { data: swrReviews, mutate } = useSWR(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review_list/${itemId}`,
+  //   (url: string) => fetcherWithCredential(url,'get'))
 
-  useEffect(() => {
-    if (loginUser.id) {
-      fetchAsyncMyReview()
+  const [loginUserReview, otherUserReviews] = useMemo((): [Review | undefined, Review[] | undefined] => {
+    if (loginUser && isAuthenticated) {
+      // ログインしている場合、reduceを使用してレビューを分類する
+      return reviews.reduce(
+        ([userReview, others], review) => {
+          if (review.user.id === loginUser.id) {
+            return [review, others]
+          }
+          return [userReview, [...others, review]]
+        },
+        [undefined, []]
+      )
+    } else {
+      // ログインしていない場合、全レビューをその他のレビューとして扱う
+      return [undefined, reviews];
     }
-  }, [loginUser.id])
+  }, [reviews, loginUser, isAuthenticated]);
+  console.log("Login User Review:", loginUserReview);
+  console.log("Other User Reviews:", otherUserReviews);
+
+
+  // useEffect(() => {
+  //   if (loginUser.id) {
+  //     fetchAsyncMyReview()
+  //   }
+  // }, [loginUser.id])
 
   const { handleHome } = useNavigation()
+
+  if (!isAuthenticated) {
+    return (
+      <>
+        <Head><title>レビューリスト</title></Head>
+        {showMessage.show && (
+          <AlertMessage message={showMessage.message} color={showMessage.color} />
+        )}
+        <AppButton text="ホームに戻る" type="button" onClick={handleHome} color="blue" />
+        <ItemDetail item={itemDetail} />
+        <div className="col-span-2">
+          <ReviewCardList reviews={otherUserReviews} />
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -75,17 +110,17 @@ export const ReviewListPage: NextPage<ServerSideProps> = ({itemId,reviews}) => {
       <ItemDetail item={itemDetail} />
       {isAuthenticated && (
         <>
-          {isMyReview && isMyReview.id ? (
+          {loginUserReview && loginUserReview.id ? (
             <>
               <p>自分のレビュー</p>
-              <ReviewCard review={isMyReview} />
+              <ReviewCard review={loginUserReview} />
               <div>
-                {loginUser && loginUser.id === isMyReview.user.id && (
+                {loginUser && loginUser.id === loginUserReview.user.id && (
                   <div className="text-sm flex space-x-4">
-                    <Link href={`/review/${isMyReview.id}/edit?itemId=${itemId}`}>
+                    <Link href={`/review/${loginUserReview.id}/edit?itemId=${itemId}`}>
                       編集
                     </Link>
-                    <DeleteReviewButton reviewId={isMyReview.id}/>
+                    <DeleteReviewButton reviewId={loginUserReview.id}/>
                   </div>
                 )}
               </div>
@@ -101,11 +136,9 @@ export const ReviewListPage: NextPage<ServerSideProps> = ({itemId,reviews}) => {
             </div>
           )}
           <div className="col-span-2">
-            
-              <div className="col-span-2">
-                <ReviewCardList reviews={reviews}/>
-              </div>
-            
+            <div className="col-span-2">
+              <ReviewCardList reviews={otherUserReviews}/>
+            </div>
           </div>
         </>
       )}
@@ -129,33 +162,17 @@ export const getStaticProps: GetStaticProps = async ({ params } :GetStaticPropsC
   }
 
   const itemId = Number(params.itemId)
-  const reviewsData = await getAllReview({ itemId });
-  // console.log("islogin"+isLogin)
+  const reviewsData = await axios.get<Review[]>(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review_list/${itemId}`, {
+    withCredentials: true, 
+  })
+  console.log("reviewData"+reviewsData.data)
 
   // itemデータをpropsとしてページコンポーネントに渡す
   return {
     props: {
-      reviews: reviewsData.review
+      itemId:itemId,
+      reviews: reviewsData.data
     },
     revalidate: 8,
   }
 }
-
-// export const getServerSideProps = async (context) => {
-//   const { params } = context;
-//   const itemId = Number(params.itemId) // URLからitemIdを取得
-
-//   // const reviewsData = await getAllReview({ itemId })
-//   const reviewsData = await axios.get<Review[]>(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review_list/${itemId}`, {
-//     withCredentials: true, 
-//   });
-//   console.log(reviewsData)
-//   const reviews = reviewsData.data ?? [];
-
-//   return {
-//     props: {
-//       itemId: itemId,
-//       reviews: reviews
-//     }
-//   }
-// }

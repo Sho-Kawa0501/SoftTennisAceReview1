@@ -21,7 +21,7 @@ const getAllReview = async (
   try {
     const response = await axios.get<Review[]>(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review_list/${itemId}`, {
       withCredentials: true, 
-    });
+    })
 
     return {
       review: response.data ?? initial,
