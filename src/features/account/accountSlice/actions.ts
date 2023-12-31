@@ -143,9 +143,7 @@ export const fetchAsyncNewAccessToken = createAsyncThunk<
           },
         }
       )
-      
       return res.data
-
     } catch (error: unknown) {
       return rejectWithValue(error)
     }

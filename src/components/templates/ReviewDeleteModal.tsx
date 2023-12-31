@@ -22,7 +22,7 @@ const ReviewDeleteModal = () => {
 
   const deleteReview = async () => {
     if (selectedReviewId) {
-      dispatch(fetchAsyncDeleteReview(selectedReviewId));
+      dispatch(fetchAsyncDeleteReview(selectedReviewId))
       dispatch(setIsDeleteReview())
       closeModal()
     }

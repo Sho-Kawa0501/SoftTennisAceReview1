@@ -21,7 +21,7 @@ export const HeaderContent = () => {
         <div className="max-w-5xl mx-auto flex justify-between px-4">
           <div className="font-extrabold test-lg sm:text-xl font-extrabold">
             <Link href="/" legacyBehavior>
-              SoftTennisAceReview
+              開発環境(サイトロゴ)
             </Link>
           </div>
           <div className="flex space-x-4">

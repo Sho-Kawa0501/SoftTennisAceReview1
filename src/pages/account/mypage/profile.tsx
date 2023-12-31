@@ -12,6 +12,7 @@ import { ProfileInputData,ProfileSubmitData, } from 'types/accountTypes'
 import { useAuthGuard } from 'hooks/auth'
 import { selectLoginUser } from 'features/account/accountSlice/'
 import useNavigation from 'hooks/utils/useNavigation'
+import { setIsButtonDisabled } from 'features/app/appSlice'
 
 const ProfileEdit = () => {
   const dispatch:AppDispatch = useDispatch()
@@ -24,17 +25,22 @@ const ProfileEdit = () => {
     if (!data || !loginUser) {
       return
     } 
-    const submitData:ProfileSubmitData = {
-      id:loginUser.id,
-      name:data.name,
-      image:data.image,
-    }
-    const result = await dispatch(fetchAsyncEditProfile(submitData))
-    if (fetchAsyncEditProfile.fulfilled.match(result)) {
-      await dispatch(fetchAsyncCheckAuth())
-      dispatch(setIsEditProfile())
-      handleGoToMypage()
-    }
+    dispatch(setIsButtonDisabled(true))
+    try {
+      const submitData:ProfileSubmitData = {
+        id:loginUser.id,
+        name:data.name,
+        image:data.image,
+      }
+      const result = await dispatch(fetchAsyncEditProfile(submitData))
+      if (fetchAsyncEditProfile.fulfilled.match(result)) {
+        await dispatch(fetchAsyncCheckAuth())
+        dispatch(setIsEditProfile())
+        handleGoToMypage()
+      }
+  } finally {
+    dispatch(setIsButtonDisabled(false))
+  }
   }
 
   return (

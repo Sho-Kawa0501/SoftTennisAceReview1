@@ -43,7 +43,11 @@ const ReviewCard = React.memo(({review} :ReviewCardProps) => {
         </div>
       </div>
       {loginUser.id && (
-        <FavoriteReview reviewId={review.id} userId={loginUser.id} />
+        <FavoriteReview 
+          reviewId={review.id} 
+          userId={loginUser.id}
+          // favoriteCounts={review.favorites_count}
+        />
       )}
     </div>
   </>

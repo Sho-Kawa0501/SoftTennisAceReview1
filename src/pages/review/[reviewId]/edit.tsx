@@ -11,6 +11,7 @@ import { useAuthGuard } from 'hooks/auth'
 import { setIsEditReview } from 'features/review/slice'
 import { EditReviewSubmitData } from 'types/reviewTypes'
 import useNavigation from 'hooks/utils/useNavigation'
+import { setIsButtonDisabled } from 'features/app/appSlice'
 
 
 const EditReview = () => {
@@ -48,7 +49,7 @@ const EditReview = () => {
       content: editData.content,
       image: editData.image,
     }
-
+    dispatch(setIsButtonDisabled(true))
     try {
       const result = await dispatch(fetchAsyncEditReview(submitData))
       if (fetchAsyncEditReview.fulfilled.match(result) && result.payload) {
@@ -58,6 +59,8 @@ const EditReview = () => {
       }
     } catch(error) {
       console.error("EditReview:"+error)
+    } finally {
+      dispatch(setIsButtonDisabled(false))
     }
   }, [reviewId])
   

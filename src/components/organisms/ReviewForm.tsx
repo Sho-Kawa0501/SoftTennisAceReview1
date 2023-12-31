@@ -14,6 +14,7 @@ import { ReviewInputData } from 'types/reviewTypes'
 import { selectMyReviews } from 'features/review/slice'
 import { selectReviewError } from 'features/review/slice'
 import useNavigation from 'hooks/utils/useNavigation'
+import { setIsButtonDisabled,selectIsButtonDisabled, } from 'features/app/appSlice'
 
 interface SubmitFormData {
   title: string
@@ -28,7 +29,7 @@ interface ReviewFormProps {
 
 const ReviewForm = ({ onSubmit,reviewId }: ReviewFormProps,) => {
   const reviewError = useSelector(selectReviewError)
-  console.log("reviewE"+reviewError)
+  const isButtonDisabled = useSelector(selectIsButtonDisabled)
   const router = useRouter()
   const { itemId } = router.query
   const { navigateTo } = useNavigation()
@@ -71,13 +72,13 @@ const ReviewForm = ({ onSubmit,reviewId }: ReviewFormProps,) => {
     }
   }
 
-const handleBack = () => {
-  if (itemId) {
-    handleReviewList()
-  } else {
-    handleMyReviewList()
+  const handleBack = () => {
+    if (itemId) {
+      handleReviewList()
+    } else {
+      handleMyReviewList()
+    }
   }
-}
 
   return (
     <FormProvider {...methods}>
@@ -132,7 +133,7 @@ const handleBack = () => {
         </div>
       <div className="flex justify-center">
         <div>
-          <AppButton text="送信" type={"submit"} color="blue" />
+          <AppButton text="送信" type={"submit"} color="blue" disabled={isButtonDisabled} />
           <AppButton text="戻る" type="button" onClick={handleBack} color="blue" />
         </div>
       </div>

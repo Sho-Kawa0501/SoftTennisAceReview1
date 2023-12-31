@@ -1,7 +1,6 @@
 import React,{useEffect,useState} from 'react'
 import { AppDispatch } from 'app/store'
-import { useDispatch } from 'react-redux'
-import { useSelector } from 'react-redux'
+import { useDispatch,useSelector } from 'react-redux'
 import { 
   selectIsDeleteUser,
   selectIsRegister,
@@ -9,10 +8,12 @@ import {
   selectIsLogout,
   selectIsEditProfile,
 } from 'features/account/accountSlice'
-
-
 import { 
-  resetIsDeleteUser,resetIsLogin,resetIsRegister,resetIsLogout,resetIsEditProfile
+  resetIsDeleteUser,
+  resetIsLogin,
+  resetIsRegister,
+  resetIsLogout,
+  resetIsEditProfile
 } from 'features/account/accountSlice'
 
 export const useAlertAuthMessage = () => {
@@ -22,8 +23,7 @@ export const useAlertAuthMessage = () => {
   const isRegister = useSelector(selectIsRegister)
   const isDeleteUser = useSelector(selectIsDeleteUser)
   const isEditProfile = useSelector(selectIsEditProfile)
-
-
+  
   const [showMessage, setShowMessage] = useState({ 
     message: "",
     show: false,
@@ -62,7 +62,7 @@ export const useAlertAuthMessage = () => {
 
   useEffect(() => {
     if (isDeleteUser) {
-      setShowMessage({ message: "アカウント削除が完了しました", show: true,color:"blue", })
+      setShowMessage({ message: "退会処理が完了しました", show: true,color:"blue", })
       handleShowMessage()
       dispatch(resetIsDeleteUser())
     }

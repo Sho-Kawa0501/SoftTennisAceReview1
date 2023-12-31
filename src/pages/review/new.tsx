@@ -12,6 +12,7 @@ import { ReviewInputData } from 'types/reviewTypes'
 import { setIsNewReview } from 'features/review/slice'
 import { NewReviewSubmitData } from 'types/reviewTypes'
 import useNavigation from 'hooks/utils/useNavigation'
+import { setIsButtonDisabled } from 'features/app/appSlice'
 
 const NewReview = () => {
   const dispatch: AppDispatch = useDispatch()
@@ -26,6 +27,7 @@ const NewReview = () => {
     if (!data || !itemId) {
       return
     }
+    dispatch(setIsButtonDisabled(true))
     const submitData:NewReviewSubmitData = {
       itemId: itemId,
       title:data.title,
@@ -43,6 +45,8 @@ const NewReview = () => {
       }
     } catch(error) {
       console.error("NewReview:"+error)
+    } finally {
+      dispatch(setIsButtonDisabled(false))
     }
   },[itemId])
 

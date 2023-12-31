@@ -3,7 +3,6 @@ import React from "react"
 type AlertMessageProps = {
   message:string,
   color:string,
-
 }
 export const AlertMessage = ({message,color}:AlertMessageProps) => {
   if (!message) {

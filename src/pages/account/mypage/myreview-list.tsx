@@ -16,7 +16,7 @@ import DeleteReviewButton from 'components/Atoms/DeleteReviewButton'
 const MyReviewList = () => {
   useAuthGuard()
   const dispatch: AppDispatch = useDispatch()
-  const myReview:Review[] = useSelector(selectMyReviews)
+  const myReview:Review[] = useSelector(selectMyReviews)  
   const { showMessage } = useAlertReviewMessage()
   const { navigateTo } = useNavigation()
   const handleMyPage = () => navigateTo("/account/mypage/")

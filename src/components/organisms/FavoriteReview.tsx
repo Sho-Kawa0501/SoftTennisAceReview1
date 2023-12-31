@@ -5,83 +5,63 @@ import useSWR, { mutate } from 'swr'
 import { useState,useEffect } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 import FavoriteButton from '../molecules/FavoriteButton'
-import useFavoritesCount from 'hooks/review/useFavoriteCount'
-import { useIsFavorite } from 'hooks/review/useFavoriteResponse'
+import { fetchIsFavorite } from 'lib/review/fetchIsFavorite'
+import { fetchFavoriteCount } from 'lib/review/fetchFavoriteCount'
 import { fetchAsyncToggleFavorite } from '../../features/review/slice'
 
 type Props = {
   userId: string
   reviewId: string
+  // favoriteCounts: number
 }
 
-//1つ1つのいいねのマークとカウントを表示させる
 const FavoriteReview: React.FC<Props> = ({ reviewId, }) => {
   const dispatch:AppDispatch = useDispatch()
-  const reviewData = useFavoritesCount(reviewId)
   const [isFavorite, setIsFavorite] = useState<boolean>()
-  const [favoriteCount, setFavoriteCount] = useState<number>(0)
+  const [ favoriteCounts,setFavoriteCounts] = useState<number>() 
+  useEffect(() => {
+    const fetchData = async () => {
+      const favoriteData = await fetchIsFavorite(reviewId)
+      const favoriteCountData = await fetchFavoriteCount(reviewId)
+      setIsFavorite(favoriteData.isFavorite)
+      setFavoriteCounts(favoriteCountData.favoriteCounts)
+    }
+    fetchData()
+  }, [reviewId])
+  
+  // const [favoriteCount, setFavoriteCount] = useState<number>(favoriteCounts)
   const [isUpdating, setIsUpdating] = useState(false)
-
-  // 追加
-  useEffect(() => {
-    if (reviewData !== undefined) {
-      setFavoriteCount(reviewData.favorites_count)
-    }
-  }, [reviewData])
-
-  //いいねがあるかないかを返却
-  const isFavoriteSWR = useIsFavorite(reviewId)
-  useEffect(() => {
-    if (isFavoriteSWR !== undefined) {
-      setIsFavorite(isFavoriteSWR.isFavorite)
-    }
-  }, [isFavoriteSWR])
+  console.log("reviewD"+isFavorite+favoriteCounts)
+  console.log("isF"+isFavorite)
 
   const toggleFavorite = useDebouncedCallback(async () => {
-    if (isFavorite === undefined || !reviewData) {
-      return
-    }
     setIsUpdating(true)
     const newFavoriteStatus = !isFavorite;
-    setIsFavorite(newFavoriteStatus);
-    setFavoriteCount(newFavoriteStatus ? favoriteCount + 1 : favoriteCount - 1);
-
-   
-    
     try {
       const resultAction = await dispatch(fetchAsyncToggleFavorite({ reviewId, isFavorite }))
       if (fetchAsyncToggleFavorite.fulfilled.match(resultAction)) {
-        // setIsFavorite(newFavoriteStatus);
-        // setFavoriteCount(newFavoriteStatus ? favoriteCount + 1 : favoriteCount - 1);
-        mutate(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review/${reviewId}/favorite/`) //お気に入りをしているかが返ってくる
-        mutate(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review/favorites_count/${reviewId}/`) //お気に入りのカウント数が返ってくる
+        setIsFavorite(newFavoriteStatus)
+        setFavoriteCounts(newFavoriteStatus ? favoriteCounts + 1 : favoriteCounts - 1)
       } else {
         throw new Error('Failed to update favorite')
       }
     } catch (error) {
       console.error('Favorite:', error)
-      setIsFavorite(!newFavoriteStatus);  // エラー時は状態を元に戻す
-      setFavoriteCount(favoriteCount); 
-      mutate(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review/${reviewId}/favorite/`, !isFavorite, false)
-      mutate(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review/favorites_count/${reviewId}/`, reviewData, false)
     } finally {
       setIsUpdating(false)
     }
-  }, 300)
+  }, 100)
   
   return (
     <div>
-      <FavoriteButton isFavorite={!isFavorite} onClick={toggleFavorite} count={favoriteCount} disabled={isUpdating}/>
+      <FavoriteButton 
+        isFavorite={isFavorite}
+        onClick={toggleFavorite}
+        count={favoriteCounts}
+        disabled={isUpdating}
+      />
     </div>
   )
 }
 
 export default FavoriteReview
-
-
-  // setIsFavorite(newFavoriteStatus);  // ここで即座に状態を更新
-  // setFavoriteCount(newFavoriteCount);
-  //reviewIdとloginUser.idを使っていいねがあるかどうかを返す
-  //GetFavoriteReviewView
-  //第１引数がisFavoriteのbool値を返してくるので、そのbool値を反転させたものがキャッシュに保存される
-  // mutate(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review/${reviewId}/favorite/`, !isFavorite, false)

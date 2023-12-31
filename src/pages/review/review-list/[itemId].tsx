@@ -34,6 +34,7 @@ import { Review } from 'types/types'
 import { fetcherWithCredential } from 'lib/utils'
 import DeleteReviewButton from 'components/Atoms/DeleteReviewButton'
 import { checkUserAuthentication } from 'pages/api/checkAuth'
+import { selectIsDeleteReview } from 'features/review/slice'
 
 type ReviewPageProps = InferGetStaticPropsType<typeof getStaticProps>
 
@@ -42,16 +43,33 @@ type ReviewPageProps = InferGetStaticPropsType<typeof getStaticProps>
 //以下の2つから選択
 //マイレビューをUserReviewモデルからアイテムidとユーザーidを使って絞り込んで取得する関数、APIを作成する
 //取得したすべてのレビューをfilterで回し、マイレビューを取得
-export const ReviewListPage: NextPage<ReviewPageProps> = ({itemId,reviews}) => {
+export const ReviewListPage: NextPage<ReviewPageProps> = ({itemId,reviews: ssgReviews}) => {
   const loginUser = useSelector(selectLoginUser)
   const isAuthenticated = useSelector(selectIsAuthenticated)
   const items = useSelector(selectItems)
+  const isDeleteReview = useSelector(selectIsDeleteReview)
   const itemDetail = itemId ? items.find(item => item.id === itemId) : null
   console.log("itemdetail"+itemDetail)
 
   const { showMessage } = useAlertReviewMessage()
-  // const { data: swrReviews, mutate } = useSWR(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review_list/${itemId}`,
-  //   (url: string) => fetcherWithCredential(url,'get'))
+  const { data: swrReviews, mutate } = useSWR(
+    `${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review_list/${itemId}`,
+    (url: string) => fetcherWithCredential(url,'get'))
+
+  useEffect(() => {
+    mutate()
+  },[isDeleteReview])
+  
+  
+  const reviews = swrReviews || ssgReviews
+
+  // useEffect (() => {
+  //   console.log("mutate((()))")
+  //   mutate()
+  // },[reviews])
+
+  console.log("SWRreview"+swrReviews)
+
 
   const [loginUserReview, otherUserReviews] = useMemo((): [Review | undefined, Review[] | undefined] => {
     if (loginUser && isAuthenticated) {
@@ -67,18 +85,11 @@ export const ReviewListPage: NextPage<ReviewPageProps> = ({itemId,reviews}) => {
       )
     } else {
       // ログインしていない場合、全レビューをその他のレビューとして扱う
-      return [undefined, reviews];
+      return [undefined, reviews]
     }
-  }, [reviews, loginUser, isAuthenticated]);
-  console.log("Login User Review:", loginUserReview);
-  console.log("Other User Reviews:", otherUserReviews);
-
-
-  // useEffect(() => {
-  //   if (loginUser.id) {
-  //     fetchAsyncMyReview()
-  //   }
-  // }, [loginUser.id])
+  }, [reviews, loginUser, isAuthenticated])
+  console.log("Login User Review:", loginUserReview)
+  console.log("Other User Reviews:", otherUserReviews)
 
   const { handleHome } = useNavigation()
 
@@ -95,7 +106,7 @@ export const ReviewListPage: NextPage<ReviewPageProps> = ({itemId,reviews}) => {
           <ReviewCardList reviews={otherUserReviews} />
         </div>
       </>
-    );
+    )
   }
 
   return (
@@ -120,10 +131,11 @@ export const ReviewListPage: NextPage<ReviewPageProps> = ({itemId,reviews}) => {
                     <Link href={`/review/${loginUserReview.id}/edit?itemId=${itemId}`}>
                       編集
                     </Link>
-                    <DeleteReviewButton reviewId={loginUserReview.id}/>
+                    <DeleteReviewButton reviewId={loginUserReview.id} />
                   </div>
                 )}
               </div>
+              <ReviewDeleteModal />
             </>
           ) : (
             <div className="flex justify-center">
@@ -173,6 +185,6 @@ export const getStaticProps: GetStaticProps = async ({ params } :GetStaticPropsC
       itemId:itemId,
       reviews: reviewsData.data
     },
-    revalidate: 8,
+    revalidate: 5,
   }
 }

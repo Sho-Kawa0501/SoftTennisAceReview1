@@ -36,17 +36,17 @@ const DeleteUserModal = () => {
 
   return (
     <div>
-      <AppButton onClick={openModal} text="アカウント削除" type="submit" color="red"/>
+      <AppButton onClick={openModal} text="退会" type="submit" color="red"/>
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         contentLabel="Delete Confirmation"
-        className="w-1/2 mt-20 mx-auto bg-white p-6 rounded" // Adjust width and styling here
-        overlayClassName="fixed inset-0 bg-black bg-opacity-50" // Add overlay styling
+        className="w-1/2 mt-20 mx-auto bg-white p-6 rounded"
+        overlayClassName="fixed inset-0 bg-black bg-opacity-50"
         shouldCloseOnOverlayClick={false}
         shouldFocusAfterRender={true}
       >
-         <h2>この操作は取り消せません。本当にアカウントを削除しますか？</h2>
+         <h2>この操作は取り消せません。本当に退会しますか？</h2>
          <div className="flex justify-center">
           <AppButton text="削除する" type={"submit"} color="red" onClick={handleClick} />
           <AppButton text="戻る" type="button" onClick={closeModal} color="blue" />

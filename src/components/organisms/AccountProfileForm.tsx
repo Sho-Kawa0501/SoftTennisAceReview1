@@ -16,6 +16,7 @@ import {
   selectAuthError 
 } from 'features/account/accountSlice'
 import useNavigation from 'hooks/utils/useNavigation'
+import { selectIsButtonDisabled } from 'features/app/appSlice'
 
 export type ProfileFormData = {
   name: string
@@ -32,6 +33,7 @@ const AccountProfileForm = ({onSubmit}:AccountProfileFormProps) => {
   useEffect(() => {
     dispatch(resetIsAuthErrorMessage())
   },[])
+  const isButtonDisabled = useSelector(selectIsButtonDisabled)
   const authError = useSelector(selectAuthError)
   const loginUser = useSelector(selectLoginUser)
   //ImagePreviewに送る画像データ
@@ -49,7 +51,6 @@ const AccountProfileForm = ({onSubmit}:AccountProfileFormProps) => {
   const { handleBack } = useNavigation()
 
   useEffect(() => {
-    // const absoluteImageUrl = getValues("image")
     setImagePreviewUrl(loginUserImage)
   }, [loginUser,loginUserImage])
   useEffect(() => {
@@ -95,7 +96,6 @@ return (
           },
         })}
       />
-      
     </div>
     <div className="mb-4">
       <div className="mb-1">プロフィール画像</div>
@@ -107,7 +107,7 @@ return (
       
     </div>  
     <div className="flex justify-center">
-      <AppButton text="送信" type={"submit"} color="blue" />
+      <AppButton text="送信" type={"submit"} color="blue" disabled={isButtonDisabled}/>
       <AppButton text="戻る" type={"button"} color="blue" onClick={handleBack} />
     </div>
   </form>

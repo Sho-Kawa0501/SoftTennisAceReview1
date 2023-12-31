@@ -5,10 +5,11 @@ type AppSubmitButtonProps = {
   onClick?: () => void
   type:ButtonHTMLAttributes<HTMLButtonElement>['type']
   color:string
-  className?:string,
+  className?:string
+  disabled?: boolean
 }
 
-const AppButton = React.memo(({ text,onClick,type,color,className}:AppSubmitButtonProps) => {
+const AppButton = React.memo(({ text,onClick,type,color,className,disabled}:AppSubmitButtonProps) => {
   const backgroundColors = {
     red: 'bg-red-500',
     green: 'bg-green-500',
@@ -20,7 +21,8 @@ const AppButton = React.memo(({ text,onClick,type,color,className}:AppSubmitButt
     blue: 'hover:bg-blue-600',
   }
   return (
-    <button 
+    <button
+      disabled={disabled}
       className={`${backgroundColors[color]} ${hoverColors[color]} ${className} m-1 text-white px-4 py-2 rounded-md mr-2 transition duration-300`}
       type={type}
       onClick={onClick}>

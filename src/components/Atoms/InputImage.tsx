@@ -22,7 +22,7 @@ export const InputImage:ForwardRefRenderFunction<HTMLInputElement,InputImageProp
         accept="image/*"
         onChange={onChange}
         ref={fileInputRef}
-        className="cursor-pointer border border-gray-300 hover:bg-gray-100 text-gray-800 py-2 px-4 rounded"
+        className="hidden cursor-pointer border border-gray-300 hover:bg-gray-100 text-gray-800 py-2 px-4 rounded"
       />
       </div>
       <button 

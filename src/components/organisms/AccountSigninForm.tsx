@@ -9,6 +9,7 @@ import AppButton from '../Atoms/AppButton'
 import { resetIsAuthErrorMessage } from 'features/account/accountSlice'
 import { selectAuthError } from 'features/account/accountSlice'
 import useNavigation from 'hooks/utils/useNavigation'
+import { selectIsButtonDisabled } from 'features/app/appSlice'
 
 type AccountSigninFormProps = {
   onSubmit:(data:Credential) => void
@@ -21,6 +22,7 @@ const AccountSinginForm = React.memo(({onSubmit,} : AccountSigninFormProps) => {
     console.log("AccountFo Component Mounted")
     dispatch(resetIsAuthErrorMessage())
   }, [])
+  const isButtonDisabled = useSelector(selectIsButtonDisabled)
   const authError = useSelector(selectAuthError)
   const methods = useForm<Credential>()
   const {
@@ -72,7 +74,7 @@ const AccountSinginForm = React.memo(({onSubmit,} : AccountSigninFormProps) => {
         </div>
       <div className="flex justify-center">
         <div>
-          <AppButton text="送信" type={"submit"} color="blue" />
+          <AppButton text="送信" type={"submit"} color="blue" disabled={isButtonDisabled} />
           <AppButton text="戻る" type={"button"} color="blue" onClick={handleBack} />
         </div>
       </div>

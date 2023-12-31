@@ -12,6 +12,7 @@ import Head from 'next/head'
 import AccountSinginForm from 'components/organisms/AccountSigninForm'
 import { setIsLogin } from 'features/account/accountSlice/'
 import useNavigation from 'hooks/utils/useNavigation'
+import { setIsButtonDisabled } from 'features/app/appSlice'
 
 
 const Login = () => {
@@ -23,6 +24,7 @@ const Login = () => {
     if(!credential) {
       return
     } 
+    dispatch(setIsButtonDisabled(true))
     try {
     const result = await dispatch(fetchAsyncLogin(credential))
       if (fetchAsyncLogin.fulfilled.match(result)) {
@@ -33,6 +35,8 @@ const Login = () => {
       }
     } catch(error){
       console.error("Login:"+error)
+    } finally {
+      dispatch(setIsButtonDisabled(false))
     }
   }
 

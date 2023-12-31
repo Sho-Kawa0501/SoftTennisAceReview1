@@ -13,6 +13,7 @@ import { setIsRegister } from 'features/account/accountSlice/'
 import useNavigation from 'hooks/utils/useNavigation'
 import { AlertMessage } from 'components/Atoms/AlertMessage'
 import { useAlertReviewMessage } from 'hooks/review/useAlertReviewMessage'
+import { setIsButtonDisabled } from 'features/app/appSlice'
 
 const Register = () => {
   const dispatch:AppDispatch = useDispatch()
@@ -20,8 +21,9 @@ const Register = () => {
   const { showMessage } = useAlertReviewMessage()
   const onSubmit = async (credential: Credential) => {
     if (!credential) {
-      return 
+      return
     }
+    dispatch(setIsButtonDisabled(true))
     try {
       const result = await dispatch(fetchAsyncRegister(credential))
       if (fetchAsyncRegister.fulfilled.match(result)) {
@@ -29,9 +31,11 @@ const Register = () => {
         await dispatch(fetchAsyncCheckAuth())
         dispatch(setIsRegister())
         handleHome()
-      }  
+      }
     } catch(error) {
       console.error("Register:"+error)
+    } finally {
+      dispatch(setIsButtonDisabled(false))
     }
   }
 
