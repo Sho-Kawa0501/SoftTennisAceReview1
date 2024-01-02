@@ -20,13 +20,13 @@ export const LogoutIconComponent = () => {
   const { handleHome } = useNavigation()
   const logoutHandler = useCallback(async () => {
     try {
-      if (dispatch && dispatch !== null && dispatch !== undefined) {
-        await dispatch(fetchAsyncLogout())
+      const result = await dispatch(fetchAsyncLogout())
+      if (fetchAsyncLogout.fulfilled.match(result)) {
         dispatch(setIsLogout())
         handleHome()
       }
     } catch(error) {
-      console.log(error)
+      console.error(error)
     }
   },[dispatch,])
   return (

@@ -30,7 +30,7 @@ const AccountSinginForm = React.memo(({onSubmit,} : AccountSigninFormProps) => {
     formState: {errors},
   } = methods
 
-  const { handleBack } = useNavigation()
+  const { handleHome } = useNavigation()
 
   return (
     <FormProvider {...methods}>
@@ -75,7 +75,7 @@ const AccountSinginForm = React.memo(({onSubmit,} : AccountSigninFormProps) => {
       <div className="flex justify-center">
         <div>
           <AppButton text="送信" type={"submit"} color="blue" disabled={isButtonDisabled} />
-          <AppButton text="戻る" type={"button"} color="blue" onClick={handleBack} />
+          <AppButton text="戻る" type={"button"} color="blue" onClick={handleHome} />
         </div>
       </div>
     </form>

@@ -112,7 +112,7 @@ export const ReviewListPage: NextPage<ReviewPageProps> = ({itemId,reviews: ssgRe
   return (
     <>
       <Head>
-        <title>レビューリスト</title>  
+        <title>レビューリスト</title>
       </Head>
       {showMessage.show && (
         <AlertMessage message={showMessage.message} color={showMessage.color} />
@@ -174,9 +174,11 @@ export const getStaticProps: GetStaticProps = async ({ params } :GetStaticPropsC
   }
 
   const itemId = Number(params.itemId)
-  const reviewsData = await axios.get<Review[]>(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review_list/${itemId}`, {
-    withCredentials: true, 
-  })
+  const reviewsData = await axios.get<Review[]>(
+    `${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review_list/${itemId}`, {
+      withCredentials: true, 
+    }
+  )
   console.log("reviewData"+reviewsData.data)
 
   // itemデータをpropsとしてページコンポーネントに渡す
@@ -185,6 +187,6 @@ export const getStaticProps: GetStaticProps = async ({ params } :GetStaticPropsC
       itemId:itemId,
       reviews: reviewsData.data
     },
-    revalidate: 5,
+    revalidate: 8,
   }
 }

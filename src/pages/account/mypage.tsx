@@ -27,13 +27,16 @@ const MyPage = () => {
             <AlertMessage message={showMessage.message} color={showMessage.color} />
           }
           <div className="flex flex-col items-center justify-center mb-6">
-            <Image 
-              src={loginUser.image}
-              width="60"
-              height="60"
-              alt="loginUser.image"
-              className="rounded-full mb-2"
-            />
+          {loginUser.image && ( // loginUser.image が存在する場合のみ Image コンポーネントを表示
+              <Image 
+                src={loginUser.image}
+                width="60"
+                height="60"
+                alt="loginUser.image"
+                className="rounded-full mb-2"
+              />
+            )
+          }
             <h1 className="text-2xl font-bold">{loginUser.name}</h1>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
