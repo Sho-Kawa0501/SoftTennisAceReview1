@@ -14,7 +14,9 @@ import {
 } from 'next'
 import MyReviewCard from 'components/organisms/MyReviewCard'
 import { useAuthGuard } from 'hooks/auth'
+import useSWR from 'swr'
 import { selectMyReviews } from 'features/review/slice'
+import { fetcherWithCredential } from 'lib/utils'
 import { useAlertReviewMessage } from 'hooks/review/useAlertReviewMessage'
 import { fetchAsyncMyReview } from 'features/review/slice'
 import AlertMessage from 'components/Atoms/AlertMessage'
@@ -22,15 +24,20 @@ import AppButton from 'components/Atoms/AppButton'
 import useNavigation from 'hooks/utils/useNavigation'
 import DeleteReviewButton from 'components/Atoms/DeleteReviewButton'
 
-type ReviewPageProps = InferGetStaticPropsType<typeof getStaticProps>
+// type ReviewPageProps = InferGetStaticPropsType<typeof getStaticProps>
 
-const MyReviewList: NextPage<ReviewPageProps> = ({reviews}) => {
+const MyReviewList= () => {
   useAuthGuard()
   const dispatch: AppDispatch = useDispatch()
   // const myReview:Review[] = useSelector(selectMyReviews)
   const { showMessage } = useAlertReviewMessage()
   const { navigateTo } = useNavigation()
   const handleMyPage = () => navigateTo("/account/mypage/")
+
+  const { data: reviews = [], mutate } = useSWR(
+    `${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/myreview_list/`,
+    (url: string) => fetcherWithCredential(url,'get'))
+
   // const myreview = reviews
 
   return (
@@ -62,33 +69,24 @@ const MyReviewList: NextPage<ReviewPageProps> = ({reviews}) => {
 
 export default MyReviewList
 
-// export const getStaticPaths: GetStaticPaths = async () => {
-//   //ログインIDを取得
-//   const paths = await getItemIds()
+// export const getStaticProps: GetStaticProps = async () => {
+//   //ログインIDでレビュー取得関数実行
+  
+//   const reviewsData = await axios.get<Review[]>(
+//     `${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/myreview_list/`,{
+//       withCredentials: true,
+//     }
+//   )
+//   // const reviewsData = await axios.get<Review[]>(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review_list/${itemId}`, {
+//   //   withCredentials: true, 
+//   // })
+//   console.log("reviewData"+reviewsData)
+
+//   // itemデータをpropsとしてページコンポーネントに渡す
 //   return {
-//     paths,
-//     fallback: false,
+//     props: {
+//       reviews: reviewsData.data
+//     },
+//     revalidate: 8,
 //   }
 // }
-
-export const getStaticProps: GetStaticProps = async () => {
-  //ログインIDでレビュー取得関数実行
-  
-  const reviewsData = await axios.get<Review[]>(
-    `${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/myreview_list/`,{
-      withCredentials: true,
-    }
-  )
-  // const reviewsData = await axios.get<Review[]>(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/review_list/${itemId}`, {
-  //   withCredentials: true, 
-  // })
-  console.log("reviewData"+reviewsData)
-
-  // itemデータをpropsとしてページコンポーネントに渡す
-  return {
-    props: {
-      reviews: reviewsData.data
-    },
-    revalidate: 8,
-  }
-}

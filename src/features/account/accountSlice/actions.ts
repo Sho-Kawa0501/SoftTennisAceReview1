@@ -9,7 +9,6 @@ import { LoginUserInfo } from 'types/types'
 import { handleAxiosError } from 'lib/utils/HandleAxiosError'
 import { Credential,ProfileSubmitData } from 'types/accountTypes'
 
-
 axios.defaults.withCredentials = true
 
 type AsyncThunkConfig = {
@@ -21,23 +20,6 @@ type AsyncThunkConfig = {
 }
 
 type AuthResponse = LoginUserInfo | { error: string } | string
-
-//使ってない
-export const fetchSession = createAsyncThunk(
-  'account/fetchSession',
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/auth/session/`, 
-      )
-      
-      const data = await response.data
-      return data
-    } catch (error) {
-      return rejectWithValue(error.message)
-    }
-  }
-)
 
 export const fetchAsyncLogin = createAsyncThunk<
   { data: Credential },
@@ -65,7 +47,6 @@ export const fetchAsyncLogin = createAsyncThunk<
   }
 )
 
-
 export const fetchAsyncRegister = createAsyncThunk<
   { data: Credential },
   Credential,
@@ -89,6 +70,7 @@ export const fetchAsyncRegister = createAsyncThunk<
   }
 })
 
+//ログインしているなら、ログインユーザーの情報が返ってくる
 export const fetchAsyncCheckAuth = createAsyncThunk<
   AuthResponse,
   void
@@ -96,7 +78,7 @@ export const fetchAsyncCheckAuth = createAsyncThunk<
   'account/CheckAuth',
   async (_,{ rejectWithValue }) => {
   try {
-    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/auth/loginuser-information/`,{
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/auth/check-auth/`,{
       withCredentials: true,
     })
     return res.data
@@ -105,7 +87,7 @@ export const fetchAsyncCheckAuth = createAsyncThunk<
   }
 })
 
-export const fetchAsyncRefreshToken = createAsyncThunk<
+export const fetchAsyncGetRefreshToken = createAsyncThunk<
   {refresh: string },
   void,
   AsyncThunkConfig
@@ -113,7 +95,7 @@ export const fetchAsyncRefreshToken = createAsyncThunk<
   'account/Refresh',
   async (_,{rejectWithValue}) => {
   try {
-    const res = await axios.get<{refresh:string}>(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/auth/refresh-token/`,{
+    const res = await axios.get<{refresh:string}>(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/auth/get-refresh-token/`,{
       withCredentials: true,
   })
   return res.data
@@ -124,16 +106,16 @@ export const fetchAsyncRefreshToken = createAsyncThunk<
 
 
 //newToken 取得したrefreshtokenとcsrftokenを使ってアクセストークンを新発行
-export const fetchAsyncNewAccessToken = createAsyncThunk<
+export const fetchAsyncCreateAccessToken = createAsyncThunk<
   { data: string },
   { refresh: string; csrfToken: string },
   AsyncThunkConfig
 >(
-  'account/NewAccessToken',
+  'account/CreateAccessToken',
   async ({ refresh, csrfToken }, { rejectWithValue }) => {
     try {
       const res = await axios.post<{ data: string }>(
-        `${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/auth/token/refresh/`,
+        `${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/auth/create-accesstoken/`,
           {refresh:refresh},
         {
           withCredentials: true,

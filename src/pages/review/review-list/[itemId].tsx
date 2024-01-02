@@ -60,16 +60,9 @@ export const ReviewListPage: NextPage<ReviewPageProps> = ({itemId,reviews: ssgRe
     mutate()
   },[isDeleteReview])
   
-  
   const reviews = swrReviews || ssgReviews
 
-  // useEffect (() => {
-  //   console.log("mutate((()))")
-  //   mutate()
-  // },[reviews])
-
   console.log("SWRreview"+swrReviews)
-
 
   const [loginUserReview, otherUserReviews] = useMemo((): [Review | undefined, Review[] | undefined] => {
     if (loginUser && isAuthenticated) {
@@ -142,7 +135,7 @@ export const ReviewListPage: NextPage<ReviewPageProps> = ({itemId,reviews: ssgRe
               <Link href={`/review/new?itemId=${itemId}`}>
                 <div className="inline-flex items-center border rounded-md p-4 hover:bg-gray-100 hover:scale-110 transition-transform duration-300">
                   <PencilAltIcon className="h-7 w-7"/>
-                  <span className="ttext-base sm:text-2xl ml-2">新規投稿</span>
+                  <span className="text-base sm:text-2xl ml-2">新規投稿</span>
                 </div>
               </Link>
             </div>

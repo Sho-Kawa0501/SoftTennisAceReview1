@@ -3,7 +3,7 @@ import { FaStar } from "react-icons/fa6"
 import { FaRegStar } from "react-icons/fa6"
 
 type FavoriteButtonProps = {
-  isFavorite: boolean
+  isFavorite: boolean | undefined
   onClick: () => void
   count: number | undefined
   disabled: boolean
@@ -22,14 +22,22 @@ const FavoriteButton = React.memo(({ isFavorite, onClick, count,disabled }: Favo
       onClick={handleClick}
       disabled={disabled}
     >
-      {isFavorite ? (
-        <FaStar className="text-yellow-500" size={20} />
-      ) : (
-        <FaRegStar className="text-gray-500" size={20} />
+    {isFavorite === undefined ? (
+          <p>loading now</p> // isFavorite が undefined のときに "loading now" を表示
+        ) : isFavorite ? (
+          <FaStar className="text-yellow-500" size={20} />
+        ) : (
+          <FaRegStar className="text-gray-500" size={20} />
+        )}
+      </button>
+      {isFavorite !== undefined && (
+        <>
+          <span>いいね</span>
+          <span>{count !== undefined ? Math.max(count, 0) : '...'}</span>
+        </>
       )}
-    </button>
-    <span>いいね</span>
-    <span>{count}</span>
+    {/* <span>いいね</span>
+    <span>{count}</span> */}
   </>
   )
 })

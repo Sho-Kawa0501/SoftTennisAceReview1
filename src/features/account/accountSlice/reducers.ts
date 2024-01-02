@@ -98,10 +98,6 @@ export const accountSlice = createSlice({
   },
   
   extraReducers: (builder) => {
-    builder.addCase(actions.fetchSession.fulfilled, 
-      (state, action) => {
-        state.isAuthenticated = action.payload.isAuthenticated
-    })
     builder.addCase(actions.fetchAsyncLogin.fulfilled,
       (state) => {
         state.isAuthenticated = true
