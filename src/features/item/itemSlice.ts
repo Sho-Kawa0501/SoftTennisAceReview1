@@ -17,8 +17,12 @@ export const fetchAsyncItemList = createAsyncThunk(
       withCredentials: true,
   })
   return res.data
-  } catch(error:unknown) {
-    return rejectWithValue(error)
+  } catch(error:any) {
+    if (error.response.data) {
+      return rejectWithValue(error.response.data)
+    } else {
+      return rejectWithValue(error)
+    }
   }
 })
 

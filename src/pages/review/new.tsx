@@ -54,9 +54,9 @@ const NewReview = () => {
     <>
     <div>
       <Head>
-        <title>新規投稿</title>
+        <title>レビュー投稿</title>
       </Head>
-      <div className="text-center text-2xl mb-5">新規投稿</div>
+      <div className="text-center text-2xl mb-5">レビュー投稿</div>
       <FormProvider {...methods}>
         <ReviewForm onSubmit={onSubmit} />
       </FormProvider>

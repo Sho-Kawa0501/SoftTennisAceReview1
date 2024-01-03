@@ -41,8 +41,12 @@ export const fetchAsyncLogin = createAsyncThunk<
         }
       )
       return res.data
-    } catch (error:unknown) {
-      return rejectWithValue(error)
+    } catch (error:any) {
+      if (error.response.data) {
+        return rejectWithValue(error.response.data)
+      } else {
+        return rejectWithValue(error)
+      }
     }
   }
 )
@@ -55,7 +59,8 @@ export const fetchAsyncRegister = createAsyncThunk<
   'account/Register',
   async (auth:Credential,{ rejectWithValue }) => {
     try {
-    const res = await axios.post<{ data: Credential }>(`${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/auth/register/`, 
+    const res = await axios.post<{ data: Credential }>(
+      `${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/auth/register/`, 
       auth,
       {
       headers: {
@@ -65,8 +70,13 @@ export const fetchAsyncRegister = createAsyncThunk<
     },
   )
     return res.data
-  } catch(error:unknown) {
-    return rejectWithValue(error)
+  } catch(error:any) {
+    console.log("erd"+error.response.data)
+    if (error.response.data) {
+      return rejectWithValue(error.response.data)
+    } else {
+      return rejectWithValue(error)
+    }
   }
 })
 
@@ -82,8 +92,12 @@ export const fetchAsyncCheckAuth = createAsyncThunk<
       withCredentials: true,
     })
     return res.data
-  } catch(error:unknown) {
-    return rejectWithValue(error)
+  } catch(error:any) {
+    if (error.response.data) {
+      return rejectWithValue(error.response.data)
+    } else {
+      return rejectWithValue(error)
+    }
   }
 })
 
@@ -99,8 +113,12 @@ export const fetchAsyncGetRefreshToken = createAsyncThunk<
       withCredentials: true,
   })
   return res.data
-  } catch(error:unknown) {
-    return rejectWithValue(error)
+  } catch(error:any) {
+    if (error.response.data) {
+      return rejectWithValue(error.response.data)
+    } else {
+      return rejectWithValue(error)
+    }
   }
 })
 
@@ -126,8 +144,12 @@ export const fetchAsyncCreateAccessToken = createAsyncThunk<
         }
       )
       return res.data
-    } catch (error: unknown) {
-      return rejectWithValue(error)
+    } catch (error: any) {
+      if (error.response.data) {
+        return rejectWithValue(error.response.data)
+      } else {
+        return rejectWithValue(error)
+      }
     }
   }
 )
@@ -166,8 +188,12 @@ export const fetchAsyncLogout = createAsyncThunk<
       },
     )
     return res.data
-    } catch (error:unknown) {
-      return rejectWithValue(error)
+    } catch (error:any) {
+      if (error.response.data) {
+        return rejectWithValue(error.response.data)
+      } else {
+        return rejectWithValue(error)
+      }
     }
   }
 )
@@ -190,8 +216,12 @@ export const fetchAsyncDeleteUser = createAsyncThunk<
       },
     )
     return res.data
-    } catch (error:unknown) {
-      return rejectWithValue(error)
+    } catch (error:any) {
+      if (error.response.data) {
+        return rejectWithValue(error.response.data)
+      } else {
+        return rejectWithValue(error)
+      }
     }
   }
 )

@@ -15,7 +15,6 @@ interface EditReview {
   image: File | null
 }
 
-
 type AsyncThunkConfig = {
   state?: unknown
   dispatch?: AppDispatch
@@ -47,8 +46,12 @@ export const fetchAsyncMyReview = createAsyncThunk<
       }
     )
     return response.data
-  } catch(error) {
-    return rejectWithValue(error)
+  } catch(error:any) {
+    if (error.response.data) {
+      return rejectWithValue(error.response.data)
+    } else {
+      return rejectWithValue(error)
+    }
   }
 }
 )
@@ -77,8 +80,12 @@ export const fetchAsyncNewReview = createAsyncThunk<
         }
       )
       return response.data
-    } catch (error:unknown) {
-      return rejectWithValue(error)
+    } catch (error:any) {
+      if (error.response.data) {
+        return rejectWithValue(error.response.data)
+      } else {
+        return rejectWithValue(error)
+      }
     }
   }
 )
@@ -107,9 +114,13 @@ export const fetchAsyncEditReview = createAsyncThunk<
         }
       )
       return response.data
-    } catch (error:unknown) {
+    } catch (error:any) {
       console.log("handleAsyncThunkAxiosError")
-      return rejectWithValue(error)
+      if (error.response.data) {
+        return rejectWithValue(error.response.data)
+      } else {
+        return rejectWithValue(error)
+      }
     }
   }
 )
@@ -130,8 +141,12 @@ export const fetchAsyncDeleteReview = createAsyncThunk<
         withCredentials: true,
       }
     )
-  } catch(error:unknown) {
-    return rejectWithValue(error)
+  } catch(error:any) {
+    if (error.response.data) {
+      return rejectWithValue(error.response.data)
+    } else {
+      return rejectWithValue(error)
+    }
   }}
 )
 
@@ -160,8 +175,12 @@ export const fetchAsyncToggleFavorite = createAsyncThunk<
         throw new Error('Failed to create favorite')
       }
       return true
-    } catch (error:unknown) {
-      return rejectWithValue(error)
+    } catch (error:any) {
+      if (error.response.data) {
+        return rejectWithValue(error.response.data)
+      } else {
+        return rejectWithValue(error)
+      }
     }
   },
 )

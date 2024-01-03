@@ -23,6 +23,8 @@ import AlertMessage from 'components/Atoms/AlertMessage'
 import AppButton from 'components/Atoms/AppButton'
 import useNavigation from 'hooks/utils/useNavigation'
 import DeleteReviewButton from 'components/Atoms/DeleteReviewButton'
+import { selectIsButtonDisabled } from 'features/app/appSlice'
+
 
 // type ReviewPageProps = InferGetStaticPropsType<typeof getStaticProps>
 
@@ -31,6 +33,7 @@ const MyReviewList= () => {
   const dispatch: AppDispatch = useDispatch()
   // const myReview:Review[] = useSelector(selectMyReviews)
   const { showMessage } = useAlertReviewMessage()
+  const isButtonDisabled = useSelector(selectIsButtonDisabled)
   const { navigateTo } = useNavigation()
   const handleMyPage = () => navigateTo("/account/mypage/")
 
@@ -55,8 +58,11 @@ const MyReviewList= () => {
             <MyReviewCard review={review} />     
             <div>
               <Link href={`/review/${review.id}/edit`}>
-                編集
+                <AppButton type={"submit"} color="blue" disabled={isButtonDisabled}>
+                  編集                
+                </AppButton>
               </Link>
+
               <DeleteReviewButton reviewId={review.id} />
             </div>
           </div>

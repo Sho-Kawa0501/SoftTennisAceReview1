@@ -1,15 +1,16 @@
-import React,{ButtonHTMLAttributes} from 'react'
+import React,{ButtonHTMLAttributes,ReactNode} from 'react'
 
 type AppSubmitButtonProps = {
-  text: string
+  text?: string
   onClick?: () => void
   type:ButtonHTMLAttributes<HTMLButtonElement>['type']
   color:string
   className?:string
   disabled?: boolean
+  children?:ReactNode
 }
 
-const AppButton = React.memo(({ text,onClick,type,color,className,disabled}:AppSubmitButtonProps) => {
+const AppButton = React.memo(({ text,onClick,type,color,className,disabled,children}:AppSubmitButtonProps) => {
   const backgroundColors = {
     red: 'bg-red-500',
     green: 'bg-green-500',
@@ -27,6 +28,7 @@ const AppButton = React.memo(({ text,onClick,type,color,className,disabled}:AppS
       type={type}
       onClick={onClick}>
       {text}
+      {children} 
     </button>
   )
 })

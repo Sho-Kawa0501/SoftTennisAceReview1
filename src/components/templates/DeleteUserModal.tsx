@@ -46,9 +46,9 @@ const DeleteUserModal = () => {
         shouldCloseOnOverlayClick={false}
         shouldFocusAfterRender={true}
       >
-         <h2>この操作は取り消せません。本当に退会しますか？</h2>
-         <div className="flex justify-center">
-          <AppButton text="削除する" type={"submit"} color="red" onClick={handleClick} />
+        <h2 className="text-center">この操作は取り消せません。本当に退会しますか？</h2>
+        <div className="flex justify-center">
+          <AppButton text="退会する" type={"submit"} color="red" onClick={handleClick} />
           <AppButton text="戻る" type="button" onClick={closeModal} color="blue" />
         </div>
       </Modal>

@@ -1,6 +1,8 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch,useSelector } from 'react-redux';
 import { setSelectedReviewId, setActiveModal } from 'features/app/appSlice';
+import AppButton from './AppButton'
+import { selectIsButtonDisabled } from 'features/app/appSlice';
 
 type DeleteReviewButtonProps = {
   reviewId: string;
@@ -8,6 +10,7 @@ type DeleteReviewButtonProps = {
 
 const DeleteReviewButton: React.FC<DeleteReviewButtonProps> = ({ reviewId }) => {
   const dispatch = useDispatch();
+  const isButtonDisabled = useSelector(selectIsButtonDisabled)
 
   const openModal = () => {
     dispatch(setSelectedReviewId(reviewId));
@@ -15,9 +18,10 @@ const DeleteReviewButton: React.FC<DeleteReviewButtonProps> = ({ reviewId }) => 
   };
 
   return (
-    <button onClick={openModal} className="text-red-600 hover:text-red-800">
+    <AppButton onClick={openModal} type={"button"} color="red" disabled={isButtonDisabled}>
       削除
-    </button>
+    </AppButton>
+    
   );
 };
 

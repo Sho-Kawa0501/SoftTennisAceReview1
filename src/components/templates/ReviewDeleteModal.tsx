@@ -8,6 +8,7 @@ import { fetchAsyncDeleteReview } from 'features/review/slice/actions'
 import { setActiveModal, selectActiveModal,selectSelectedReviewId } from 'features/app/appSlice'
 import AppButton from 'components/Atoms/AppButton'
 import { setSelectedReviewId } from 'features/app/appSlice'
+import { setIsButtonDisabled } from 'features/app/appSlice'
 
 
 const ReviewDeleteModal = () => {
@@ -18,6 +19,7 @@ const ReviewDeleteModal = () => {
 
   const closeModal = () => {
     dispatch(setActiveModal(null))
+    dispatch(setIsButtonDisabled(false))
   }
 
   const deleteReview = async () => {
@@ -43,7 +45,7 @@ const ReviewDeleteModal = () => {
         shouldCloseOnOverlayClick={false}
         shouldFocusAfterRender={true}
       >
-        <h2>この操作は取り消せません。本当にレビューを削除しますか？</h2>
+        <h2 className="text-center">この操作は取り消せません。本当にレビューを削除しますか？</h2>
         <div className="flex justify-center">
           <AppButton text="削除する" type={"submit"} color="red" onClick={handleClick} />
           <AppButton text="戻る" type="button" onClick={closeModal} color="blue" />

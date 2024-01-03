@@ -48,6 +48,7 @@ const ProfileEdit = () => {
       <Head>
         <title>プロフィール編集</title>
       </Head>
+      <div className="text-center text-2xl mb-5">プロフィール編集</div>
       <AccountProfileForm onSubmit={onSubmit} />
     </>
   )

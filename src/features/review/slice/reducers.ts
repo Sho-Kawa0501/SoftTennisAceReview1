@@ -63,7 +63,7 @@ export const reviewSlice = createSlice({
     )
     builder.addCase(actions.fetchAsyncMyReview.rejected, 
       (state,action) => {
-        handleActionError(state, action, 'マイレビュー取得に失敗しました。','reviewError')
+        handleActionError(state, action, 'マイレビュー取得に失敗しました。再度時間を空けてからお試しください。','reviewError')
     })
     builder.addCase(actions.fetchAsyncNewReview.fulfilled,
       (state, action: PayloadAction<Review>) => {
@@ -74,7 +74,7 @@ export const reviewSlice = createSlice({
       })
     builder.addCase(actions.fetchAsyncNewReview.rejected, 
       (state,action) => {
-        handleActionError(state, action, 'レビュー作成に失敗しました。','reviewError')
+        handleActionError(state, action, 'レビュー作成に失敗しました。再度時間を空けてからお試しください。','reviewError')
     })
     builder.addCase(actions.fetchAsyncEditReview.fulfilled,
       (state, action:PayloadAction<Review>) => {
@@ -85,7 +85,7 @@ export const reviewSlice = createSlice({
       })
     builder.addCase(actions.fetchAsyncEditReview.rejected, 
       (state,action) => {
-        handleActionError(state, action, 'レビュー編集に失敗しました','reviewError')
+        handleActionError(state, action, 'レビュー編集に失敗しました。再度時間を空けてからお試しください。','reviewError')
     })
     builder.addCase(actions.fetchAsyncDeleteReview.fulfilled,
       (state, action) => {

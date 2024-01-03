@@ -35,6 +35,7 @@ import { fetcherWithCredential } from 'lib/utils'
 import DeleteReviewButton from 'components/Atoms/DeleteReviewButton'
 import { checkUserAuthentication } from 'pages/api/checkAuth'
 import { selectIsDeleteReview } from 'features/review/slice'
+import { selectIsButtonDisabled } from 'features/app/appSlice'
 
 type ReviewPageProps = InferGetStaticPropsType<typeof getStaticProps>
 
@@ -48,6 +49,7 @@ export const ReviewListPage: NextPage<ReviewPageProps> = ({itemId,reviews: ssgRe
   const isAuthenticated = useSelector(selectIsAuthenticated)
   const items = useSelector(selectItems)
   const isDeleteReview = useSelector(selectIsDeleteReview)
+  const isButtonDisabled = useSelector(selectIsButtonDisabled)
   const itemDetail = itemId ? items.find(item => item.id === itemId) : null
   console.log("itemdetail"+itemDetail)
 
@@ -120,9 +122,11 @@ export const ReviewListPage: NextPage<ReviewPageProps> = ({itemId,reviews: ssgRe
               <ReviewCard review={loginUserReview} />
               <div>
                 {loginUser && loginUser.id === loginUserReview.user.id && (
-                  <div className="text-sm flex space-x-4">
+                  <div className="text-sm flex space-x-1">
                     <Link href={`/review/${loginUserReview.id}/edit?itemId=${itemId}`}>
-                      編集
+                      <AppButton type={"submit"} color="blue" disabled={isButtonDisabled}>
+                        編集                
+                      </AppButton>
                     </Link>
                     <DeleteReviewButton reviewId={loginUserReview.id} />
                   </div>

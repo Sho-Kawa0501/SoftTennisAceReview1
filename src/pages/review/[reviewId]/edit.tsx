@@ -70,7 +70,7 @@ const EditReview = () => {
         <Head>
           <title>レビュー編集</title>
         </Head>
-        <div className="text-center text-2xl mb-5">投稿編集</div>
+        <div className="text-center text-2xl mb-5">レビュー編集</div>
         <ReviewForm onSubmit={onSubmit} reviewId={reviewId} />
       </div>
     </>

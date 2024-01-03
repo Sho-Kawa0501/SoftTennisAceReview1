@@ -21,7 +21,6 @@ const FavoriteReviewsPage = () => {
   const review = isAuthenticated ? favoriteReviewData.review : null
   const { navigateTo } = useNavigation()
   const handleMyPage = () => navigateTo("/account/mypage/")
-  
 
   return (
     <>
