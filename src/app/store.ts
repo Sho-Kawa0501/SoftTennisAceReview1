@@ -56,7 +56,7 @@ export type AsyncThunkConfig = {
   dispatch?: ThunkDispatch<unknown, unknown, AnyAction>
   extra?: unknown
   serializedErrorType?: unknown
-  rejectWithValue: (value: unknown) => PayloadAction<unknown>
+  rejectWithValue: (value: any) => PayloadAction<any>
 }
 
 //型定義  typeofで型を指定

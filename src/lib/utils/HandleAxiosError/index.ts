@@ -1,6 +1,6 @@
 import axios from "axios"
 
-export const handleAxiosError = (error: unknown): string => {
+export const handleAxiosError = (error: any): string => {
   if (axios.isAxiosError(error)) {
     if (error.response) {
       return error.response.data.error

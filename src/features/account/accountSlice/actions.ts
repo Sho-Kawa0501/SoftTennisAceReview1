@@ -15,7 +15,7 @@ type AsyncThunkConfig = {
   state?: unknown
   dispatch?: AppDispatch
   extra?: unknown
-  rejectValue?: unknown
+  rejectValue?: any
   serializedErrorType?: unknown
 }
 
@@ -164,7 +164,7 @@ export const fetchCsrfToken = async (): Promise<string> => {
       }
     )
     return res.data.csrfToken
-  } catch (error:unknown) {
+  } catch (error:any) {
     return handleAxiosError(error)
   }
 }
