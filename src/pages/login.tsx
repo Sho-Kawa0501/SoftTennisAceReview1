@@ -45,6 +45,7 @@ const Login = () => {
       <Head>
         <title>ログイン</title>
       </Head>
+      <div className="text-center text-2xl mb-5">ログイン</div>
       <AccountSinginForm onSubmit={onSubmit} />
     </>
   )

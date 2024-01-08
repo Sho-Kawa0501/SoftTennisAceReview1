@@ -42,13 +42,14 @@ const EditReview = () => {
     if (!editData || !reviewId) {
       return
     }
-   
+    
     const submitData:EditReviewSubmitData = {
       reviewId: reviewId,
       title: editData.title,
       content: editData.content,
       image: editData.image,
     }
+    console.log("reviewData"+editData.image)
     dispatch(setIsButtonDisabled(true))
     try {
       const result = await dispatch(fetchAsyncEditReview(submitData))

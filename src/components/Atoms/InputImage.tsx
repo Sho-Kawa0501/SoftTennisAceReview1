@@ -8,11 +8,11 @@ export const InputImage:ForwardRefRenderFunction<HTMLInputElement,InputImageProp
 
   const fileInputRef = useRef<HTMLInputElement>(null)
   const handleButtonClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
-    if (fileInputRef.current) {
-      fileInputRef.current.click()
+    e.preventDefault();
+    if (ref && 'current' in ref) {
+      ref.current?.click();
     }
-  },[])
+  },[ref])
   
   return (
     <div className="mb-4">
@@ -21,7 +21,7 @@ export const InputImage:ForwardRefRenderFunction<HTMLInputElement,InputImageProp
         type="file"
         accept="image/*"
         onChange={onChange}
-        ref={fileInputRef}
+        ref={ref}
         className="hidden cursor-pointer border border-gray-300 hover:bg-gray-100 text-gray-800 py-2 px-4 rounded"
       />
       </div>

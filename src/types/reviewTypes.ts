@@ -6,10 +6,10 @@ export interface EditReviewSubmitData {
 }
 
 export interface NewReviewSubmitData {
-  itemId: number,
-  title:string,
-  content:string,
-  image:File | null,
+  itemId: number
+  title:string
+  content:string
+  image:File | null
 }
 
 export interface ReviewInputData {

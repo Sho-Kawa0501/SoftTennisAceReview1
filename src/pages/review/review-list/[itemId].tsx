@@ -39,11 +39,6 @@ import { selectIsButtonDisabled } from 'features/app/appSlice'
 
 type ReviewPageProps = InferGetStaticPropsType<typeof getStaticProps>
 
-//アイテム詳細をreduxで取得
-//SSGでレビューを全取得する関数、APIを実行する
-//以下の2つから選択
-//マイレビューをUserReviewモデルからアイテムidとユーザーidを使って絞り込んで取得する関数、APIを作成する
-//取得したすべてのレビューをfilterで回し、マイレビューを取得
 export const ReviewListPage: NextPage<ReviewPageProps> = ({itemId,reviews: ssgReviews}) => {
   const loginUser = useSelector(selectLoginUser)
   const isAuthenticated = useSelector(selectIsAuthenticated)
@@ -59,6 +54,7 @@ export const ReviewListPage: NextPage<ReviewPageProps> = ({itemId,reviews: ssgRe
     (url: string) => fetcherWithCredential(url,'get'))
 
   useEffect(() => {
+    console.log("after delete")
     mutate()
   },[isDeleteReview])
   
@@ -70,7 +66,7 @@ export const ReviewListPage: NextPage<ReviewPageProps> = ({itemId,reviews: ssgRe
     if (loginUser && isAuthenticated) {
       // ログインしている場合、reduceを使用してレビューを分類する
       return reviews.reduce(
-        ([userReview, others], review) => {
+        ([userReview, others]: any, review: { user: { id: string } }) => {
           if (review.user.id === loginUser.id) {
             return [review, others]
           }
@@ -79,7 +75,6 @@ export const ReviewListPage: NextPage<ReviewPageProps> = ({itemId,reviews: ssgRe
         [undefined, []]
       )
     } else {
-      // ログインしていない場合、全レビューをその他のレビューとして扱う
       return [undefined, reviews]
     }
   }, [reviews, loginUser, isAuthenticated])
@@ -176,9 +171,7 @@ export const getStaticProps: GetStaticProps = async ({ params } :GetStaticPropsC
       withCredentials: true, 
     }
   )
-  console.log("reviewData"+reviewsData.data)
-
-  // itemデータをpropsとしてページコンポーネントに渡す
+  
   return {
     props: {
       itemId:itemId,

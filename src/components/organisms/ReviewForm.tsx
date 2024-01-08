@@ -1,4 +1,4 @@
-import React, { useState,useEffect,useCallback,useMemo } from 'react'
+import React, { useState,useEffect,useCallback,useMemo,useRef } from 'react'
 import { useSelector} from 'react-redux'
 import { useRouter } from 'next/router'
 import { useForm,FormProvider,SubmitHandler } from 'react-hook-form'
@@ -46,11 +46,12 @@ const ReviewForm = ({ onSubmit,reviewId }: ReviewFormProps,) => {
   const [imagePreviewUrl, setImagePreviewUrl] = 
     useState<string | null>(isMyReview ? isMyReview.image : null)
   const [image, setImage] = useState<File | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const methods = useForm<ReviewInputData>({
     defaultValues: {
       title: isMyReview?.title || '',
       content: isMyReview?.content || '',
-      image: imagePreviewUrl,
+      image: imagePreviewUrl || null,
     }
   })
   
@@ -58,15 +59,24 @@ const ReviewForm = ({ onSubmit,reviewId }: ReviewFormProps,) => {
   useEffect(() => {
     setValue("title", isMyReview?.title || '')
     setValue("content", isMyReview?.content || '')
-    setValue("image",isMyReview?.image || '', )
+    setImagePreviewUrl(isMyReview?.image || '')
   }, [isMyReview,])
+
+  const resetImage = () => {
+    setImage(null);
+    setImagePreviewUrl("")
+    setValue('image', "")
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  }
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null
     setImage(file)
     if (file) {
       convertFileToDataURL(file, dataUrl => {
-        setImagePreviewUrl(dataUrl) // 画像をstring型としてsetImagePreviewUrlに設定
+        setImagePreviewUrl(dataUrl)
         setValue('image', dataUrl)
       })
     }
@@ -109,13 +119,19 @@ const ReviewForm = ({ onSubmit,reviewId }: ReviewFormProps,) => {
         <div className="mb-1">画像</div>
         <InputImage 
           onChange={handleImageChange}
+          ref={fileInputRef}
         />
+        <button type="button" onClick={resetImage}>画像をリセットする</button>
         {errors.image && 
           <InputErrorMessage errorMessage={errors.image.message || null} />
         }
       </div>
-        <ImagePreview />
+      <ImagePreview />
+        
       <div className="mb-4">
+        {errors.content && 
+          <InputErrorMessage errorMessage={errors.content.message || null} />
+        }
         <div className="mb-1">説明</div>
           <TextArea
             placeholder="説明"
@@ -127,9 +143,6 @@ const ReviewForm = ({ onSubmit,reviewId }: ReviewFormProps,) => {
               },
             })}
           />
-          {errors.content && 
-            <InputErrorMessage errorMessage={errors.content.message || null} />
-          }
         </div>
       <div className="flex justify-center">
         <div>

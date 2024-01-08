@@ -1,4 +1,4 @@
-import React,{ useState,useEffect,useCallback,} from 'react'
+import React,{ useState,useEffect,useCallback,useRef} from 'react'
 import { useForm,FormProvider,useFormContext,SubmitHandler } from 'react-hook-form'
 import { useSelector} from 'react-redux'
 import TextInput from '../Atoms/TextInput'
@@ -27,46 +27,48 @@ interface AccountProfileFormProps {
   onSubmit: SubmitHandler<SubmitFormData>
 }
 
-
 const AccountProfileForm = ({onSubmit}:AccountProfileFormProps) => {
-  const dispatch: AppDispatch = useDispatch()
-  useEffect(() => {
-    dispatch(resetIsAuthErrorMessage())
-  },[])
   const isButtonDisabled = useSelector(selectIsButtonDisabled)
   const authError = useSelector(selectAuthError)
   const loginUser = useSelector(selectLoginUser)
-  //ImagePreviewに送る画像データ
   const loginUserImage = `${loginUser.image}`
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(loginUserImage)
-  //保存するデータ
   const [image, setImage] = useState<File | null>(null)
+  console.log("image" +image)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const methods = useForm<ProfileFormData>({
     defaultValues: {
       name: loginUser.name,
-      image: imagePreviewUrl
+      image: loginUserImage || null
     },
   })
   const { register, handleSubmit, formState: { errors },setValue } = methods
   const { handleBack } = useNavigation()
 
   useEffect(() => {
-    setImagePreviewUrl(loginUserImage)
-  }, [loginUser,loginUserImage])
-  useEffect(() => {
-    setValue("image", imagePreviewUrl)
-  }, [imagePreviewUrl])
+    setImagePreviewUrl(null)
+  }, [loginUserImage,])
+
+  const resetImage = () => {
+    setImage(null);
+    setImagePreviewUrl(null)
+    setValue('image', null)
+    
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+  }
   
-  const handleImageChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null
     setImage(file)
     if (file) {
       convertFileToDataURL(file, dataUrl => {
-        setImagePreviewUrl(dataUrl) // 画像をstring型としてsetImagePreviewUrlに設定
+        setImagePreviewUrl(dataUrl) 
         setValue('image', dataUrl)
       })
     }
-  },[])
+  }
 
 return (
   <FormProvider {...methods}>
@@ -83,7 +85,6 @@ return (
       <div className="mb-1">
         名前
       </div>
-      
       <TextInput
         label="ニックネーム"
         type="text"
@@ -99,11 +100,13 @@ return (
     </div>
     <div className="mb-4">
       <div className="mb-1">プロフィール画像</div>
-      <InputImage onChange={handleImageChange} />
-      
-    {loginUser.image && (
+      <InputImage 
+        onChange={handleImageChange}
+        ref={fileInputRef}
+      />
+      <button type="button" onClick={resetImage}>画像をリセットする</button>
       <ImagePreview />
-    )}
+  
       
     </div>  
     <div className="flex justify-center">

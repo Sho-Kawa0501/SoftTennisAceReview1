@@ -27,14 +27,16 @@ const MyReviewCard = React.memo(({review} :ReviewCardProps) => {
         </div>
         <div className="flex flex-col md:flex-row">
           <div className="mb-2 md:mb-0 md:mr-4 flex-shrink-0">
-            <Image                                     
-              src={review.image}
-              alt={review.title}
-              className="object-cover rounded-lg"
-              width={150} 
-              height={150}
-              priority
-            />
+            {review.image && (
+              <Image                                     
+                src={review.image}
+                alt={review.title}
+                className="object-cover rounded-lg"
+                width={150} 
+                height={150}
+                priority
+              />
+            )}
           </div>
           <div>
             <div className="text-base sm:test-sm xs:text-xs">{review.is_edited ? "(編集済み)" : ""}</div>
@@ -46,7 +48,6 @@ const MyReviewCard = React.memo(({review} :ReviewCardProps) => {
           <FavoriteReview 
             reviewId={review.id}
             userId={loginUser.id}
-            // favoriteCounts={review.favorites_count}
           />
         )}
       </div>

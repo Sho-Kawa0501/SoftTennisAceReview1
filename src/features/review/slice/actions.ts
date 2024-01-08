@@ -56,6 +56,34 @@ export const fetchAsyncMyReview = createAsyncThunk<
 }
 )
 
+export const fetchAsyncSingleMyReview = createAsyncThunk<
+  Review,
+  void,
+  AsyncThunkConfig
+>(
+  'review/MyReview',
+  async (_,{ rejectWithValue }) => {
+    try {
+    const response = await axios.get<Review>(
+      `${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/myreview_list/reviewId/`,
+      {
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+        withCredentials: true,
+      }
+    )
+    return response.data
+  } catch(error:any) {
+    if (error.response.data) {
+      return rejectWithValue(error.response.data)
+    } else {
+      return rejectWithValue(error)
+    }
+  }
+}
+)
+
 export const fetchAsyncNewReview = createAsyncThunk<
   Review,
   NewReviewSubmitData,
@@ -100,12 +128,20 @@ export const fetchAsyncEditReview = createAsyncThunk<
     const uploadData = new FormData()
     uploadData.append("title", editReview.title)
     uploadData.append("content", editReview.content)
-    editReview.image && uploadData.append("image", editReview.image)
+    // editReview.image && uploadData.append("image", editReview.image)
+    if (editReview.image !== null) {
+      // 画像がある場合、その画像を追加
+      editReview.image && uploadData.append("image", editReview.image);
+    } else {
+      // 画像がnullの場合、空の文字列を追加して画像を削除することを示す
+      uploadData.append("image", "");
+    }
     
     try {
       const response = await axios.patch<Review>(
         `${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/reviews/${editReview.reviewId}/`,
         uploadData,
+        
         {
           headers: {
             'content-type': 'multipart/form-data',
@@ -113,6 +149,7 @@ export const fetchAsyncEditReview = createAsyncThunk<
           withCredentials: true,
         }
       )
+      console.log("handleAsyncThunkAxios"+response.data.image)
       return response.data
     } catch (error:any) {
       console.log("handleAsyncThunkAxiosError")

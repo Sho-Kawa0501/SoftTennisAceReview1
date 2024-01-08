@@ -14,7 +14,6 @@ type InitialState = {
   isEditReview:boolean,
   reviewError:string | null,
   isDeleteReview: boolean,
-  
 }
 
 const initialState:InitialState = {
@@ -30,6 +29,7 @@ export const reviewSlice = createSlice({
   name: 'review',
   initialState,
   reducers: {
+    
     setIsNewReview(state) {
       state.isNewReview = true
     },
@@ -63,7 +63,7 @@ export const reviewSlice = createSlice({
     )
     builder.addCase(actions.fetchAsyncMyReview.rejected, 
       (state,action) => {
-        handleActionError(state, action, 'マイレビュー取得に失敗しました。再度時間を空けてからお試しください。','reviewError')
+        handleActionError(state, action, 'レビュー取得に失敗しました。再度時間を空けてからお試しください。','reviewError')
     })
     builder.addCase(actions.fetchAsyncNewReview.fulfilled,
       (state, action: PayloadAction<Review>) => {

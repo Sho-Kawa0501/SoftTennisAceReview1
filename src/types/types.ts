@@ -2,7 +2,7 @@ export interface Review {
   id:string,
   title:string,
   content:string,
-  image: string,
+  image: string | null,
   favorites_count:number,
   is_edited:boolean,
   user:{

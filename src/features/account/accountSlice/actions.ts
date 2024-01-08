@@ -235,9 +235,23 @@ export const fetchAsyncEditProfile = createAsyncThunk<
   async (newProfile:ProfileSubmitData,{rejectWithValue }) => {
     const uploadData = new FormData()
     uploadData.append("name", newProfile.name)
-    newProfile.image && uploadData.append("image", newProfile.image)
+    // newProfile.image && uploadData.append("image", newProfile.image)
+    // if (newProfile.image !== null) {
+    //   // 画像がある場合、その画像を追加
+    //   newProfile.image && uploadData.append("image", newProfile.image);
+    // } else {
+    //   // 画像がnullの場合、空の文字列を追加して画像を削除することを示す
+    //   uploadData.append("image", "");
+    // }
+    
+    if (newProfile.image !== null) {
+      uploadData.append("image", newProfile.image);
+    } else {
+      uploadData.append("image", "") // 空のファイルを追加して明示的に画像をリセット
+    }
+
     try {
-      const res = await axios.patch(
+      const res = await axios.patch<ProfileSubmitData>(
         `${process.env.NEXT_PUBLIC_API_BASE_PATH}/api/auth/users/${newProfile.id}/`,
         uploadData, 
         {
@@ -248,7 +262,7 @@ export const fetchAsyncEditProfile = createAsyncThunk<
         },
       )
       return res.data
-    } catch (error:unknown) {
+    } catch (error:any) {
       return rejectWithValue(error)
     }
   }

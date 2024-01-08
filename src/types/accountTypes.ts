@@ -17,10 +17,10 @@ export interface ProfileInputData {
   name: string
   image: File | null
 }
-
 export interface ProfileSubmitData {
   id:string
   name:string
   image:File | null
 }
+
 

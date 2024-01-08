@@ -10,7 +10,6 @@ export const handleActionError = <T>(
   if (action.payload && typeof action.payload === 'object' && action.payload.detail) {
     state[errorField] = action.payload.detail as T[keyof T];
   } else {
-    // オブジェクトにdetailキーがない場合、デフォルトメッセージを使用
     state[errorField] = defaultMessage as T[keyof T];
   }
 }

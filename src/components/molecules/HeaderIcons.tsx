@@ -8,9 +8,9 @@ import { setIsLogout } from 'features/account/accountSlice'
 import useNavigation from 'hooks/utils/useNavigation'
 
 export const HomeIconComponent = () => (
-  <div className="text-lg sm:text-sm font-extrabold">
+  <div className="text-lg font-extrabold">
   <Link href="/" legacyBehavior>
-    <HomeIcon className="md:h-7 md:w-7 h-5 w-5" />
+    <HomeIcon className="md:h-7 md:w-7 h-10 w-10" />
   </Link>
   </div>
 )
@@ -31,7 +31,7 @@ export const LogoutIconComponent = () => {
   },[dispatch,])
   return (
   <div onClick={logoutHandler} className="cursor-pointer">
-    <LogoutIcon className="md:h-7 md:w-7 h-5 w-5" />
+    <LogoutIcon className="md:h-7 md:w-7 h-10 w-10" />
   </div>
   )
 }
@@ -39,7 +39,7 @@ export const LogoutIconComponent = () => {
 export const LoginIconComponent = () => (
   <Link href="/login" legacyBehavior>
     <a>
-      <LoginIcon className="md:h-7 md:w-7 h-5 w-5" />
+      <LoginIcon className="md:h-7 md:w-7 h-10 w-10" />
     </a>
   </Link>
 )
@@ -47,7 +47,7 @@ export const LoginIconComponent = () => (
 export const RegisterIconComponent = () => (
   <Link href="/register" legacyBehavior>
     <a>
-      <UserAddIcon className="md:h-7 md:w-7 h-5 w-5" />
+      <UserAddIcon className="md:h-7 md:w-7 h-10 w-10" />
     </a>
   </Link>
 )
@@ -55,7 +55,7 @@ export const RegisterIconComponent = () => (
 export const UserIconComponent = () => (
   <Link href="/account/mypage" legacyBehavior>
     <a>
-      <UserIcon className="md:h-7 md:w-7 h-5 w-5" />
+      <UserIcon className="md:h-7 md:w-7 h-10 w-10" />
     </a>
   </Link>
 )

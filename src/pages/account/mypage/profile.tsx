@@ -25,6 +25,9 @@ const ProfileEdit = () => {
     if (!data || !loginUser) {
       return
     } 
+    console.log("送信データ:", data.name);
+    console.log("送信データ:", data.image);
+    
     dispatch(setIsButtonDisabled(true))
     try {
       const submitData:ProfileSubmitData = {
@@ -32,8 +35,11 @@ const ProfileEdit = () => {
         name:data.name,
         image:data.image,
       }
+      console.log("sData"+submitData.image)
       const result = await dispatch(fetchAsyncEditProfile(submitData))
+      
       if (fetchAsyncEditProfile.fulfilled.match(result)) {
+        console.log("fAEP" +result.payload.image)
         await dispatch(fetchAsyncCheckAuth())
         dispatch(setIsEditProfile())
         handleGoToMypage()
